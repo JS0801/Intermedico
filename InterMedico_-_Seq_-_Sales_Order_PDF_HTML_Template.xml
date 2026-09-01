@@ -310,7 +310,7 @@
                 ${grouped.rate}
             </td>
             <td align="right">
-                ${grouped.amount}
+                ${grouped.amount?string.currency}
             </td>
         </tr>
 
