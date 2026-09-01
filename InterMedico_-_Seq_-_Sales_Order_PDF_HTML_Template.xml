@@ -24,7 +24,7 @@
                         <b>${companyInformation.companyName}</b><br />
                         ${companyInformation.addressText}
                     </td>
-                    <td align="right" style="padding: 0;" ><span style="font-size: 16pt; font-weight: bold; font-style: italic;">&nsbp;<br />Order Confirmation</span></td>
+                    <td align="right" style="padding: 0;" ><span style="font-size: 16pt; font-weight: bold; font-style: italic;"><br />Order Confirmation</span></td>
                 </tr>
                 <tr>
                     <td align="right" style="padding: 0;">Page <pagenumber/> of <totalpages/></td>
