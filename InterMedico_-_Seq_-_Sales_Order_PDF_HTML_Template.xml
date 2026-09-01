@@ -176,13 +176,13 @@
                     <th align="center" style="width: 8%; padding: 6px 6px;">
                         Line
                     </th>
-                    <th align="center" style="width: 10%; padding: 6px 6px;">
+                    <th style="width: 10%; padding: 6px 6px;">
                         Quantity Ordered
                     </th>
                     <th style="width: 15%; padding: 6px 6px;">
                         Item No.
                     </th>
-                    <th align="center" style="width: 34%; padding: 6px 6px;">
+                    <th style="width: 34%; padding: 6px 6px;">
                         Description
                     </th>
                     <th align="center" style="width: 12.5%; padding: 6px 6px;">
