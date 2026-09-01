@@ -179,10 +179,10 @@
                     <th style="width: 10%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Quantity Ordered
                     </th>
-                    <th style="width: 15%; padding: 6px 6px; border-right: 1px solid #444444;">
+                    <th style="width: 12%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Item No.
                     </th>
-                    <th style="width: 34%; padding: 6px 6px; border-right: 1px solid #444444;">
+                    <th style="width: 40%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Description
                     </th>
                     <th align="center" style="width: 12.5%; padding: 6px 6px; border-right: 1px solid #444444;">
@@ -203,7 +203,7 @@
                 ${item.quantity}
             </td>
             <td style="border-right: 1px solid #444444;">
-                ${item.item}
+                ${item.custcol_item_id}
             </td>
             <td style="border-right: 1px solid #444444;">
                 ${item.description}
