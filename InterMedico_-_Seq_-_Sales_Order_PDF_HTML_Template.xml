@@ -167,28 +167,28 @@
 <body header="nlheader" header-height="30%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
   
     <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 8pt">
+<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 9pt">
     <!-- start items -->
     <#list record.item as item>
         <#if item_index==0>
             <thead>
                 <tr>
-                    <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-right: 1px solid #444444;">
+                    <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-right: 1px solid #444444; font-size: 9.5pt">
                         Line
                     </th>
-                    <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                    <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; font-size: 9.5pt">
                         Quantity Ordered
                     </th>
-                    <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
+                    <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
                         Item No.
                     </th>
-                    <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
+                    <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
                         Description
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
                         Unit Price
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
                         Extended
                     </th>
                 </tr>
