@@ -113,13 +113,11 @@
         <macro id="nlfooter">
             <table style="width: 100%; font-size: 8pt;">
                 <tr>
-                    <td style="padding: 0;">
-                        <barcode codetype="code128" showtext="true" value="${record.tranid}"/>
-                    </td>
-                    <td align="right" style="padding: 0;">
-                        
-                    </td>
+                    <td style="padding: 0; font-weight: bold; font-style: italic;" align = "center">Thank you for your order.</td>
                 </tr>
+              <tr>
+                <td style="padding: 0; font-style: italic;" align = "center">Freight and special handling charges will be determined at the time of shipment.</td>
+              </tr>
             </table>
         </macro>
     </macrolist>
@@ -344,38 +342,6 @@
     </#list>
 
 </table>
-          ${record.custbody_nsps_item_num_and_expiration_}
-    <hr style="width: 100%; color: #d3d3d3; background-color: #d3d3d3; height: 1px;" />
-    </#if>
-    <table style="page-break-inside: avoid; width: 100%; margin-top: 10px;">
-        <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.subtotal@label}</td>
-            <td align="right">${record.subtotal}</td>
-        </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.taxtotal@label} (${record.taxrate}%)</td>
-            <td align="right">${record.taxtotal}</td>
-        </tr>
-        <tr style="background-color: #e3e3e3; line-height: 200%;">
-            <td background-color="#ffffff" colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.total@label}</td>
-            <td align="right">${record.total}</td>
-        </tr>
-    </table>
-
-
-               <table class="total" style="width: 100%; margin-top:20pt;">
-        <tr class="totalrow">
-
-          <td align="center"><b>Notes/ Remarques</b></td></tr>
-                 <tr>
-                      <td align="center" background-color="#ffffff" >${record.custbody_im_customer_comments}</td>
-        </tr>
-    </table>
-
-
-              
+        </#if>
 </body>
 </pdf>
