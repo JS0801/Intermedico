@@ -165,7 +165,7 @@
 <body header="nlheader" header-height="30%" footer="nlfooter" footer-height="5pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
   
     <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 9pt">
+<table style="width: 100%; margin-top: 10px; border: 1px; font-size: 9pt">
 
     <#assign groupedItems = {}>
     <#assign groupOrder = []>
@@ -242,22 +242,22 @@
 
     <thead>
         <tr>
-            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444;">
+            <th align="center" style="width: 6%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
                 Line
             </th>
-            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 8%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
                 Quantity Ordered
             </th>
-            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 12%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
                 Item No.
             </th>
-            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 40%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
                 Description
             </th>
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
                 Unit Price
             </th>
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444;">
                 Extended
             </th>
         </tr>
