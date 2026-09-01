@@ -167,7 +167,7 @@
 <body header="nlheader" header-height="30%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
   
     <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 9pt">
+<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 8pt">
     <!-- start items -->
     <#list record.item as item>
         <#if item_index==0>
