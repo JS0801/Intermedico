@@ -170,28 +170,28 @@
     <table style="width: 100%; margin-top: 10px;">
         <!-- start items -->
         <#list record.item as item>
+           <#assign counter = 1/>
             <#if item_index==0>
                 <thead>
                 <tr>
-                    <th colspan="9" style="padding: 10px 6px;">${item.item@label}/<br />Article</th>
-                  <th colspan="3" style="padding: 10px 6px;">Customer<br />Supply Date</th>
-                    <th colspan="3" style="padding: 10px 6px;">${item.quantity@label}/<br />Quantité</th>
-                   <th colspan="3" style="padding: 10px 6px;">Committed<br />Qty</th>
-                    <th colspan="3" style="padding: 10px 6px;">B/O<br />Qty</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.rate@label}/<br />Tarif</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.amount@label}/<br />Montant</th>
+                    <th style="padding: 10px 6px;">Line</th>
+                    <th colspan="3" style="padding: 10px 6px;">Qauntity Ordered</th>
+                    <th colspan="3" style="padding: 10px 6px;">Item No.</th>
+                    <th colspan="3" style="padding: 10px 6px;">Description</th>
+                    <th colspan="4" align="right" style="padding: 10px 6px;">Unit Price</th>
+                    <th colspan="4" align="right" style="padding: 10px 6px;">Extended</th>
                 </tr>
                 </thead>
             </#if>
             <tr>
-                <td colspan="9"><span style="font-weight: bold; color: #333333;">${item.custcol_nsps_item_number_only}</span><br />${item.description}<#if item.custcol_im_external_notes?has_content><br />${item.custcol_im_external_notes}</#if></td>
-              <td colspan="3">${item.requesteddate}</td>
-              <td colspan="3">${item.quantity}</td>
-               <td colspan="3">${item.quantitycommitted}</td>
-              <td colspan="3">${item.quantitybackordered}</td>
+                <td>${counter}</td>
+                <td colspan="3">${item.quantity}</td>
+                <td colspan="3">${item.item}</td>
+                <td colspan="3">${item.description}</td>
                 <td colspan="4" align="right">${item.rate}</td>
                 <td colspan="4" align="right">${item.amount}</td>
             </tr>
+               <#assign counter = counter + 1/>
         </#list>
         <!-- end items -->
     </table>
