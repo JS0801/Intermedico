@@ -165,176 +165,153 @@
 <body header="nlheader" header-height="30%" footer="nlfooter" footer-height="5pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
   
     <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border: 1px; font-size: 9pt">
+<table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 9pt">
 
     <#assign groupedItems = {}>
+    <#assign groupOrder = []>
 
-    <!-- Build grouped items -->
+    <!-- Build grouped items in first-seen order. This groups non-consecutive matching lines too. -->
     <#list record.item as item>
 
-        <#assign groupKey = item.custcol_item_id?string + "_" + item.description?string + "_" + item.rate?string>
+        <#assign itemNo = item.custcol_item_id?string>
+        <#assign description = item.description?string>
+        <#assign rate = item.rate?string>
+        <#assign lineQty = (item.quantity)>
+        <#assign lineAmount = (item.amount)>
+        <#assign groupKey = itemNo + "||" + description + "||" + rate>
+
+        <#assign dateKey = "">
+        <#if item.requesteddate?has_content>
+            <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
+        </#if>
 
         <#if groupedItems[groupKey]??>
 
             <#assign existing = groupedItems[groupKey]>
+            <#assign updatedDates = existing.dates>
 
-            <!-- Date key -->
-            <#if item.requesteddate?has_content>
-                <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
-
+            <#if dateKey?has_content>
                 <#if existing.dates[dateKey]??>
-                    <#assign dateQty = existing.dates[dateKey] + item.quantity>
+                    <#assign dateQty = existing.dates[dateKey] + lineQty>
                 <#else>
-                    <#assign dateQty = item.quantity>
+                    <#assign dateQty = lineQty>
                 </#if>
 
                 <#assign updatedDates = existing.dates + {
                     dateKey: dateQty
                 }>
-            <#else>
-                <#assign updatedDates = existing.dates>
             </#if>
 
-            <!-- Update grouped item -->
             <#assign groupedItems = groupedItems + {
                 groupKey: {
                     "item": existing.item,
                     "description": existing.description,
                     "rate": existing.rate,
-                    "quantity": existing.quantity + item.quantity,
-                    "amount": existing.amount + item.amount,
+                    "quantity": existing.quantity + lineQty,
+                    "amount": existing.amount + lineAmount,
                     "dates": updatedDates
                 }
             }>
 
         <#else>
 
-            <!-- First occurrence of group -->
             <#assign dates = {}>
 
-            <#if item.requesteddate?has_content>
-                <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
-
+            <#if dateKey?has_content>
                 <#assign dates = dates + {
-                    dateKey: item.quantity
+                    dateKey: lineQty
                 }>
             </#if>
 
             <#assign groupedItems = groupedItems + {
                 groupKey: {
-                    "item": item.custcol_item_id,
-                    "description": item.description,
-                    "rate": item.rate,
-                    "quantity": item.quantity,
-                    "amount": item.amount,
+                    "item": itemNo,
+                    "description": description,
+                    "rate": rate,
+                    "quantity": lineQty,
+                    "amount": lineAmount,
                     "dates": dates
                 }
             }>
+
+            <#assign groupOrder = groupOrder + [groupKey]>
 
         </#if>
 
     </#list>
 
-
-    <!-- Header -->
     <thead>
         <tr>
-            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
+            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444;">
                 Line
             </th>
-
-            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
+            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                 Quantity Ordered
             </th>
-
-            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
+            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                 Item No.
             </th>
-
-            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
+            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                 Description
             </th>
-
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                 Unit Price
             </th>
-
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                 Extended
             </th>
         </tr>
     </thead>
 
-
-    <!-- Display grouped items -->
     <#assign counter = 1>
 
-    <#list groupedItems?keys as key>
+    <#list groupOrder as key>
 
         <#assign grouped = groupedItems[key]>
 
         <tr>
-
-            <td align="center" style="border-right: 1px solid #444444;">
+            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
                 ${counter}
             </td>
-
             <td align="right" style="border-right: 1px solid #444444;">
                 ${grouped.quantity}
             </td>
-
             <td style="border-right: 1px solid #444444;">
                 ${grouped.item}
             </td>
-
-            <!-- Description + Date/Qty table -->
             <td style="border-right: 1px solid #444444;">
-
                 ${grouped.description}
 
                 <#if grouped.dates?size gt 0>
-
                     <table style="width: 70%; margin-top: 4px; font-size: 8pt;">
-
                         <tr>
                             <td style="width: 55%; padding: 2px 4px;">
                                 <b><u>Date Wanted</u></b>
                             </td>
-
                             <td align="right" style="width: 45%; padding: 2px 4px;">
                                 <b><u>Quantity</u></b>
                             </td>
                         </tr>
 
-                        <!-- Sort dates ascending -->
                         <#list grouped.dates?keys?sort as dateKey>
-
                             <tr>
                                 <td style="padding: 2px 4px;">
                                     ${dateKey?date("yyyy-MM-dd")?string("MMM dd, yyyy")}
                                 </td>
-
                                 <td align="right" style="padding: 2px 4px;">
                                     ${grouped.dates[dateKey]}
                                 </td>
                             </tr>
-
                         </#list>
-
                     </table>
-
                 </#if>
-
             </td>
-
             <td align="right" style="border-right: 1px solid #444444;">
                 ${grouped.rate}
             </td>
-
-            <td align="right">
-                ${grouped.amount?string.currency}
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.amount}
             </td>
-
         </tr>
 
         <#assign counter = counter + 1>
@@ -342,6 +319,7 @@
     </#list>
 
 </table>
+
         </#if>
 </body>
 </pdf>
