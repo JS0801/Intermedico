@@ -176,10 +176,10 @@
                     <th align="center" style="width: 8%; padding: 10px 6px;">
                         Line
                     </th>
-                    <th align="center" style="width: 15%; padding: 10px 6px;">
+                    <th align="center" style="width: 10%; padding: 10px 6px;">
                         Quantity Ordered
                     </th>
-                    <th align="center" style="width: 18%; padding: 10px 6px;">
+                    <th style="width: 15%; padding: 10px 6px;">
                         Item No.
                     </th>
                     <th align="center" style="width: 34%; padding: 10px 6px;">
@@ -196,22 +196,22 @@
         </#if>
 
         <tr>
-            <td align="center" style="width: 8%;">
+            <td align="center">
                 ${item_index + 1}
             </td>
-            <td align="right" style="width: 15%;">
+            <td align="right">
                 ${item.quantity}
             </td>
-            <td style="width: 18%;">
+            <td>
                 ${item.item}
             </td>
-            <td style="width: 34%;">
+            <td >
                 ${item.description}
             </td>
-            <td align="right" style="width: 12.5%;">
+            <td align="right">
                 ${item.rate}
             </td>
-            <td align="right" style="width: 12.5%;">
+            <td align="right">
                 ${item.amount}
             </td>
         </tr>
