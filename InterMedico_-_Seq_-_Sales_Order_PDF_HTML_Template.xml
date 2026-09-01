@@ -21,21 +21,13 @@
                     <td rowspan="4" style="padding: 0; width: 30%;">
                     <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
                     <td rowspan="4">&nsbp;<br />
-                        ${companyInformation.companyName}<br />
+                        <b>${companyInformation.companyName}</b><br />
                         ${companyInformation.addressText}
                     </td>
-                    <td align="right" style="padding: 0;"><span style="font-size: 28pt;">${record@title} /</span></td>
-                </tr>
-                
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">Commande client</span></td>
-                </tr>
-            
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">#${record.tranid}</span></td>
+                    <td align="right" style="padding: 0;" rowspan="3"><span style="font-size: 20pt; font-weight: bold; font-style: italic;">Order Confirmation</span></td>
                 </tr>
                 <tr>
-                    <td align="right" style="padding: 0;">${record.trandate}</td>
+                    <td align="right" style="padding: 0;">Page <pagenumber/> of <totalpages/></td>
                 </tr>
             </table>
 
@@ -47,7 +39,7 @@
                         <barcode codetype="code128" showtext="true" value="${record.tranid}"/>
                     </td>
                     <td align="right" style="padding: 0;">
-                        <pagenumber/> of <totalpages/>
+                        
                     </td>
                 </tr>
             </table>
