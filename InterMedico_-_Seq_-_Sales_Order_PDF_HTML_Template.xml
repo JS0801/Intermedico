@@ -164,7 +164,7 @@
         }
     </style>
 </head>
-<body header="nlheader" header-height="25%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+<body header="nlheader" header-height="35%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
 
     <table style="width: 100%; margin-top: 10px;">
         <tr>
