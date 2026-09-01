@@ -39,6 +39,76 @@
         </tr>
     </table>
 
+
+    <!-- First Information Table -->
+<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1.5pt solid #444444; border-radius: 18px; overflow: hidden; margin-bottom: 12px;">
+    <tr>
+        <th style="width: 13%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Order Date
+        </th>
+        <th style="width: 24%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Customer number
+        </th>
+        <th style="width: 26%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Customer P.O. Number
+        </th>
+        <th style="width: 37%; text-align: center; padding: 6px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Ship Via
+        </th>
+    </tr>
+
+    <tr>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.trandate}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.entity.entityid}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.otherrefnum}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; font-size: 10pt;">
+            ${record.shipmethod}
+        </td>
+    </tr>
+</table>
+
+
+<!-- Second Information Table -->
+<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1.5pt solid #444444; border-radius: 18px; overflow: hidden;">
+
+    <tr>
+        <th style="width: 13%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Date Required
+        </th>
+        <th style="width: 24%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Inter Medico Order No
+        </th>
+        <th style="width: 26%; text-align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Order Entered By
+        </th>
+        <th style="width: 37%; text-align: center; padding: 6px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+            Ordered By
+        </th>
+    </tr>
+
+    <tr>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.duedate}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.tranid}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+            ${record.custbody_order_entered_by}
+        </td>
+        <td style="text-align: center; padding: 7px 4px; font-size: 10pt;">
+            ${record.custbody_ordered_by}
+        </td>
+    </tr>
+
+</table>
+
         </macro>
         <macro id="nlfooter">
             <table style="width: 100%; font-size: 8pt;">
