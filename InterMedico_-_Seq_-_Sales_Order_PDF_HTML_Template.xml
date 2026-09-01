@@ -168,54 +168,113 @@
   
     <#if record.item?has_content>
 <table style="width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 9pt">
-    <!-- start items -->
+
+    <#assign groupedItems = {}>
+
+    <!-- Build grouped items -->
     <#list record.item as item>
-        <#if item_index==0>
-            <thead>
-                <tr>
-                    <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-right: 1px solid #444444; ">
-                        Line
-                    </th>
-                    <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
-                        Quantity Ordered
-                    </th>
-                    <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
-                        Item No.
-                    </th>
-                    <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
-                        Description
-                    </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
-                        Unit Price
-                    </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
-                        Extended
-                    </th>
-                </tr>
-            </thead>
+
+        <#assign groupKey = item.item?string + "_" + item.description?string + "_" + item.rate?string>
+
+        <#if groupedItems[groupKey]??>
+
+            <#assign existing = groupedItems[groupKey]>
+
+            <#assign groupedItems = groupedItems + {
+                groupKey: {
+                    "item": existing.item,
+                    "description": existing.description,
+                    "rate": existing.rate,
+                    "quantity": existing.quantity + item.quantity,
+                    "amount": existing.amount + item.amount
+                }
+            }>
+
+        <#else>
+
+            <#assign groupedItems = groupedItems + {
+                groupKey: {
+                    "item": item.custcol_item_id,
+                    "description": item.description,
+                    "rate": item.rate,
+                    "quantity": item.quantity,
+                    "amount": item.amount
+                }
+            }>
+
         </#if>
 
-        <tr>
-            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
-                ${item_index + 1}
-            </td>
-            <td align="right" style="border-right: 1px solid #444444;">
-                ${item.quantity}
-            </td>
-            <td style="border-right: 1px solid #444444;">
-                ${item.custcol_item_id}
-            </td>
-            <td style="border-right: 1px solid #444444;">
-                ${item.description}
-            </td>
-            <td align="right" style="border-right: 1px solid #444444;">
-                ${item.rate}
-            </td>
-            <td align="right" style="border-right: 1px solid #444444;">
-                ${item.amount}
-            </td>
-        </tr>
     </#list>
+
+
+    <!-- Display grouped items -->
+    <#assign counter = 1>
+
+    <thead>
+        <tr>
+            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444;">
+                Line
+            </th>
+
+            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                Quantity Ordered
+            </th>
+
+            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                Item No.
+            </th>
+
+            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                Description
+            </th>
+
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                Unit Price
+            </th>
+
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+                Extended
+            </th>
+        </tr>
+    </thead>
+
+
+    <#list groupedItems?keys as key>
+
+        <#assign grouped = groupedItems[key]>
+
+        <tr>
+
+            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
+                ${counter}
+            </td>
+
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.quantity}
+            </td>
+
+            <td style="border-right: 1px solid #444444;">
+                ${grouped.item}
+            </td>
+
+            <td style="border-right: 1px solid #444444;">
+                ${grouped.description}
+            </td>
+
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.rate}
+            </td>
+
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.amount}
+            </td>
+
+        </tr>
+
+        <#assign counter = counter + 1>
+
+    </#list>
+
 </table>
           ${record.custbody_nsps_item_num_and_expiration_}
     <hr style="width: 100%; color: #d3d3d3; background-color: #d3d3d3; height: 1px;" />
