@@ -173,22 +173,22 @@
         <#if item_index==0>
             <thead>
                 <tr>
-                    <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-right: 1px solid #444444; font-size: 9.5pt">
+                    <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-right: 1px solid #444444; ">
                         Line
                     </th>
-                    <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; font-size: 9.5pt">
+                    <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
                         Quantity Ordered
                     </th>
-                    <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
+                    <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
                         Item No.
                     </th>
-                    <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
+                    <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
                         Description
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
                         Unit Price
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px; font-size: 9.5pt">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;  border-left: 0px;">
                         Extended
                     </th>
                 </tr>
