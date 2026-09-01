@@ -241,27 +241,27 @@
     <!-- Header -->
     <thead>
         <tr>
-            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444;">
+            <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
                 Line
             </th>
 
-            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 8%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
                 Quantity Ordered
             </th>
 
-            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 12%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
                 Item No.
             </th>
 
-            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th style="width: 40%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
                 Description
             </th>
 
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px; border-top: 0px;">
                 Unit Price
             </th>
 
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444; border-left: 0px;">
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444;">
                 Extended
             </th>
         </tr>
@@ -277,7 +277,7 @@
 
         <tr>
 
-            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
+            <td align="center" style="border-right: 1px solid #444444;">
                 ${counter}
             </td>
 
@@ -333,7 +333,7 @@
                 ${grouped.rate}
             </td>
 
-            <td align="right" style="border-right: 1px solid #444444;">
+            <td align="right">
                 ${grouped.amount}
             </td>
 
