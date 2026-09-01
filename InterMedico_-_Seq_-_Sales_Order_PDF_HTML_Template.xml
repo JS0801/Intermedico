@@ -266,7 +266,7 @@
             </td>
 
             <td align="right" style="border-right: 1px solid #444444;">
-                ${grouped.amount?string.curreny}
+                ${grouped.amount?string.currency}
             </td>
 
         </tr>
