@@ -78,16 +78,16 @@
 <table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1pt solid #444444; border-radius: 18px; overflow: hidden;">
 
     <tr>
-        <th style="width: 13%; align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+        <th style="width: 13%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
             Date Required
         </th>
-        <th style="width: 24%; align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+        <th style="width: 24%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
             Inter Medico Order No
         </th>
-        <th style="width: 26%; align: center; padding: 6px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+        <th style="width: 26%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
             Order Entered By
         </th>
-        <th style="width: 37%; align: center; padding: 6px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 11pt;">
+        <th style="width: 37%; align: center; padding: 4px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
             Ordered By
         </th>
     </tr>
