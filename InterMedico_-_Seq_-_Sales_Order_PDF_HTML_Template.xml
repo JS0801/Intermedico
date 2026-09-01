@@ -270,7 +270,7 @@
         <#assign grouped = groupedItems[key]>
 
         <tr>
-            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
+            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444; border-left: 0px;">
                 ${counter}
             </td>
             <td align="right" style="border-right: 1px solid #444444;">
@@ -309,7 +309,7 @@
             <td align="right" style="border-right: 1px solid #444444;">
                 ${grouped.rate}
             </td>
-            <td align="right" style="border-right: 1px solid #444444;">
+            <td align="right">
                 ${grouped.amount}
             </td>
         </tr>
