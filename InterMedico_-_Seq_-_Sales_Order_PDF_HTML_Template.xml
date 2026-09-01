@@ -332,7 +332,7 @@
             </td>
 
             <td align="right">
-                ${grouped.amount?string.c}
+                ${grouped.amount?string.currency}
             </td>
 
         </tr>
