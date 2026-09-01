@@ -167,28 +167,28 @@
 <body header="nlheader" header-height="30%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
   
     <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: 1px solid #444444;">
+<table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
     <!-- start items -->
     <#list record.item as item>
         <#if item_index==0>
             <thead>
                 <tr>
-                    <th align="center" style="width: 8%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th align="center" style="width: 8%; padding: 6px 6px; border-left: 1px solid #444444; border-right: 1px solid #444444;">
                         Line
                     </th>
-                    <th style="width: 10%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th style="width: 10%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Quantity Ordered
                     </th>
-                    <th style="width: 15%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th style="width: 15%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Item No.
                     </th>
-                    <th style="width: 34%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th style="width: 34%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Description
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Unit Price
                     </th>
-                    <th align="center" style="width: 12.5%; padding: 6px 6px; border: 1px solid #444444;">
+                    <th align="center" style="width: 12.5%; padding: 6px 6px; border-right: 1px solid #444444;">
                         Extended
                     </th>
                 </tr>
@@ -196,27 +196,26 @@
         </#if>
 
         <tr>
-            <td align="center" style="border: 1px solid #444444;">
+            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444;">
                 ${item_index + 1}
             </td>
-            <td align="right" style="border: 1px solid #444444;">
+            <td align="right" style="border-right: 1px solid #444444;">
                 ${item.quantity}
             </td>
-            <td style="border: 1px solid #444444;">
+            <td style="border-right: 1px solid #444444;">
                 ${item.item}
             </td>
-            <td style="border: 1px solid #444444;">
+            <td style="border-right: 1px solid #444444;">
                 ${item.description}
             </td>
-            <td align="right" style="border: 1px solid #444444;">
+            <td align="right" style="border-right: 1px solid #444444;">
                 ${item.rate}
             </td>
-            <td align="right" style="border: 1px solid #444444;">
+            <td align="right" style="border-right: 1px solid #444444;">
                 ${item.amount}
             </td>
         </tr>
     </#list>
-    <!-- end items -->
 </table>
           ${record.custbody_nsps_item_num_and_expiration_}
     <hr style="width: 100%; color: #d3d3d3; background-color: #d3d3d3; height: 1px;" />
