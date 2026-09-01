@@ -93,16 +93,16 @@
     </tr>
 
     <tr>
-        <td style="align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+        <td style="align: center; border-right: 1pt solid #444444;">
             ${record.duedate}
         </td>
-        <td style="align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+        <td style="align: center; border-right: 1pt solid #444444;">
             ${record.tranid}
         </td>
-        <td style="align: center; padding: 7px 4px; border-right: 1pt solid #444444; font-size: 10pt;">
+        <td style="align: center; border-right: 1pt solid #444444;">
             ${record.custbody_order_entered_by}
         </td>
-        <td style="align: center; padding: 7px 4px; font-size: 10pt;">
+        <td style="align: center;">
             ${record.custbody_ordered_by}
         </td>
     </tr>
