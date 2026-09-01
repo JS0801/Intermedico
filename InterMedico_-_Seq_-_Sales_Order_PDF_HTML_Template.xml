@@ -174,23 +174,53 @@
     <!-- Build grouped items -->
     <#list record.item as item>
 
-        <#assign groupKey = item.item?string + "_" + item.description?string + "_" + item.rate?string>
+        <#assign groupKey = item.custcol_item_id?string + "_" + item.description?string + "_" + item.rate?string>
 
         <#if groupedItems[groupKey]??>
 
             <#assign existing = groupedItems[groupKey]>
 
+            <!-- Date key -->
+            <#if item.requesteddate?has_content>
+                <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
+
+                <#if existing.dates[dateKey]??>
+                    <#assign dateQty = existing.dates[dateKey] + item.quantity>
+                <#else>
+                    <#assign dateQty = item.quantity>
+                </#if>
+
+                <#assign updatedDates = existing.dates + {
+                    dateKey: dateQty
+                }>
+            <#else>
+                <#assign updatedDates = existing.dates>
+            </#if>
+
+            <!-- Update grouped item -->
             <#assign groupedItems = groupedItems + {
                 groupKey: {
                     "item": existing.item,
                     "description": existing.description,
                     "rate": existing.rate,
                     "quantity": existing.quantity + item.quantity,
-                    "amount": existing.amount + item.amount
+                    "amount": existing.amount + item.amount,
+                    "dates": updatedDates
                 }
             }>
 
         <#else>
+
+            <!-- First occurrence of group -->
+            <#assign dates = {}>
+
+            <#if item.requesteddate?has_content>
+                <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
+
+                <#assign dates = dates + {
+                    dateKey: item.quantity
+                }>
+            </#if>
 
             <#assign groupedItems = groupedItems + {
                 groupKey: {
@@ -198,7 +228,8 @@
                     "description": item.description,
                     "rate": item.rate,
                     "quantity": item.quantity,
-                    "amount": item.amount
+                    "amount": item.amount,
+                    "dates": dates
                 }
             }>
 
@@ -207,9 +238,7 @@
     </#list>
 
 
-    <!-- Display grouped items -->
-    <#assign counter = 1>
-
+    <!-- Header -->
     <thead>
         <tr>
             <th align="center" style="width: 6%; padding: 6px 6px; border: 1px solid #444444;">
@@ -239,6 +268,9 @@
     </thead>
 
 
+    <!-- Display grouped items -->
+    <#assign counter = 1>
+
     <#list groupedItems?keys as key>
 
         <#assign grouped = groupedItems[key]>
@@ -257,8 +289,44 @@
                 ${grouped.item}
             </td>
 
+            <!-- Description + Date/Qty table -->
             <td style="border-right: 1px solid #444444;">
+
                 ${grouped.description}
+
+                <#if grouped.dates?size gt 0>
+
+                    <table style="width: 70%; margin-top: 4px; font-size: 8pt;">
+
+                        <tr>
+                            <td style="width: 55%; padding: 2px 4px;">
+                                <b><u>Date Wanted</u></b>
+                            </td>
+
+                            <td align="right" style="width: 45%; padding: 2px 4px;">
+                                <b><u>Quantity</u></b>
+                            </td>
+                        </tr>
+
+                        <!-- Sort dates ascending -->
+                        <#list grouped.dates?keys?sort as dateKey>
+
+                            <tr>
+                                <td style="padding: 2px 4px;">
+                                    ${dateKey?date("yyyy-MM-dd")?string("MMM dd, yyyy")}
+                                </td>
+
+                                <td align="right" style="padding: 2px 4px;">
+                                    ${grouped.dates[dateKey]}
+                                </td>
+                            </tr>
+
+                        </#list>
+
+                    </table>
+
+                </#if>
+
             </td>
 
             <td align="right" style="border-right: 1px solid #444444;">
@@ -266,7 +334,7 @@
             </td>
 
             <td align="right" style="border-right: 1px solid #444444;">
-                ${grouped.amount?string.currency}
+                ${grouped.amount}
             </td>
 
         </tr>
