@@ -94,7 +94,7 @@
 
     <tr>
         <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.duedate}
+            ${record.shipdate}
         </td>
         <td style="align: center; border-right: 1pt solid #444444;">
             ${record.tranid}
