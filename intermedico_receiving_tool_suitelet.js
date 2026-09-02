@@ -93,6 +93,7 @@ define([
             locationText: search.createColumn({ name: 'locationnohierarchy' }),
             quantity: search.createColumn({ name: 'quantity' }),
             received: search.createColumn({ name: 'quantityshiprecv' }),
+            createdFrom: search.createColumn({ name: 'createdfrom' }),
             billed: search.createColumn({ name: 'quantitybilled' }),
             line: search.createColumn({ name: 'line' }),
             lineKey: search.createColumn({ name: 'lineuniquekey' })
@@ -401,6 +402,7 @@ define([
                     line: line.line,
                     lineKey: line.lineKey,
                     quantity: receiveQty,
+                    salesOrderId: line.salesOrderId || '',
                     useBins: useBins,
                     needsNumber: needsNumber,
                     needsDetail: needsDetail,
@@ -490,6 +492,7 @@ define([
                 locationId: r.getValue(c.location) || '',
                 line: r.getValue(c.line) || '',
                 lineKey: r.getValue(c.lineKey) || '',
+                salesOrderId: r.getValue(c.createdFrom) || '',
                 remaining: round(Math.max(ordered - received, 0))
             });
             return true;
@@ -508,9 +511,13 @@ define([
         const allocationByLine = {};
         const allocationByItemLocation = {};
         const lineCount = ir.getLineCount({ sublistId: 'item' });
-
+        const salesOrders = {};
+      
         allocations.forEach(function (a) {
             allocationByLine[String(a.line)] = a;
+            if (a.salesOrderId) {
+                salesOrders[a.salesOrderId] = true;
+            }
             if (a.lineKey) {
                 allocationByLine[String(a.lineKey)] = a;
             }
@@ -591,7 +598,8 @@ define([
             poUrl: resolveRecordUrl(record.Type.PURCHASE_ORDER, poId),
             itemReceiptId: irId,
             itemReceiptNumber: values.tranid || irId,
-            itemReceiptUrl: resolveRecordUrl(record.Type.ITEM_RECEIPT, irId)
+            itemReceiptUrl: resolveRecordUrl(record.Type.ITEM_RECEIPT, irId),
+            salesOrderIds: Object.keys(salesOrders)
         };
     }
 
@@ -874,6 +882,7 @@ define([
             'function submitForm(form){if(window.HTMLFormElement&&HTMLFormElement.prototype.submit){HTMLFormElement.prototype.submit.call(form);return;}form.submit();}',
             'function submitReceive(){var errors=validate();if(errors.length){alert(errors.join("\\n"));return;}var groups=Object.keys(state.selected).map(function(key){var g=groupByKey(key);return {masterId:g.masterId,itemId:g.itemId,item:g.item,locationId:g.locationId,location:g.location,qty:num(state.qty[key]),refs:g.refs,inventory:state.details[key]||[]};});showProgress();window.setTimeout(function(){try{var form=ensurePostForm();writeFormValue(form,"custpage_receive_payload",JSON.stringify({groups:groups}));submitForm(form);}catch(ex){hideProgress();alert("Could not submit the receiving request: "+(ex&&ex.message?ex.message:ex));}},60);}',
             'function showResult(){if(!results.length)return;var rows=results.map(function(r){return "<tr><td>"+link(r.poUrl,r.poNumber)+"</td><td>"+link(r.itemReceiptUrl,r.itemReceiptNumber)+"</td></tr>";}).join("");var modal=document.getElementById("im-result-modal");modal.innerHTML="<div class=\\"im-dialog\\"><div class=\\"im-dialog-head\\"><div class=\\"im-dialog-title\\">Item Receipts Created</div></div><div class=\\"im-dialog-body\\"><table class=\\"im-line-table\\"><thead><tr><th>Purchase Order</th><th>Item Receipt</th></tr></thead><tbody>"+rows+"</tbody></table></div><div class=\\"im-dialog-actions\\"><button type=\\"button\\" class=\\"im-btn im-btn-primary\\" id=\\"result-ok\\">OK</button></div></div>";modal.className="im-modal im-open";}',
+            'function callSalesOrderAllocation(){var called={};results.forEach(function(r){(r.salesOrderIds||[]).forEach(function(soId){if(!soId||called[soId])return;called[soId]=true;var frame=document.createElement("iframe");frame.style.display="none";frame.src="/app/accounting/transactions/salesord.nl?_execute_action_=allocatesalesorder&id="+encodeURIComponent(soId);document.body.appendChild(frame);});});}',
             'body.addEventListener("click",function(e){var exp=dataValue(e.target,"data-expand"),inv=dataValue(e.target,"data-inv");if(exp){state.expanded[exp]=!state.expanded[exp];render();}if(inv){showInv(inv);}});',
             'body.addEventListener("change",function(e){var k=e.target.getAttribute("data-check"),q=e.target.getAttribute("data-qty");if(k){if(e.target.checked)state.selected[k]=true;else delete state.selected[k];render();}if(q){state.qty[q]=e.target.value;if(!checkLineQty(q,e.target)){if(warning)warning.textContent="Cannot receive more than what is remaining.";}else if((state.details[q]||[]).length&&Math.abs(invQtySum(q)-num(state.qty[q]))>0.0001){alert("Inventory detail quantity must match Qty To Receive. Please update inventory detail.");}render();}});',
             'body.addEventListener("input",function(e){var k=e.target.getAttribute("data-qty");if(k){var g=groupByKey(k);state.qty[k]=e.target.value;if(num(e.target.value)>0){state.selected[k]=true;var row=e.target.parentNode&&e.target.parentNode.parentNode;var check=row?row.querySelector("[data-check]"):null;if(check)check.checked=true;}if(warning)warning.textContent=g&&num(e.target.value)>num(g.remaining)?"Cannot receive more than what is remaining.":"";metrics(rows());}});',
@@ -886,7 +895,7 @@ define([
             'document.getElementById("im-mark").addEventListener("click",function(){rows().forEach(function(m){(m.groups||[]).forEach(function(g){state.selected[g.key]=true;});});render();});',
             'document.getElementById("im-unmark").addEventListener("click",function(){state.selected={};render();});',
             'receiveBtn.addEventListener("click",submitReceive);',
-            'makeOptions();render();showResult();',
+            'makeOptions();render();callSalesOrderAllocation();showResult();',
             '}());',
             '</script>'
         ].join('');
