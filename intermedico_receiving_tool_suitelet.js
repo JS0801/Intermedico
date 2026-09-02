@@ -34,6 +34,8 @@ define([
         if (context.request.method === 'POST') {
             const params = context.request.parameters || {};
 
+            
+
             try {
                 const result = receiveItems(JSON.parse(params.custpage_receive_payload || '{"groups":[]}').groups || []);
                 renderPage(context, '', result);
@@ -896,8 +898,8 @@ define([
             'document.getElementById("im-mark").addEventListener("click",function(){rows().forEach(function(m){(m.groups||[]).forEach(function(g){state.selected[g.key]=true;});});render();});',
             'document.getElementById("im-unmark").addEventListener("click",function(){state.selected={};render();});',
             'receiveBtn.addEventListener("click",submitReceive);',
-            'makeOptions();render();showResult();',
-           // 'makeOptions();render();callSalesOrderAllocation();showResult();',
+           // 'makeOptions();render();showResult();',
+            'makeOptions();render();callSalesOrderAllocation();showResult();',
             '}());',
             '</script>'
         ].join('');
