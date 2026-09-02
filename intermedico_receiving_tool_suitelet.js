@@ -896,7 +896,8 @@ define([
             'document.getElementById("im-mark").addEventListener("click",function(){rows().forEach(function(m){(m.groups||[]).forEach(function(g){state.selected[g.key]=true;});});render();});',
             'document.getElementById("im-unmark").addEventListener("click",function(){state.selected={};render();});',
             'receiveBtn.addEventListener("click",submitReceive);',
-            'makeOptions();render();callSalesOrderAllocation();showResult();',
+            'makeOptions();render();showResult();',
+           // 'makeOptions();render();callSalesOrderAllocation();showResult();',
             '}());',
             '</script>'
         ].join('');
