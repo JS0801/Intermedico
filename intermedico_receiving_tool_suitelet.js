@@ -450,7 +450,8 @@ define([
             quantity: search.createColumn({ name: 'quantity' }),
             received: search.createColumn({ name: 'quantityshiprecv' }),
             line: search.createColumn({ name: 'line' }),
-            lineKey: search.createColumn({ name: 'lineuniquekey' })
+            lineKey: search.createColumn({ name: 'lineuniquekey' }),
+            createdFrom: search.createColumn({ name: 'createdfrom' })
         };
         const filters = [
             ['type', 'anyof', 'PurchOrd'],
