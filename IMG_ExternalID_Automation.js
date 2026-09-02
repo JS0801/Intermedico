@@ -12,6 +12,8 @@ define(['N/record', 'N/log'], function (record, log) {
     };
 
     function afterSubmit(context) {
+
+      log.debug('type', context.type)
         if (context.type === context.UserEventType.DELETE ||
             context.type === context.UserEventType.XEDIT) {
             return;
