@@ -256,7 +256,7 @@
           <waitforworkflow></waitforworkflow>
           <waitforworkflowstate></waitforworkflowstate>
           <initcondition>
-            <formula><![CDATA[( isEmpty("Related Transaction") = 'F' AND "Type" IN ("Transaction Type1") ) OR ( "Vendor Category" NOT IN ("{#Vendor#} Category1","{#Vendor#} Category2") )]]></formula>
+            <formula><![CDATA[( isEmpty("Related Transaction") = 'F' AND "Type" IN ("Transaction Type1") ) OR ( "Vendor Category" NOT IN ("{#Vendor#} Category1","{#Vendor#} Category2") ) AND "User Role" NOT IN ("Role1")]]></formula>
             <type>VISUAL_BUILDER</type>
             <parameters>
               <parameter>
@@ -285,6 +285,15 @@
                 <name>{#Vendor#} Category2</name>
                 <selectrecordtype>-110</selectrecordtype>
                 <value>[ACCOUNT_SPECIFIC_VALUE]</value>
+              </parameter>
+              <parameter>
+                <name>User Role</name>
+                <value>STDUSERROLE</value>
+              </parameter>
+              <parameter>
+                <name>Role1</name>
+                <selectrecordtype>-118</selectrecordtype>
+                <value>[scriptid=customrole_dsl__wd_std_apanalyst]</value>
               </parameter>
             </parameters>
           </initcondition>
