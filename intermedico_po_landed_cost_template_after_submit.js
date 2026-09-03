@@ -61,7 +61,7 @@ define(['N/log', 'N/record', 'N/search'], function (log, record, search) {
     function afterSubmit(context) {
         try {
             if (CONFIG.runOnlyOnCreate && context.type !== context.UserEventType.CREATE) {
-//                return;
+                return;
             }
 
             if (!context.newRecord || context.newRecord.type !== record.Type.PURCHASE_ORDER) {
