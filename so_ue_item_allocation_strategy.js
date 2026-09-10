@@ -9,7 +9,7 @@ define(['N/search', 'N/record', 'N/log'], (search, record, log) => {
 
         const salesOrderId = context.newRecord.id;
         if (!salesOrderId) return;
-
+        log.debug('salesOrderId', salesOrderId)
         try {
             const allocationColumn = search.createColumn({
                 name: 'defaultallocationstrategy',
