@@ -23,8 +23,8 @@
       <description></description>
       <donotexitworkflow>F</donotexitworkflow>
       <name>State 1</name>
-      <positionx>243</positionx>
-      <positiony>133</positiony>
+      <positionx>573</positionx>
+      <positiony>203</positiony>
       <workflowactions triggertype="BEFORESUBMIT">
         <setfieldvalueaction scriptid="workflowaction245">
           <clienttriggerfields></clienttriggerfields>
@@ -57,6 +57,38 @@
             </parameters>
           </initcondition>
         </setfieldvalueaction>
+        <workflowsublistactiongroup scriptid="workflowaction408">
+          <conditionsavedsearch></conditionsavedsearch>
+          <contexttypes>ACTION|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|RECORDACTION|CUSTOMTOOL|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|EVENTSUBSCRIBER|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OFFLINECLIENT|OTHER|PAYMENTPOSTBACK|PAYMENTGATEWAY|PLATFORMEXTENSION|PORTLET|PROMOTIONS|CONSOLRATEADJUSTOR|RESTWEBSERVICES|RESTLET|ADVANCEDREVREC|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|WEBSERVICES|SUBSCRIBERSCRIPT|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WORKBOOKBUILDER|WORKFLOW</contexttypes>
+          <eventtypes></eventtypes>
+          <isinactive>F</isinactive>
+          <scheduledelay></scheduledelay>
+          <schedulemode>DELAY</schedulemode>
+          <schedulerecurrence></schedulerecurrence>
+          <scheduletimeofday></scheduletimeofday>
+          <scheduletimeunit></scheduletimeunit>
+          <sublist>ITEM</sublist>
+          <initcondition>
+            <formula></formula>
+            <type>VISUAL_BUILDER</type>
+          </initcondition>
+          <setfieldvalueaction scriptid="workflowaction409">
+            <field>[scriptid=custcol_fefo_supplyreqdate_update]</field>
+            <isinactive>F</isinactive>
+            <valuechecked>T</valuechecked>
+            <valuedate></valuedate>
+            <valuefield></valuefield>
+            <valueformula></valueformula>
+            <valuejoinfield></valuejoinfield>
+            <valueselect></valueselect>
+            <valuetext></valuetext>
+            <valuetype>STATIC</valuetype>
+            <initcondition>
+              <formula></formula>
+              <type>VISUAL_BUILDER</type>
+            </initcondition>
+          </setfieldvalueaction>
+        </workflowsublistactiongroup>
       </workflowactions>
     </workflowstate>
   </workflowstates>
