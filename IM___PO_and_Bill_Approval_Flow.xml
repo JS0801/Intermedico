@@ -1571,7 +1571,7 @@
     <workflowstate scriptid="workflowstate107">
       <description></description>
       <donotexitworkflow>F</donotexitworkflow>
-      <name>State 1</name>
+      <name>AP Role Next Approver</name>
       <positionx>1163</positionx>
       <positiony>143</positiony>
       <workflowactions triggertype="BEFORELOAD">
@@ -1704,7 +1704,7 @@
     <workflowstate scriptid="workflowstate108">
       <description></description>
       <donotexitworkflow>F</donotexitworkflow>
-      <name>State 2</name>
+      <name>AP Role Approver</name>
       <positionx>1163</positionx>
       <positiony>243</positiony>
       <workflowactions triggertype="ONENTRY">
