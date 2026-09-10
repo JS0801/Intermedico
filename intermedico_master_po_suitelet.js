@@ -276,7 +276,9 @@ define([
             'AND',
             ['shipping', 'is', 'F'],
             'AND',
-            ['cogs', 'is', 'F']
+            ['cogs', 'is', 'F'], 
+            "AND",
+            ["approvalstatus","anyof","11","2"]
         ];
 
         function andFilter(filter) {
