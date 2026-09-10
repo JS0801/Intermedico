@@ -124,7 +124,9 @@ define([
                 'AND',
                 ["status","noneof","PurchOrd:H","PurchOrd:G","PurchOrd:F","PurchOrd:A","PurchOrd:C"],
                 'AND',
-                [CONFIG.masterPoField, 'noneof', '@NONE@']
+                [CONFIG.masterPoField, 'noneof', '@NONE@'], 
+                "AND", 
+                ["approvalstatus","anyof","11","2"]
             ],
             columns: Object.keys(c).map(function (key) { return c[key]; })
         });
