@@ -177,7 +177,7 @@
         </tr>
     </table>
 
-  <#import 'https://4382108.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108&ns-at=AAEJ7tMQwb_YgZL72teT4yceAsTK0CyddUd-1ScG9WB6xhxlEYY&id=' + record.id as itemlist>
+  <#import 'https://4382108-sb1.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108_SB1&ns-at=AAEJ7tMQcux2XwoJSy3-m2ZrYwC3xKZhrvkjlo8W_iEsau4sWI4&id=' + record.id as itemlist>
     <#assign obj = itemlist.ObjDetail />
     <#if obj.item?has_content>
     
