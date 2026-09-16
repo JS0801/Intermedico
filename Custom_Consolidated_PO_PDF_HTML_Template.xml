@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+	<#if .locale == "zh_CN">
+		<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+	<#elseif .locale == "zh_TW">
+		<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+	<#elseif .locale == "ja_JP">
+		<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+	<#elseif .locale == "ko_KR">
+		<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+	<#elseif .locale == "th_TH">
+		<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+	</#if>
+    <macrolist>
+        <macro id="nlheader">
+           <table style="width: 100%; font-size: 10pt;">
+                <tr>
+                    <td rowspan="4" style="padding: 0; width: 30%;">
+                    <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
+                    <td rowspan="4" style="padding: 0; width: 35%;">&nsbp;<br />
+                        ${companyInformation.companyName}<br />
+                        ${companyInformation.addressText}
+                      <br />TEL: (905) 470-2520 FAX: (905) 470-2381
+                    </td>
+                    <td align="right" style="padding: 0;"><span style="font-size: 24pt;">Purchase Order/</span></td>
+                </tr>
+                
+                <tr>
+                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">Bon de commande</span></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">#${record.name}</span></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 0;">${record.custrecord_cpo_date}</td>
+                </tr>
+            </table>
+
+        </macro>
+        <macro id="nlfooter">
+            <table class="footer" style="width: 100%;">
+                <tr>
+                    <td colspan="3">Our Purchase order number must appear on all packages, packing slips, invoices and correspondence<br />If applicable, please fax a copy of the way bill and commercial invoice in advance. Thank you.
+                    </td>
+                    <td align="right">
+                        <pagenumber/> of <totalpages/>
+                    </td>
+                </tr>
+            </table>
+        </macro>
+    </macrolist>
+    <style>
+		* {
+		<#if .locale == "zh_CN">
+			font-family: NotoSans, NotoSansCJKsc, sans-serif;
+		<#elseif .locale == "zh_TW">
+			font-family: NotoSans, NotoSansCJKtc, sans-serif;
+		<#elseif .locale == "ja_JP">
+			font-family: NotoSans, NotoSansCJKjp, sans-serif;
+		<#elseif .locale == "ko_KR">
+			font-family: NotoSans, NotoSansCJKkr, sans-serif;
+		<#elseif .locale == "th_TH">
+			font-family: NotoSans, NotoSansThai, sans-serif;
+		<#else>
+			font-family: NotoSans, sans-serif;
+		</#if>
+		}
+		table {
+			font-size: 9pt;
+			table-layout: fixed;
+		}
+        th {
+            font-weight: bold;
+            font-size: 8pt;
+            vertical-align: middle;
+            padding: 5px 6px 3px;
+            background-color: #e3e3e3;
+            color: #333333;
+        }
+        td {
+            padding: 4px 6px;
+        }
+		td p { align:left }
+        b {
+            font-weight: bold;
+            color: #333333;
+        }
+        table.header td {
+            padding: 0;
+            font-size: 10pt;
+        }
+        table.footer td {
+            padding: 0;
+            font-size: 8pt;
+        }
+        table.itemtable th {
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
+        table.body td {
+            padding-top: 2px;
+        }
+        table.total {
+            page-break-inside: avoid;
+        }
+        tr.totalrow {
+            background-color: #e3e3e3;
+            line-height: 200%;
+        }
+        td.totalboxtop {
+            font-size: 12pt;
+            background-color: #e3e3e3;
+        }
+        td.addressheader {
+            font-size: 8pt;
+            padding-top: 6px;
+            padding-bottom: 2px;
+        }
+        td.address {
+            padding-top: 0;
+        }
+        td.totalboxmid {
+            font-size: 28pt;
+            padding-top: 20px;
+            background-color: #e3e3e3;
+        }
+        td.totalboxbot {
+            background-color: #e3e3e3;
+            font-weight: bold;
+        }
+        span.title {
+            font-size: 28pt;
+        }
+        span.number {
+            font-size: 16pt;
+        }
+        span.itemname {
+            font-weight: bold;
+        }
+        hr {
+            width: 100%;
+            color: #d3d3d3;
+            background-color: #d3d3d3;
+            height: 1px;
+        }
+          th p {align: left}
+
+    </style>
+</head>
+<body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+    <table style="width: 100%;">
+        <tr>
+            <td class="addressheader" colspan="3"><b>Bill To/ Fournisseur</b></td>
+          <td class="addressheader" colspan="6"><b>Ship To / Livré à</b></td>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="address" colspan="3" rowspan="2">${record.custrecord_cpo_vendor.billaddress}</td>
+          <td class="address" colspan="6" rowspan="2">${record.custrecord_cpo_vendor.shipaddress}</td>
+            <td  align="right" colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right" colspan="2">&nbsp;</td>
+        </tr>
+    </table>
+    <table class="body" style="width: 100%; margin-top:10px;">
+        <tr>
+            <th>Vendor No./<br />Fournisseur Num</th>
+            <th>Currency/<br />Devise</th>
+        </tr>
+        <tr>
+            <td>${record.custrecord_cpo_vendor.entityid}</td>
+            <td>${record.custrecord_cpo_currency.symbol}</td>
+        </tr>
+    </table>
+
+  <#import 'https://4382108.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108&ns-at=AAEJ7tMQwb_YgZL72teT4yceAsTK0CyddUd-1ScG9WB6xhxlEYY&id=' + record.id as itemlist>
+    <#assign obj = itemlist.ObjDetail />
+    <#if obj.item?has_content>
+    
+    <table class="itemtable" style="width: 100%; margin-top:10px;">
+        <#assign counter = 1>
+        
+        <#list obj.item as item>
+            <#if item_index==0>
+                <thead>
+                <tr>
+                  <th colspan="2" align="center">Line/<br />Ligne</th>  
+                  <th colspan="3" align="center">Quantity/<br />Quantité</th>
+                  <th colspan="4">Item/<br />Produit numéro</th>
+                  <th colspan="8">Description/<br />Libellé</th>
+                  <th colspan="4" align="right">Price/<br />Prix</th>
+                  <th colspan="4" align="right">Extension</th>
+                </tr>
+                </thead>
+            </#if>
+            <tr>
+                <td colspan="2"  align="center">${counter}</td>  
+                <td colspan="3"  align="center">${item.quantity}</td>
+                <td colspan="4"><span class="itemname">${item.item}</span></td>
+                <td colspan="8">${item.description}</td>
+                <td colspan="4" align="right">$ ${item.rate?number?string["#,##0.00"]}</td>
+                <td colspan="4" align="right">$ ${item.amount?number?string["#,##0.00"]}</td>
+            </tr>
+              <#assign counter = counter + 1>
+        </#list>
+    </table>
+    </#if>
+    <hr />
+    <#if obj.total?has_content>
+      
+    <table class="total" style="width: 100%;">
+        <tr class="totalrow">
+            <td background-color="#ffffff" colspan="4"></td>
+            <td align="right"><b>${record.custrecord_cpo_currency.symbol} Total</b></td>
+            <td align="right">$ ${(obj.total.total)?number?string["#,##0.00"]}</td>
+          
+        </tr>
+    </table>
+      </#if>
+              <table class="total" style="width: 100%; margin-top:20pt;">
+        <tr class="totalrow">
+
+          <td align="center"><b>Notes/ Remarques</b></td></tr>
+                 <tr>
+                      <td align="center" background-color="#ffffff" >${record.custrecord_cpo_notes}</td>
+        </tr>
+    </table>
+</body>
+</pdf>
+
+
+              
