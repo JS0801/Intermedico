@@ -123,8 +123,8 @@ define([
                 ['closed', 'is', 'F'],
                 'AND',
                 ["status","noneof","PurchOrd:H","PurchOrd:G","PurchOrd:F","PurchOrd:A","PurchOrd:C"],
-                'AND',
-                [CONFIG.masterPoField, 'noneof', '@NONE@'], 
+                // 'AND',
+                // [CONFIG.masterPoField, 'noneof', '@NONE@'], 
                 "AND", 
                 ["approvalstatus","anyof","11","2"]
             ],
