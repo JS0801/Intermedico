@@ -143,7 +143,7 @@ define([
                     return;
                 }
 
-                const masterId = r.getValue(c.master);
+                const masterId = r.getValue(c.master) || '';
                 const poId = r.getValue(c.poId);
                 const itemId = r.getValue(c.item);
                 const locationId = r.getValue(c.location) || '';
@@ -152,34 +152,51 @@ define([
                 const received = Math.abs(num(r.getValue(c.received)));
                 const billed = Math.abs(num(r.getValue(c.billed)));
                 const remaining = Math.max(ordered - received, 0);
-                const key = masterId + '|' + itemId + '|' + locationId;
 
-                if (!masterId || !poId || !itemId) {
+                if (!poId || !itemId) {
                     return;
                 }
 
-                if (!masters[masterId]) {
-                    masters[masterId] = {
-                        id: masterId,
-                        name: r.getText(c.master) || masterId,
-                        url: resolveRecordUrl(CONFIG.masterPoRecordType, masterId),
-                        vendorId: r.getValue(c.vendorId) || '',
-                        vendor: r.getText(c.vendor) || r.getValue(c.vendor) || '',
-                        vendorUrl: resolveRecordUrl(record.Type.VENDOR, r.getValue(c.vendorId)),
-                        date: '',
-                        poMap: {},
-                        locationMap: {},
-                        groupsMap: {},
-                        groups: [],
-                        ordered: 0,
-                        received: 0,
-                        billed: 0,
-                        remaining: 0
-                    };
-                    masterIds[masterId] = true;
-                }
 
-                const master = masters[masterId];
+              const containerId = masterId || ('po_' + poId);
+const key = containerId + '|' + itemId + '|' + locationId;
+
+if (!masters[containerId]) {
+    masters[containerId] = {
+        id: containerId,
+        masterId: masterId,
+        isRegularPo: !masterId,
+        poId: masterId ? '' : poId,
+        name: masterId
+            ? (r.getText(c.master) || masterId)
+            : (r.getValue(c.poNumber) || poId),
+        url: resolveRecordUrl(
+            masterId ? CONFIG.masterPoRecordType : record.Type.PURCHASE_ORDER,
+            masterId || poId
+        ),
+        vendorId: r.getValue(c.vendorId) || '',
+        vendor: r.getText(c.vendor) || r.getValue(c.vendor) || '',
+        vendorUrl: resolveRecordUrl(record.Type.VENDOR, r.getValue(c.vendorId)),
+        date: masterId ? '' : (r.getValue(c.poDate) || ''),
+        poMap: {},
+        locationMap: {},
+        groupsMap: {},
+        groups: [],
+        ordered: 0,
+        received: 0,
+        billed: 0,
+        remaining: 0
+    };
+
+    if (masterId) {
+        masterIds[masterId] = true;
+    }
+}
+
+const master = masters[containerId];
+
+
+
                 master.poMap[poId] = {
                     id: poId,
                     tranid: r.getValue(c.poNumber) || poId,
@@ -191,6 +208,8 @@ define([
                     master.groupsMap[key] = {
                         key: key,
                         masterId: masterId,
+                        isRegularPo: !masterId,
+                        poId: masterId ? '' : poId,
                         itemId: itemId,
                         item: r.getText(c.item) || r.getValue(c.item) || '',
                         itemUrl: '/app/common/item/item.nl?id=' + encodeURIComponent(itemId),
@@ -253,7 +272,7 @@ define([
             const master = masters[masterId];
             const detail = masterDetails[masterId] || {};
             master.name = detail.name || master.name;
-            master.date = detail.date || '';
+            master.date = detail.date || master.date;
             master.vendorId = detail.vendorId || master.vendorId;
             master.vendor = detail.vendor || master.vendor;
             master.vendorUrl = resolveRecordUrl(record.Type.VENDOR, master.vendorId);
@@ -300,6 +319,7 @@ define([
             throw error.create({ name: 'NO_LINES_SELECTED', message: 'Select at least one line to receive.' });
         }
 
+
         const itemIds = {};
         const liveLines = getLiveLines(groups);
         const allocationsByPo = {};
@@ -326,14 +346,19 @@ define([
                 };
             }).filter(function (row) { return row.quantity > 0; });
 
-            const lines = liveLines.filter(function (line) {
-                return String(line.masterId) === String(group.masterId) &&
-                    String(line.itemId) === String(group.itemId) &&
-                    String(line.locationId || '') === String(group.locationId || '') &&
-                    line.remaining > 0;
-            }).sort(function (a, b) {
-                return Number(a.poId) - Number(b.poId) || Number(a.lineKey || a.line) - Number(b.lineKey || b.line);
-            });
+const lines = liveLines.filter(function (line) {
+    const matchingContainer = group.isRegularPo
+        ? String(line.poId) === String(group.poId)
+        : String(line.masterId) === String(group.masterId);
+
+    return matchingContainer &&
+        String(line.itemId) === String(group.itemId) &&
+        String(line.locationId || '') === String(group.locationId || '') &&
+        line.remaining > 0;
+}).sort(function (a, b) {
+    return Number(a.poId) - Number(b.poId) ||
+        Number(a.lineKey || a.line) - Number(b.lineKey || b.line);
+});
 
             const available = round(lines.reduce(function (sum, line) { return sum + line.remaining; }, 0));
             const invQty = round(inventory.reduce(function (sum, row) { return sum + row.quantity; }, 0));
@@ -427,23 +452,28 @@ define([
 
     function getLiveLines(groups) {
         const masterIds = {};
+        const poIds = {};
         const itemIds = {};
         const locationIds = {};
         let hasBlankLocation = false;
 
         groups.forEach(function (g) {
-            if (g.masterId) {
-                masterIds[g.masterId] = true;
-            }
-            if (g.itemId) {
-                itemIds[g.itemId] = true;
-            }
-            if (g.locationId) {
-                locationIds[g.locationId] = true;
-            } else {
-                hasBlankLocation = true;
-            }
-        });
+    if (g.isRegularPo && g.poId) {
+        poIds[g.poId] = true;
+    } else if (g.masterId) {
+        masterIds[g.masterId] = true;
+    }
+
+    if (g.itemId) {
+        itemIds[g.itemId] = true;
+    }
+
+    if (g.locationId) {
+        locationIds[g.locationId] = true;
+    } else {
+        hasBlankLocation = true;
+    }
+});
 
         const c = {
             master: search.createColumn({ name: CONFIG.masterPoField }),
@@ -457,21 +487,35 @@ define([
             lineKey: search.createColumn({ name: 'lineuniquekey' }),
             createdFrom: search.createColumn({ name: 'createdfrom' })
         };
-        const filters = [
-            ['type', 'anyof', 'PurchOrd'],
-            'AND',
-            ['mainline', 'is', 'F'],
-            'AND',
-            ['taxline', 'is', 'F'],
-            'AND',
-            ['shipping', 'is', 'F'],
-            'AND',
-            ['cogs', 'is', 'F'],
-            'AND',
-            [CONFIG.masterPoField, 'anyof', Object.keys(masterIds)],
-            'AND',
-            ['item', 'anyof', Object.keys(itemIds)]
-        ];
+const scopeFilters = [];
+
+if (Object.keys(masterIds).length) {
+    scopeFilters.push([CONFIG.masterPoField, 'anyof', Object.keys(masterIds)]);
+}
+
+if (Object.keys(poIds).length) {
+    if (scopeFilters.length) {
+        scopeFilters.push('OR');
+    }
+
+    scopeFilters.push(['internalid', 'anyof', Object.keys(poIds)]);
+}
+
+const filters = [
+    ['type', 'anyof', 'PurchOrd'],
+    'AND',
+    ['mainline', 'is', 'F'],
+    'AND',
+    ['taxline', 'is', 'F'],
+    'AND',
+    ['shipping', 'is', 'F'],
+    'AND',
+    ['cogs', 'is', 'F'],
+    'AND',
+    scopeFilters,
+    'AND',
+    ['item', 'anyof', Object.keys(itemIds)]
+];
 
         if (Object.keys(locationIds).length && !hasBlankLocation) {
             filters.push('AND', ['location', 'anyof', Object.keys(locationIds)]);
@@ -829,7 +873,7 @@ define([
             '<div class="im-topbar"><div class="im-title">' + esc(CONFIG.pageTitle) + '</div><div class="im-actions"><button type="button" class="im-btn im-btn-primary" id="im-receive" disabled>Receive</button></div></div>',
             vm.message ? '<div class="im-alert">' + esc(vm.message) + '</div>' : '',
             '<div class="im-filter-panel">',
-            '<div class="im-filter-cell"><label>Master PO</label><input id="f-master" list="dl-master" placeholder="Enter or select Master PO"><datalist id="dl-master"></datalist></div>',
+            '<div class="im-filter-cell"><label>Master PO / PO</label><input id="f-master" list="dl-master" placeholder="Enter or select Master PO"><datalist id="dl-master"></datalist></div>',
             '<div class="im-filter-cell"><label>Vendor</label><input id="f-vendor" list="dl-vendor" placeholder="Enter or select vendor"><datalist id="dl-vendor"></datalist></div>',
             '<div class="im-filter-cell"><label>PO Number</label><input id="f-po" list="dl-po" placeholder="Enter or select PO"><datalist id="dl-po"></datalist></div>',
             '<div class="im-filter-cell"><label>Location</label><input id="f-location" list="dl-location" placeholder="Enter or select location"><datalist id="dl-location"></datalist></div>',
@@ -838,8 +882,8 @@ define([
             '</div>',
             '<div class="im-metrics"><div class="im-metric"><div class="im-metric-label">No. of Master POs</div><div class="im-metric-value" id="m-count">0</div></div><div class="im-metric"><div class="im-metric-label">Selected Lines</div><div class="im-metric-value" id="m-selected">0</div></div><div class="im-metric"><div class="im-metric-label">Qty To Receive</div><div class="im-metric-value" id="m-qty">0</div></div><div class="im-metric"><div class="im-metric-label">Remaining Qty</div><div class="im-metric-value" id="m-remain">0</div></div></div>',
             '<div class="im-table-actions"><div class="im-muted" id="im-warning"></div><div class="im-table-buttons"><button type="button" class="im-btn" id="im-mark">Mark All</button><button type="button" class="im-btn" id="im-unmark">Unmark All</button><button type="button" class="im-btn" id="im-reset">Reset Filters</button></div></div>',
-            '<div class="im-table-wrap"><table class="im-table"><thead><tr><th style="width:48px"></th><th style="width:180px"><button type="button" data-sort="name">Master PO</button></th><th style="width:230px"><button type="button" data-sort="vendor">Vendor</button></th><th style="width:110px"><button type="button" data-sort="date">Date</button></th><th style="width:110px"><button type="button" data-sort="poCount">POs</button></th><th style="width:230px"><button type="button" data-sort="locations">Locations</button></th><th style="width:130px"><button type="button" data-sort="remaining">Remaining Qty</button></th></tr></thead><tbody id="im-body"></tbody></table><div class="im-empty" id="im-empty" style="display:none">No Master POs match the current filters.</div></div>',
-            '<div class="im-footer"><div>Loaded ' + vm.data.length + ' Master POs.</div><div>Expand a Master PO, enter Qty To Receive, then add inventory detail when required.</div></div>',
+            '<div class="im-table-wrap"><table class="im-table"><thead><tr><th style="width:48px"></th><th style="width:180px"><button type="button" data-sort="name">Master PO / PO</button></th><th style="width:230px"><button type="button" data-sort="vendor">Vendor</button></th><th style="width:110px"><button type="button" data-sort="date">Date</button></th><th style="width:110px"><button type="button" data-sort="poCount">POs</button></th><th style="width:230px"><button type="button" data-sort="locations">Locations</button></th><th style="width:130px"><button type="button" data-sort="remaining">Remaining Qty</button></th></tr></thead><tbody id="im-body"></tbody></table><div class="im-empty" id="im-empty" style="display:none">No Master POs or POs match the current filters.</div></div>',
+            '<div class="im-footer"><div>Loaded ' + vm.data.length + ' receiving groups.</div><div>Expand a Master PO or PO, enter Qty To Receive, then add inventory detail when required.</div></div>',
             '</div></div>',
             '<script>',
             '(function(){',
@@ -885,7 +929,7 @@ define([
             'function showProgress(){document.getElementById("im-progress").className="im-modal im-open";receiveBtn.disabled=true;receiveBtn.textContent="Receiving...";}',
             'function hideProgress(){document.getElementById("im-progress").className="im-modal";receiveBtn.disabled=false;receiveBtn.textContent="Receive";}',
             'function submitForm(form){if(window.HTMLFormElement&&HTMLFormElement.prototype.submit){HTMLFormElement.prototype.submit.call(form);return;}form.submit();}',
-            'function submitReceive(){var errors=validate();if(errors.length){alert(errors.join("\\n"));return;}var groups=Object.keys(state.selected).map(function(key){var g=groupByKey(key);return {masterId:g.masterId,itemId:g.itemId,item:g.item,locationId:g.locationId,location:g.location,qty:num(state.qty[key]),refs:g.refs,inventory:state.details[key]||[]};});showProgress();window.setTimeout(function(){try{var form=ensurePostForm();writeFormValue(form,"custpage_receive_payload",JSON.stringify({groups:groups}));submitForm(form);}catch(ex){hideProgress();alert("Could not submit the receiving request: "+(ex&&ex.message?ex.message:ex));}},60);}',
+            'function submitReceive(){var errors=validate();if(errors.length){alert(errors.join("\\n"));return;}var groups=Object.keys(state.selected).map(function(key){var g=groupByKey(key);return {masterId:g.masterId,isRegularPo:g.isRegularPo,poId:g.poId,itemId:g.itemId,item:g.item,locationId:g.locationId,location:g.location,qty:num(state.qty[key]),refs:g.refs,inventory:state.details[key]||[]};});showProgress();window.setTimeout(function(){try{var form=ensurePostForm();writeFormValue(form,"custpage_receive_payload",JSON.stringify({groups:groups}));submitForm(form);}catch(ex){hideProgress();alert("Could not submit the receiving request: "+(ex&&ex.message?ex.message:ex));}},60);}',
             'function showResult(){if(!results.length)return;var rows=results.map(function(r){return "<tr><td>"+link(r.poUrl,r.poNumber)+"</td><td>"+link(r.itemReceiptUrl,r.itemReceiptNumber)+"</td></tr>";}).join("");var modal=document.getElementById("im-result-modal");modal.innerHTML="<div class=\\"im-dialog\\"><div class=\\"im-dialog-head\\"><div class=\\"im-dialog-title\\">Item Receipts Created</div></div><div class=\\"im-dialog-body\\"><table class=\\"im-line-table\\"><thead><tr><th>Purchase Order</th><th>Item Receipt</th></tr></thead><tbody>"+rows+"</tbody></table></div><div class=\\"im-dialog-actions\\"><button type=\\"button\\" class=\\"im-btn im-btn-primary\\" id=\\"result-ok\\">OK</button></div></div>";modal.className="im-modal im-open";}',
             'function callSalesOrderAllocation(){var called={};results.forEach(function(r){(r.salesOrderIds||[]).forEach(function(soId){if(!soId||called[soId])return;called[soId]=true;var frame=document.createElement("iframe");frame.style.display="none";frame.src="/app/accounting/transactions/salesord.nl?_execute_action_=allocatesalesorder&id="+encodeURIComponent(soId);document.body.appendChild(frame);});});}',
             'body.addEventListener("click",function(e){var exp=dataValue(e.target,"data-expand"),inv=dataValue(e.target,"data-inv");if(exp){state.expanded[exp]=!state.expanded[exp];render();}if(inv){showInv(inv);}});',
