@@ -1,95 +1,111 @@
-<workflow scriptid="customworkflow_im_shipcentralwf">
-  <description>This is a workflow to add a 40$ premium on shipping ccosts for order over 50 pounds</description>
-  <initcontexts>ACTION|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|RECORDACTION|CUSTOMTOOL|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OFFLINECLIENT|OTHER|PAYMENTPOSTBACK|PAYMENTGATEWAY|PLATFORMEXTENSION|PORTLET|PROMOTIONS|CONSOLRATEADJUSTOR|RESTWEBSERVICES|RESTLET|ADVANCEDREVREC|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|WEBSERVICES|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WORKBOOKBUILDER|WORKFLOW</initcontexts>
-  <initeventtypes></initeventtypes>
-  <initlocalizationcontext></initlocalizationcontext>
-  <initoncreate>T</initoncreate>
-  <initonvieworupdate>T</initonvieworupdate>
-  <initsavedsearchcondition></initsavedsearchcondition>
-  <inittriggertype></inittriggertype>
-  <isinactive>F</isinactive>
-  <islogenabled>F</islogenabled>
-  <keephistory>ONLYWHENTESTING</keephistory>
-  <name>IM ShipCentral Premium price add on</name>
-  <recordtypes>SALESORDER</recordtypes>
-  <releasestatus>RELEASED</releasestatus>
-  <runasadmin>T</runasadmin>
-  <initcondition>
-    <formula></formula>
-    <type>VISUAL_BUILDER</type>
-  </initcondition>
-  <workflowstates>
-    <workflowstate scriptid="workflowstate60">
-      <description></description>
-      <donotexitworkflow>F</donotexitworkflow>
-      <name>State 1</name>
-      <positionx>573</positionx>
-      <positiony>203</positiony>
-      <workflowactions triggertype="BEFORESUBMIT">
-        <setfieldvalueaction scriptid="workflowaction245">
-          <clienttriggerfields></clienttriggerfields>
-          <conditionsavedsearch></conditionsavedsearch>
-          <contexttypes>ACTION|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|RECORDACTION|CUSTOMTOOL|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OFFLINECLIENT|OTHER|PAYMENTPOSTBACK|PAYMENTGATEWAY|PLATFORMEXTENSION|PORTLET|PROMOTIONS|CONSOLRATEADJUSTOR|RESTWEBSERVICES|RESTLET|ADVANCEDREVREC|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|WEBSERVICES|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WORKBOOKBUILDER|WORKFLOW</contexttypes>
-          <eventtypes></eventtypes>
-          <field>STDBODYHANDLINGCOST</field>
-          <isinactive>F</isinactive>
-          <scheduledelay></scheduledelay>
-          <schedulemode>DELAY</schedulemode>
-          <schedulerecurrence></schedulerecurrence>
-          <scheduletimeofday></scheduletimeofday>
-          <scheduletimeunit></scheduletimeunit>
-          <valuechecked>F</valuechecked>
-          <valuedate></valuedate>
-          <valuefield></valuefield>
-          <valueformula>{shippingcost}*0.4</valueformula>
-          <valuejoinfield></valuejoinfield>
-          <valueselect></valueselect>
-          <valuetext></valuetext>
-          <valuetype>FORMULA</valuetype>
-          <initcondition>
-            <formula><![CDATA["Total Order Weight" > 50]]></formula>
-            <type>VISUAL_BUILDER</type>
-            <parameters>
-              <parameter>
-                <name>Total Order Weight</name>
-                <value>[scriptid=custbodyim_totalweight]</value>
-              </parameter>
-            </parameters>
-          </initcondition>
-        </setfieldvalueaction>
-        <workflowsublistactiongroup scriptid="workflowaction408">
-          <conditionsavedsearch></conditionsavedsearch>
-          <contexttypes>ACTION|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|RECORDACTION|CUSTOMTOOL|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|EVENTSUBSCRIBER|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OFFLINECLIENT|OTHER|PAYMENTPOSTBACK|PAYMENTGATEWAY|PLATFORMEXTENSION|PORTLET|PROMOTIONS|CONSOLRATEADJUSTOR|RESTWEBSERVICES|RESTLET|ADVANCEDREVREC|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|WEBSERVICES|SUBSCRIBERSCRIPT|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WORKBOOKBUILDER|WORKFLOW</contexttypes>
-          <eventtypes></eventtypes>
-          <isinactive>F</isinactive>
-          <scheduledelay></scheduledelay>
-          <schedulemode>DELAY</schedulemode>
-          <schedulerecurrence></schedulerecurrence>
-          <scheduletimeofday></scheduletimeofday>
-          <scheduletimeunit></scheduletimeunit>
-          <sublist>ITEM</sublist>
-          <initcondition>
-            <formula></formula>
-            <type>VISUAL_BUILDER</type>
-          </initcondition>
-          <setfieldvalueaction scriptid="workflowaction409">
-            <field>[scriptid=custcol_fefo_supplyreqdate_update]</field>
-            <isinactive>F</isinactive>
-            <valuechecked>T</valuechecked>
-            <valuedate></valuedate>
-            <valuefield></valuefield>
-            <valueformula></valueformula>
-            <valuejoinfield></valuejoinfield>
-            <valueselect></valueselect>
-            <valuetext></valuetext>
-            <valuetype>STATIC</valuetype>
-            <initcondition>
-              <formula></formula>
-              <type>VISUAL_BUILDER</type>
-            </initcondition>
-          </setfieldvalueaction>
-        </workflowsublistactiongroup>
-      </workflowactions>
-    </workflowstate>
-  </workflowstates>
-</workflow>
+<!doctype html>
+
+<html>
+<head>
+	<title>NetSuite Login</title>
+
+<link rel="icon" type="image/png" href="/authentication/ui/loginpage/assets/icon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/authentication/ui/loginpage/assets/icon/favicon.svg" />
+<link rel="shortcut icon" href="/authentication/ui/loginpage/assets/icon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/authentication/ui/loginpage/assets/icon/apple-touch-icon.png" />
+<link rel="manifest" href="/authentication/ui/loginpage/assets/icon/site.webmanifest" />	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="robots" content="noindex, nofollow"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/@uif-js/fonts/1.0.9/css/fonts.css?NS_VER=2026.2&amp;minver=12" />
+    <link rel="stylesheet" type="text/css" href="/assets/redwood_tokens/3366255335.css?NS_VER=2026.2&amp;minver=12" />
+    <link rel="stylesheet" type="text/css" href="/assets/loginpage_redwoodcommon/3247350347.css?NS_VER=2026.2&amp;minver=12" />
+    <link rel="stylesheet" type="text/css" href="/assets/loginpage_redwood/3726434582.css?NS_VER=2026.2&amp;minver=12" />
+    	<script type="text/javascript" nonce="2zfjyRAd/rQuwdt1ah8WFiFOfOLl5kDGMlu4x84LGiw=" src="/javascript/NLPortal.jsp?JSP_VER=1&amp;NS_VER=2026.2&amp;minver=12&amp;buildver=30237"></script>
+    	<script type="text/javascript" nonce="2zfjyRAd/rQuwdt1ah8WFiFOfOLl5kDGMlu4x84LGiw=" src="/assets/loginpage_redwoodcommon/837964115.js?NS_VER=2026.2&amp;minver=12" integrity="sha512-kNmEjHmOx2vSun1vv8luzwXmtuH9edJEJy0dTSb3kuVN/cnfw8gHfj6F6alfWyJUZ/VgrO8I2dQ5bccAWuJ3yA=="></script>
+
+
+</head>
+<body>
+
+<div id="page-wrapper">
+	<div id='div__alert' class="text-align: center"></div>
+<div class="login-page-body" data-page-type="login">
+	<div class="login-page-main">
+		<div class="login-page-box">
+			<div class="login-page-box-logos">
+				<a class="login-page-box-logo-link" href="http://www.netsuite.com/portal/home.shtml?noredirect=T" tabindex="-1">
+					<img class="login-page-box-logo login-page-box-logo--ns"
+						src="/authentication/ui/loginpage/assets/logo/NetSuite-logo-mobius.svg" alt="Oracle NetSuite" />
+				</a>
+			</div>
+			<h2 class="login-page-box-title">Log In</h2>
+
+
+			<form method="post" id="login-form" class="login-page-form" data-validate data-cookie-prefill data-reset-rememberme>
+				<input type="hidden" name="jsenabled" value="F">
+
+					<input type="hidden" name="redirect" value="/app/suiteapp/devframework/xml/xmlexport.nl?ifrmcntnr=T&amp;amp;recordtype=workflow&amp;amp;id=419">
+					<input type="hidden" name="c" value="4382108_SB1">
+
+				<div class="login-page-form-field">
+					<input type="email" name="email" id="email" required data-validate-on-blur
+						placeholder="Email address"/>
+					<label for="email">Email address</label>
+					<div class="validation-message">
+						<p>
+							<img src="/uiredwood/img/message/error.svg" alt="" />
+							<span>Valid email is required: name@company.com</span>
+						</p>
+					</div>
+				</div>
+
+				<div class="login-page-form-field">
+					<input type="password" name="password" id="password" autocomplete="off" required data-validate-on-blur
+						placeholder="Password"/>
+					<label for="password">Password</label>
+					<div class="validation-message">
+						<p>
+							<img src="/uiredwood/img/message/error.svg" alt="" />
+							<span>Password is required</span>
+						</p>
+					</div>
+				</div>
+
+				<div class="login-page-form-checkbox">
+					<input type="checkbox" name="rememberme" id="rememberme" class="login-checkbox"/>
+					<label for="rememberme">Remember Me</label>
+				</div>
+
+				<button class="login-page-form-submit" type="submit" name="submitButton" id="login-submit">
+					<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M11.9982 4C14.2074 4 15.9982 5.79086 15.9982 8V11H7.99823V8C7.99823 5.79086 9.78909 4 11.9982 4ZM17.9982 11V8C17.9982 4.68629 15.3119 2 11.9982 2C8.68452 2 5.99823 4.68629 5.99823 8V11H1.99823V22H21.9982V11H17.9982ZM3.99823 13H19.9982V20H3.99823V13Z"></path>
+					</svg>
+					<span>Log In</span>
+				</button>
+
+					<script type="module" src="/authentication/ui/loginpage/assets/js/passkeys.js" defer></script>
+					<button class="login-page-form-submit" type="button" id="passkey-login-btn">
+						<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M11.9982 4C14.2074 4 15.9982 5.79086 15.9982 8V11H7.99823V8C7.99823 5.79086 9.78909 4 11.9982 4ZM17.9982 11V8C17.9982 4.68629 15.3119 2 11.9982 2C8.68452 2 5.99823 4.68629 5.99823 8V11H1.99823V22H21.9982V11H17.9982ZM3.99823 13H19.9982V20H3.99823V13Z"></path>
+						</svg>
+						<span>Log In with Passkey</span>
+					</button>
+
+				<a href="/app/login/preparepwdreset.nl?email=&"
+					class="login-page-form-forgot">Forgot your password?</a>
+
+			</form>
+
+			<div class="login-page-box-footer">
+				By clicking on the Log In button, you understand and agree to
+				<a href="https://www.oracle.com/us/legal/terms/index.html">Oracle Terms of Use</a>
+				and
+				<a href="https://www.oracle.com/us/legal/privacy/privacy-policy/index.html">Oracle Privacy Policy</a>
+			</div>
+		</div>
+
+		<div class="login-page-footer">
+			<a class="link" href="https://www.oracle.com/legal/copyright.html">© Oracle</a>
+			<span class="sep">|</span>
+			<a class="link" href="http://www.netsuite.com/portal/assets/pdf/oracle-terms-use-netsuite-support-portal.pdf">Oracle Terms of Use for NetSuite Support Portal</a>
+		</div>
+	</div>
+</div>
+</div> <!-- #page-wrapper -->
+<script type="text/javascript" nonce="274db6b460b476b61e743686504ac74d" src="/pytaQUwNX/kxkq/uYk2Q/YmJ7bkbwOYXpzQ/IlZ7JyI/dh/pJYXwGGR8"></script></body>
+</html>
