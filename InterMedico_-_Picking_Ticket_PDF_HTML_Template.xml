@@ -182,7 +182,7 @@
 						</tr>
 					</thead>
 				</#if>
-                    <#if item.custcol_release_date_for_picking?has_content && item.custcol_release_date_for_picking?date <= .now?date && item.quantitycommitted?has_content>
+                    <#if item.custcol_release_date_for_picking?has_content && item.custcol_release_date_for_picking?date <= .now?date && item.quantitycommitted?string?number > 0>
 					<tr>
 						<td colspan="8"><span class="itemname">${item.item}</span><br />${item.description}<#if item.custcol_im_internal_notes?has_content><br />${item.custcol_im_internal_notes}</#if></td>
                         <td colspan="2">${item.custcol_ns_bso_delivery_date}</td>
