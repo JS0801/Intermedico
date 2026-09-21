@@ -180,8 +180,7 @@
 						</tr>
 					</thead>
 				</#if>
-              
-                    <#if item.custcol_release_date_for_picking?has_content>
+                    <#if item.custcol_release_date_for_picking?has_content && item.custcol_release_date_for_picking?date <= .now?date>
 					<tr>
 						<td colspan="4"><span class="itemname">${item.item}</span><br />${item.description}<#if item.custcol_im_internal_notes?has_content><br />${item.custcol_im_internal_notes}</#if></td>
 						<td>${item.quantity}</td>
