@@ -81,7 +81,8 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
                 { label: 'Vendor', keywords: KEYWORDS.vendor }
             ],
             dateFilter: { label: 'Ending Date', keywords: KEYWORDS.endingDate },
-           hideColumns: [KEYWORDS.vendor]
+            serverDateFilter: { label: 'Requested Date', field: 'requesteddate', join: 'transaction' },
+            hideColumns: [KEYWORDS.vendor]
         },
 
         backorder: {
@@ -331,7 +332,9 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
                     response,
                     getReportData(
                         request.parameters.report,
-                        request.parameters.itemId
+                        request.parameters.itemId,
+                        request.parameters.reqFrom,
+                        request.parameters.reqTo
                     )
                 );
                 return;
@@ -597,6 +600,65 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
             ? [expression, 'AND', itemFilter]
             : [itemFilter];
     }
+
+
+  /*
+ * The page sends yyyy-mm-dd. NetSuite needs the date in the user's
+ * date format (8/1/2026 in your example), so format.format does the
+ * conversion instead of hard-coding M/D/YYYY.
+ */
+function formatSearchDate(isoValue) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(isoValue || ''));
+
+    if (!match) {
+        return '';
+    }
+
+        const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12, 0, 0);
+
+    return format.format({ value: date, type: format.Type.DATE });
+}
+
+/*
+ * Appends the report's serverDateFilter to the saved search while
+ * keeping its own criteria intact. An item search reaches the field
+ * through the transaction join ("transaction.requesteddate"); a
+ * transaction search uses the plain field.
+ */
+function addDateFilter(searchObj, reportKey, dateFrom, dateTo) {
+    const def = REPORT_UI[reportKey] && REPORT_UI[reportKey].serverDateFilter;
+
+    if (!def) {
+        return;
+    }
+
+    const from = formatSearchDate(dateFrom);
+    const to = formatSearchDate(dateTo);
+
+    if (!from && !to) {
+        return;
+    }
+
+    const fieldName = (def.join && searchKind(searchObj.searchType) === 'item')
+        ? def.join + '.' + def.field
+        : def.field;
+
+    let dateFilter;
+
+    if (from && to) {
+        dateFilter = [fieldName, 'within', from, to];
+    } else if (from) {
+        dateFilter = [fieldName, 'onorafter', from];
+    } else {
+        dateFilter = [fieldName, 'onorbefore', to];
+    }
+
+    const expression = searchObj.filterExpression || [];
+
+    searchObj.filterExpression = expression.length
+        ? [expression, 'AND', dateFilter]
+        : [dateFilter];
+}
 
     function safeGetValue(result, column) {
         try {
@@ -1383,7 +1445,7 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
         }
     }
 
-    function getReportData(reportKey, itemId) {
+    function getReportData(reportKey, itemId, reqFrom, reqTo) {
         const report = getReportDef(reportKey);
 
         if (!report) {
@@ -1405,6 +1467,7 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
             if (report.key === 'openPO' && /^\d+$/.test(String(itemId || ''))) {
                 addItemFilter(searchObj, String(itemId));
             }
+            addDateFilter(searchObj, report.key, reqFrom, reqTo);
 
             const baseColumns = searchObj.columns;
             const extras = addExtraColumns(searchObj, report.key);
@@ -1550,6 +1613,24 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
             const dateFilter = REPORT_UI[report.key].dateFilter;
             const dateLabel = dateFilter && dateFilter.label ? dateFilter.label + ' ' : 'Date ';
 
+            const serverDate = REPORT_UI[report.key].serverDateFilter;
+
+const serverDateHtml = serverDate
+    ? (
+        '<div class="filter-field req-field">' +
+            '<label>' + serverDate.label + ' From</label>' +
+            '<input class="input-req-from" type="date">' +
+        '</div>' +
+        '<div class="filter-field req-field">' +
+            '<label>' + serverDate.label + ' To</label>' +
+            '<input class="input-req-to" type="date">' +
+        '</div>' +
+        '<div class="req-apply">' +
+            '<button type="button" class="button apply-button">Apply</button>' +
+        '</div>'
+    )
+    : '';
+
             return (
                 '<section id="panel_' + report.key + '" class="tab-panel' +
                 (index === 0 ? ' active' : '') + '">' +
@@ -1563,6 +1644,8 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
                         '</div>' +
 
                         filterSelects(report.key) +
+
+                        serverDateHtml +
 
                         '<div class="filter-field date-field">' +
                             '<label>' + dateLabel + 'From</label>' +
@@ -1845,6 +1928,13 @@ body {
 
 .date-field {
     flex: 0 1 150px;
+}
+.req-field {
+    flex: 0 1 150px;
+}
+
+.req-apply {
+    flex: 0 0 auto;
 }
 
 .filter-field label {
@@ -2357,6 +2447,7 @@ body.modal-open {
     var cache = {};
     var states = {};
     var exportData = {};
+    var serverDates = Object.create(null);
 
     /*
      * Resolved column keys per report, rebuilt only when
@@ -2571,6 +2662,26 @@ body.modal-open {
     function filterDefs(key) {
         return (REPORT_UI[key] && REPORT_UI[key].filters) || [];
     }
+
+
+    function serverDef(key) {
+    return (REPORT_UI[key] && REPORT_UI[key].serverDateFilter) || null;
+}
+
+function serverParams(key) {
+    var dates = serverDates[key] || {};
+    var out = {};
+
+    if (dates.from) {
+        out.reqFrom = dates.from;
+    }
+
+    if (dates.to) {
+        out.reqTo = dates.to;
+    }
+
+    return out;
+}
 
     function cleanUrl(input) {
         return input
@@ -3521,11 +3632,21 @@ var reportLayout = {
             'Loading ' + report.label.toLowerCase() + '...'
         );
 
-        var requestParams = { report: key };
+                var requestParams = { report: key };
 
         Object.keys(params || {}).forEach(function (name) {
             requestParams[name] = params[name];
         });
+
+        // Requested Date range, re-sent on every load so Refresh keeps it
+        var serverFilter = serverParams(key);
+
+        Object.keys(serverFilter).forEach(function (name) {
+            requestParams[name] = serverFilter[name];
+        });
+
+        // a filtered result is only part of the report, so the overview total is left alone
+        var partial = Boolean(params) || Object.keys(serverFilter).length > 0;
 
         api('reportData', requestParams)
             .then(function (data) {
@@ -3539,9 +3660,9 @@ var reportLayout = {
 
                 populateFilters(key, data.columns || [], data.rows || []);
 
-                render(key);
+                                render(key);
 
-                if (!params) {
+                if (!partial) {
                     var count = byId('count_' + key);
 
                     count.innerHTML = esc(
@@ -3551,6 +3672,12 @@ var reportLayout = {
                     );
 
                     count.title = '';
+
+                } else if (!params) {
+                    // filtered by Requested Date: the overview card keeps the unfiltered total
+                    api('count', { report: key }).then(function (countData) {
+                        byId('count_' + key).innerHTML = esc(countData.total || 0);
+                    }).catch(function () {});
                 }
             })
             .catch(function (e) {
@@ -3567,7 +3694,7 @@ var reportLayout = {
                     'Unable to load this report: ' + e.message
                 );
 
-                if (!params) {
+                if (!partial) {
                     var count = byId('count_' + key);
 
                     count.innerHTML = '–';
@@ -3676,8 +3803,19 @@ var reportLayout = {
             parts.push(dateLabel + 'From ' + filterState.dateFrom);
         }
 
-        if (filterState.dateTo) {
+                if (filterState.dateTo) {
             parts.push(dateLabel + 'To ' + filterState.dateTo);
+        }
+
+        var serverFilterDef = serverDef(key);
+        var serverFilter = serverParams(key);
+
+        if (serverFilterDef && serverFilter.reqFrom) {
+            parts.push(serverFilterDef.label + ' From ' + serverFilter.reqFrom);
+        }
+
+        if (serverFilterDef && serverFilter.reqTo) {
+            parts.push(serverFilterDef.label + ' To ' + serverFilter.reqTo);
         }
 
         return parts;
@@ -3930,9 +4068,41 @@ var reportLayout = {
 
             var key = bar.getAttribute('data-report');
 
-            if (target.closest('.clear-button')) {
+                        if (target.closest('.clear-button')) {
+                var hadServerDates = Object.keys(serverParams(key)).length > 0;
+
                 resetFilters(key);
+
+                if (hadServerDates) {
+                    serverDates[key] = {};
+
+                    ['.input-req-from', '.input-req-to'].forEach(function (selector) {
+                        var input = bar.querySelector(selector);
+
+                        if (input) {
+                            input.value = '';
+                        }
+                    });
+
+                    loadReport(key, true);
+                    return;
+                }
+
                 render(key);
+                return;
+            }
+
+            if (target.closest('.apply-button')) {
+                var reqFrom = bar.querySelector('.input-req-from').value;
+                var reqTo = bar.querySelector('.input-req-to').value;
+
+                if (reqFrom && reqTo && reqFrom > reqTo) {
+                    sectionError(key, 'The From date is after the To date.');
+                    return;
+                }
+
+                serverDates[key] = { from: reqFrom, to: reqTo };
+                loadReport(key, true);
                 return;
             }
 
