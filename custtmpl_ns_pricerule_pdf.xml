@@ -299,7 +299,8 @@ font-family: NotoSans, sans-serif;
 
 	<table align="right" style="width: 40%; min-width: 45px; page-break-inside: avoid; background: #fff; border:1px #000000 solid; margin-top: 20px">
 		<tr>
-			<td colspan="2"><p><strong>Other Charges / Autre frais</strong></p></td>
+			<td><p><strong>Other Charges / Autre frais</strong></p></td>
+                        <td  align="right"><p><strong>${cdata.header.id?esc}</strong></p></td>
 		</tr>
 		<tr>
 			<td class="bdr-right bdr-top"><p>Freight / Tarifs d’expédition</p></td>
