@@ -1,0 +1,336 @@
+<#ftl output_format="XML" auto_esc=false>
+<?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+	<#if .locale == "zh_CN">
+	<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+	<#elseif .locale == "zh_TW">
+	<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+	<#elseif .locale == "ja_JP">
+	<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+	<#elseif .locale == "ko_KR">
+	<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+	<#elseif .locale == "th_TH">
+	<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+</#if>
+<macrolist>
+	<macro id="nlheader">
+		<table class="no-padding" style="width: 100%; margin-top: 15px; margin-bottom:0px">
+			<tr>
+				<td width="60%" align="left">
+					<table class="no-padding" width="100%">
+						<tr>
+							<td align="left">
+								<#assign logo = "https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108_SB1&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY">
+								<img src="${logo?esc}" style="float: left; margin: 0px" width="200px" height="85px"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" style="padding-top:15px">Prepared for / Preparée pour</td>
+						</tr>
+						<tr>
+							<td align="left" style="padding:10px 0px 10px 15px">
+                                    ${cdata.header.customer?esc}<br/>
+								${cdata.header.address}<br/>
+							</td>
+						</tr>
+					</table>
+
+				</td>
+				<td width="40%">
+					<table class="no-padding" width="100%" style="border:1px #000000 solid">
+						<tr>
+							<td colspan="2" align="center" style="font-size:14px; color:#FFFFFF; padding:5px; background-color:#000000;">Contract Pricing / Prix Contractuels</td>
+						</tr>
+						<tr>
+							<td width="40%" align="center" style="vertical-align:top; padding:5px" class="dark-gray bdr-right">
+								<p style="padding:0px; margin:0px">Reference No.</p>
+								<p style="padding:0px; margin:0px">No. de référence</p>
+							</td>
+							<td width="60%" align="center" style="vertical-align:top; padding:5px" class="dark-gray">
+								<p style="padding:0px; margin:0px">Account Manager</p>
+								<p style="padding:0px; margin:0px">Gestionnaire des comptes</p>
+							</td>
+						</tr>
+						<tr>
+                                        <td align="center" style="vertical-align:top; padding:5px" class="bdr-right">${cdata.header.id?esc}</td>
+							<td align="center" style="vertical-align:top; padding:5px">
+                                                <p style="padding:0px; margin:0px">${cdata.header.salesrepname?esc}</p>
+                                                <p style="padding:0px; margin:0px">${cdata.header.salesrepemail?esc}</p>
+								<#if cdata.header.salesrepmobile != ''>
+                                                <p style="padding:0px; margin:0px">Mobile #: ${cdata.header.salesrepmobile?esc}</p>
+								</#if>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center" style="vertical-align:top; padding:5px" class="dark-gray">
+								<p style="padding:0px; margin:0px">Communications sent to:</p>
+								<p style="padding:0px; margin:0px">Communications envoyées à</p>
+							</td>
+						</tr>
+						<tr>
+                                        <td colspan="2" height="50px" align="center" style="vertical-align:top; padding:3px;">${cdata.header.recipient?esc}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</macro>
+
+	<macro id="nlfooter">
+		<table width="100%" style="padding-top:10px">
+			<tr>
+				<td colspan="2" align="left" style="padding:3px 3px 10px 3px; font-size:8px">
+					<p>
+						All prices are in Canadian funds and payment terms are net thirty (30) days. Applicable taxes will be added to the order. Unless specifically quoted, orders may be subject to charges for shipping, handling and other special handling charges (i.e. hazardous goods, dry ice, minimum order requirements). Pricing may be subject to change for fluctuations in foreign exchange rates or due to the addition of tariffs. All prices are FOB Markham, Ontario. A return authorization must be obtained from Inter Medico prior to returning any product. Returned goods must be unopened, unmarked, undamaged and in original packaging. A restocking fee may be charged.
+					</p>
+					<p>
+						Tous les prix sont en dollars canadiens et les modalités de paiement sont net trente (30) jours. Les taxes applicables seront ajoutées à la commande. Sauf indication contraire dans la soumission, les commandes peuvent être assujetties à des frais de transport, de manutention et à des frais spéciaux (ex. : marchandises dangereuses, glace sèche, exigences de commande minimale). Les prix peuvent être modifiés en raison de fluctuations des taux de change ou de l’ajout de tarifs. Tous les prix sont FAB Markham, Ontario. Une autorisation de retour doit être obtenue auprès d’Inter Medico avant tout retour de produit. Les produits retournés doivent être non ouverts, non marqués, non endommagés et dans leur emballage d’origine. Des frais de restockage peuvent être chargés.
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td width="20%" align="left" style="vertical-align:top; padding:3px; font-size:8px">Page <pagenumber/> of <totalpages/></td>
+				<td width="80%" align="right" style="vertical-align:top; padding:3px; font-size:8px">
+					<p style="padding:0px; margin:0px">50 Valleywood Drive, Markham, Ontario L3R 6E9</p>
+					<p style="padding:0px; margin:0px">(905) 470-2520&nbsp;&nbsp;&nbsp;&nbsp;(800) 387-9643&nbsp;&nbsp;&nbsp;&nbsp;FR (800) 268-1150&nbsp;&nbsp;&nbsp;&nbsp;Fax (905) 470-2381</p>
+				</td>
+			</tr>
+		</table>
+	</macro>
+
+
+	<macro id="childpagesheader">
+		<table class="no-padding" style="width: 100%; margin-top: 0px; margin-bottom:15px">
+			<tr>
+				<td width="100%" align="left">
+					<table class="no-padding" width="100%">
+						<tr>
+							<td align="left">
+								<#assign logo = "https://4382108.app.netsuite.com/core/media/media.nl?id=13673&c=4382108_SB1&h=B39AZ_6nr7NI38_eZnOZ8TB0agmcLtbrEcou3X-lc57grGiU">
+								<img src="${logo?esc}" style="float: left; margin: 0px" width="200px" height="35px"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</macro>
+
+	<macro id="childpagesfooter">
+		<table width="100%" style="padding-top:10px">
+			<tr>
+				<td width="20%" align="left" style="vertical-align:top; padding:3px; font-size:8px">Page <pagenumber/> of <totalpages/></td>
+				<td width="80%" align="right" style="vertical-align:top; padding:3px; font-size:8px">
+					<p style="padding:0px; margin:0px">50 Valleywood Drive, Markham, Ontario L3R 6E9</p>
+					<p style="padding:0px; margin:0px">(905) 470-2520&nbsp;&nbsp;&nbsp;&nbsp;(800) 387-9643&nbsp;&nbsp;&nbsp;&nbsp;FR (800) 268-1150&nbsp;&nbsp;&nbsp;&nbsp;Fax (905) 470-2381</p>
+				</td>
+			</tr>
+		</table>
+	</macro>
+
+</macrolist>
+
+<style type="text/css">* {
+<#if .locale == "zh_CN">
+font-family: NotoSans, NotoSansCJKsc, sans-serif;
+<#elseif .locale == "zh_TW">
+font-family: NotoSans, NotoSansCJKtc, sans-serif;
+<#elseif .locale == "ja_JP">
+font-family: NotoSans, NotoSansCJKjp, sans-serif;
+<#elseif .locale == "ko_KR">
+font-family: NotoSans, NotoSansCJKkr, sans-serif;
+<#elseif .locale == "th_TH">
+font-family: NotoSans, NotoSansThai, sans-serif;
+<#else>
+font-family: NotoSans, sans-serif;
+</#if>
+		}
+		table {
+		font-size: 8pt;
+		}
+		th {
+		font-weight: bold;
+		font-size: 8pt;
+		padding: 5px 6px 3px;
+		color: #000000;
+		}
+		td {
+		padding: 4px 6px;
+		}
+		td p { align:left }
+		b {
+		font-weight: bold;
+		color: #333333;
+		}
+		table.header td {
+		padding:5px 3px;
+		}
+		table.no-padding td {
+		padding:0px 0px;
+		}
+		table.small-padding td {
+		padding:3px 0px;
+		}
+		table.itemtable th {
+		padding-bottom: 10px;
+		padding-top: 10px;
+		}
+		table.body td {
+		padding-top: 2px;
+		}
+		.bdr-top{
+		border-top:1px solid #000000;
+		}
+		.bdr-right{
+		border-right:1px solid #000000;
+		}
+		.bdr-left{
+		border-left:1px solid #000000;
+		}
+		.bdr-bottom{
+		border-bottom:1px solid #000000;
+		}
+		.title {
+		font-weight: bold;
+		}
+		.dark-gray {
+		background-color: #dddddd;
+		vertical-align: middle;
+		text-align:left;
+		}
+		</style>
+		</head>
+<body header="nlheader" header-height="220px" footer="nlfooter" footer-height="110px" padding="0.15in 0.5in 0.5in 0.5in" size="letter">
+
+<table class="itemtable" style="width: 100%; border:1px solid #000000;">
+	<tr>
+		<td width="23%" align="left" class="bdr-right dark-gray">
+			<p style="padding:0px; margin:0px">Catalogue Number</p>
+			<p style="padding:0px; margin:0px">Numéro de catalogue</p>
+		</td>
+		<td width="45%" align="left" class="bdr-right dark-gray">
+			<p style="padding:0px; margin:0px">Product Description</p>
+			<p style="padding:0px; margin:0px">Description du produit</p>
+		</td>
+		<td width="12%" align="center" class="bdr-right dark-gray">
+			<p style="padding:0px; margin:0px">Price</p>
+			<p style="padding:0px; margin:0px">Prix</p>
+		</td>
+		<td width="10%" align="center" class="bdr-right dark-gray">
+			<p style="padding:0px; margin:0px">Start</p>
+			<p style="padding:0px; margin:0px">Début</p>
+		</td>
+		<td width="10%" align="center" class="dark-gray">
+			<p style="padding:0px; margin:0px">End</p>
+			<p style="padding:0px; margin:0px">Fin</p>
+		</td>
+	</tr>
+	<#list cdata.detail as detail>
+	<#assign qty = detail.count?number>
+	<tr>
+                                                <td align="left" style="padding:3px" class="bdr-right bdr-top">${detail.item?esc}</td>
+		<td align="left" style="padding:3px" class="bdr-right bdr-top">${detail.description?esc}</td>
+                                                <td align="right" style="padding:3px" class="bdr-right bdr-top">$${detail.price?esc}</td>
+                                                <td align="right" style="padding:3px" class="bdr-right bdr-top">${detail.startdate?esc}</td>
+                                                <td align="right" style="padding:3px" class="bdr-top">${detail.enddate?esc}</td>
+	</tr>
+	</#list>
+</table>
+
+<#if cdata.header.customerfacingnotes != ''>
+<table width="100%" style="padding-top:10px">
+	<tr>
+		<td align="left" style="padding:3px 3px 10px 3px; font-size:8px">
+			<p>Notes:</p>
+                                    <p>${cdata.header.customerfacingnotes?esc}</p>
+
+		</td>
+	</tr>
+</table>
+</#if>
+
+<pbr header="childpagesheader" header-height="70px" footer="childpagesfooter" footer-height="20px" padding="0.15in 0.5in 0.5in 0.5in" size="letter" />
+	<table class="itemtable" style="width: 100%;">
+		<tr>
+			<td colspan="2" width="100%" align="left">
+                                    <p style="padding:0px; margin:0px">Contract Pricing Reference No. ${cdata.header.id?esc} is valid for the below account number(s) :</p>
+                                    <p style="padding:0px; margin:0px">No. de référence ${cdata.header.id?esc} est validé pour les client(s) ci-dessous :</p>
+
+			</td>
+		</tr>
+		<#list cdata.customer as customer>
+			<#if customer?index % 2 == 0>
+			<tr>
+			</#if>
+                                                <td align="left" style="padding:3px 15px; width:50%;">${customer?esc}</td>
+			<#if (customer?index % 2 == 1) || (customer?is_last)>
+				<#if customer?is_last && (customer?index % 2 == 0)>
+				<td style="padding:3px 15px; width:50%;">&nbsp;</td>
+				</#if>
+			</tr>
+			</#if>
+		</#list>
+
+		<#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
+		<tr>
+			<td colspan="2" width="100%" align="left" style="padding:20px 15px 5px 15px; font-weight:bold">
+				<p style="padding:0px; margin:0px">Rural Customers / Les sites en zone rurale:</p>
+			</td>
+		</tr>
+
+		<#list cdata.ruralcustomer as ruralcustomer>
+			<#if ruralcustomer?index % 2 == 0>
+			<tr>
+			</#if>
+                                                <td align="left" style="padding:3px 15px; width:50%;">${ruralcustomer?esc}</td>
+			<#if (ruralcustomer?index % 2 == 1) || (ruralcustomer?is_last)>
+				<#if ruralcustomer?is_last && (ruralcustomer?index % 2 == 0)>
+				<td style="padding:3px 15px; width:50%;">&nbsp;</td>
+				</#if>
+		    </tr>
+		    </#if>
+		</#list>
+
+        </#if>
+
+	</table>
+
+	<table align="right" style="width: 40%; min-width: 45px; page-break-inside: avoid; background: #fff; border:1px #000000 solid; margin-top: 20px">
+		<tr>
+			<td colspan="2"><p><strong>Other Charges / Autre frais</strong></p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Freight / Tarifs d’expédition</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.freightamount?esc}</p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Handling / Manutention</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.handlingamount?esc}</p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Dangerous Goods / Matière dangereux</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.dngrgoodsamount?esc}</p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Dry Ice / Matériel sur glace séche</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.dryiceamount?esc}</p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Minimum Order Charge / Frais pour Commande Mimimale</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.mimimumchargeamount?esc}</p></td>
+		</tr>
+		<tr>
+			<td class="bdr-right bdr-top"><p>Minimum Order / Commande Minimale</p></td>
+                                            <td class="bdr-top" align="center"><p>${cdata.header.mimimumorder?esc}</p></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="bdr-top" style="font-size:9px">
+				<p>Base = Inter Medico standard charges apply as at the date orders are placed. Rural sites may be subject to additional fees.<br />
+				Base = Les tarifs standard d'Inter Medico s'appliquent à la date de la commande. Des frais supplémentaires peuvent s'appliquer pour les sites situés en zone rurale.</p>
+			</td>
+		</tr>
+	</table>
+</body>
+</pdf>
