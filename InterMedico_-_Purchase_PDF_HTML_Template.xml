@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+<head>
+	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
+	<#if .locale == "zh_CN">
+		<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
+	<#elseif .locale == "zh_TW">
+		<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
+	<#elseif .locale == "ja_JP">
+		<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
+	<#elseif .locale == "ko_KR">
+		<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
+	<#elseif .locale == "th_TH">
+		<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
+	</#if>
+    <macrolist>
+        <macro id="nlheader">
+           <table style="width: 100%; font-size: 10pt;">
+                <tr>
+                    <td rowspan="4" style="padding: 0; width: 30%;">
+                    <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
+                    <td rowspan="4" style="padding: 0; width: 35%;">&nsbp;<br />
+                        ${companyInformation.companyName}<br />
+                        ${companyInformation.addressText}
+                      <br />TEL: (905) 470-2520 FAX: (905) 470-2381
+                    </td>
+                    <td align="right" style="padding: 0;"><span style="font-size: 24pt;">${record@title}/</span></td>
+                </tr>
+                
+<tr>
+                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">Bon de commande</span></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">#${record.tranid}</span></td>
+                </tr>
+                <tr>
+                    <td align="right" style="padding: 0;">${record.trandate}</td>
+                </tr>
+            </table>
+
+        </macro>
+        <macro id="nlfooter">
+            <table class="footer" style="width: 100%;">
+                <tr>
+                    <td colspan="3">Our Purchase order number must appear on all packages, packing slips, invoices and correspondence<br />If applicable, please fax a copy of the way bill and commercial invoice in advance. Thank you.
+                    </td>
+                    <td align="right">
+                        <pagenumber/> of <totalpages/>
+                    </td>
+                </tr>
+            </table>
+        </macro>
+    </macrolist>
+    <style>
+		* {
+		<#if .locale == "zh_CN">
+			font-family: NotoSans, NotoSansCJKsc, sans-serif;
+		<#elseif .locale == "zh_TW">
+			font-family: NotoSans, NotoSansCJKtc, sans-serif;
+		<#elseif .locale == "ja_JP">
+			font-family: NotoSans, NotoSansCJKjp, sans-serif;
+		<#elseif .locale == "ko_KR">
+			font-family: NotoSans, NotoSansCJKkr, sans-serif;
+		<#elseif .locale == "th_TH">
+			font-family: NotoSans, NotoSansThai, sans-serif;
+		<#else>
+			font-family: NotoSans, sans-serif;
+		</#if>
+		}
+		table {
+			font-size: 9pt;
+			table-layout: fixed;
+		}
+        th {
+            font-weight: bold;
+            font-size: 8pt;
+            vertical-align: middle;
+            padding: 5px 6px 3px;
+            background-color: #e3e3e3;
+            color: #333333;
+        }
+        td {
+            padding: 4px 6px;
+        }
+		td p { align:left }
+        b {
+            font-weight: bold;
+            color: #333333;
+        }
+        table.header td {
+            padding: 0;
+            font-size: 10pt;
+        }
+        table.footer td {
+            padding: 0;
+            font-size: 8pt;
+        }
+        table.itemtable th {
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
+        table.body td {
+            padding-top: 2px;
+        }
+        table.total {
+            page-break-inside: avoid;
+        }
+        tr.totalrow {
+            background-color: #e3e3e3;
+            line-height: 200%;
+        }
+        td.totalboxtop {
+            font-size: 12pt;
+            background-color: #e3e3e3;
+        }
+        td.addressheader {
+            font-size: 8pt;
+            padding-top: 6px;
+            padding-bottom: 2px;
+        }
+        td.address {
+            padding-top: 0;
+        }
+        td.totalboxmid {
+            font-size: 28pt;
+            padding-top: 20px;
+            background-color: #e3e3e3;
+        }
+        td.totalboxbot {
+            background-color: #e3e3e3;
+            font-weight: bold;
+        }
+        span.title {
+            font-size: 28pt;
+        }
+        span.number {
+            font-size: 16pt;
+        }
+        span.itemname {
+            font-weight: bold;
+        }
+        hr {
+            width: 100%;
+            color: #d3d3d3;
+            background-color: #d3d3d3;
+            height: 1px;
+        }
+          th p {align: left}
+          td.po-message {
+    align: center;
+    text-align: center;
+}
+
+td.po-message p {
+    align: center !important;
+    text-align: center !important;
+}
+
+    </style>
+</head>
+<body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+    <table style="width: 100%;">
+        <tr>
+            <td class="addressheader" colspan="3"><b>${record.billaddress@label} / Fournisseur</b></td>
+          <td class="addressheader" colspan="6"><b>${record.shipaddress@label} / Livré à</b></td>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="address" colspan="3" rowspan="2">${record.billaddress}<br /><b>Phone:/ Tel:</b>${record.billphone}<br /><b>Fax:</b>${record.entity.fax}<br /><b>Contact:</b><#if record.custbody_nsps_email_recipients_on_po_p?has_content>
+    <#list record.custbody_nsps_email_recipients_on_po_p?split(",") as contactName>
+        ${contactName?trim}<#if contactName_has_next><br /></#if>
+    </#list>
+</#if></td>
+          <td class="address" colspan="6" rowspan="2">${record.shipaddress}<br /><b>Phone:/ Tel:</b>(905) 470-2520<br /><b>Fax:</b>(905) 470-2381<br /><b>Ordered By:</b> ${record.custbody_nsps_created_by_name}<br /><b>Email:</b>${record.custbody_nsps_created_by_email}</td>
+            <td  align="right" colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right" colspan="2">&nbsp;</td>
+        </tr>
+    </table>
+    <table class="body" style="width: 100%; margin-top:10px;">
+        <tr>
+            <th>Vendor No./<br />Fournisseur Num</th>
+            <th>Currency/<br />Devise</th>
+           <th>Ship Via/<br />Expédié via</th>
+          <th>Carrier Acct#/<br />Compte transporteur</th>
+          <th>FOB</th>
+          <th>Custom Broker/<br />Courtier douane</th>
+         
+        </tr>
+        <tr>
+            <td>${record.entity.entityid}</td>
+            <td>${record.currency.symbol}</td>
+           <td>${record.custbody_po_ship_via}</td>
+          <td>${record.custbody_po_carrier_no}</td>
+          <td>${record.incoterm}</td>
+          <td>${record.custbody_po_custom_broker}</td>
+         
+        </tr>
+    </table>
+    <#if record.item?has_content>
+    <table class="itemtable" style="width: 100%; margin-top:10px;">
+        <!-- start items -->
+        <#list record.item as item>
+            <#if item_index==0>
+                <thead>
+                <tr>
+                  <th colspan="2" align="center">Line/<br />Ligne</th>  
+                  <th colspan="3" align="center">${item.quantity@label}/<br />Quantité</th>
+                    <th colspan="4">${item.item@label}/<br />Produit numéro</th>
+                  <th colspan="8">${item.description@label}/<br />Libellé</th>
+                    <th colspan="4" align="right">Price/<br />Prix</th>
+                    <th colspan="4" align="right">Extension</th>
+                </tr>
+                </thead>
+            </#if>
+            <tr>
+              <td colspan="2"  align="center">${item.line}</td>  
+              <td colspan="3"  align="center">${item.quantity}</td>
+                <td colspan="4"><span class="itemname"><#if item.vendorname?has_content>${item.vendorname}<#else>${item.custcol_nsps_item_number_only}</#if></span></td>
+              <td colspan="8">${item.description}<#if item.custcol_im_external_notes?has_content><br />${item.custcol_im_external_notes}</#if></td>
+                <td colspan="4" align="right">${item.rate}</td>
+                <td colspan="4" align="right">${item.amount}</td>
+            </tr>
+        </#list>
+        <!-- end items -->
+    </table>
+    </#if>
+    <#if record.expense?has_content>
+    <table class="itemtable" style="width: 100%;">
+        <!-- start expenses -->
+        <#list record.expense as expense >
+            <#if expense_index==0>
+                <thead>
+                <tr>
+                    <th colspan="12">${expense.category@label}</th>
+                    <th colspan="10">${expense.account@label}</th>
+                    <th align="right" colspan="4">${expense.amount@label}</th>
+                </tr>
+                </thead>
+            </#if>
+            <tr>
+                <td colspan="12">${expense.category}</td>
+                <td colspan="10"><span class="itemname">${expense.account}</span></td>
+                <td align="right" colspan="4">${expense.amount}</td>
+            </tr>
+        </#list>
+        <!-- end expenses -->
+    </table>
+    </#if>
+    <hr />
+    <table class="total" style="width: 100%;">
+        <tr class="totalrow">
+            <td background-color="#ffffff" colspan="4"></td>
+            <td align="right"><b>${record.currency.symbol} ${record.total@label}</b></td>
+            <td align="right">${record.total}</td>
+          
+        </tr>
+    </table>
+            <table class="total" style="width: 100%; margin-top: 20pt;">
+    <tr class="totalrow">
+        <td align="center">
+            <b>Notes/ Remarques</b>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="center" background-color="#ffffff">
+            ${record.custbody_im_customer_comments?replace("&", "&amp;")}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="po-message" background-color="#ffffff">
+            ${record.custbody_po_message?replace("&", "&amp;")}
+        </td>
+    </tr>
+</table>
+</body>
+</pdf>
+
+
+              
