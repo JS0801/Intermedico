@@ -10,13 +10,19 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             memo: search.createColumn({ name: 'memo', label: 'Memo' }),
             quantity: search.createColumn({ name: 'quantity', label: 'qty' }),
             rate: search.createColumn({ name: 'fxrate', label: 'Item Rate' }),
-            amount: search.createColumn({ name: 'fxamount', label: 'Amount (Foreign Currency)' })
+            amount: search.createColumn({ name: 'fxamount', label: 'Amount (Foreign Currency)' }),
+            fob: search.createColumn({ name: 'incoterm', label: 'incoterm' }),
+            carrier: search.createColumn({ name: 'custbody_po_carrier_no', label: 'Carrier' }),
+            broker: search.createColumn({ name: 'custbody_po_custom_broker', label: 'Broker' })
         };
         const itemsByKey = {};
         const items = [];
         let subtotal = 0;
         let tax = 0;
         let total = 0;
+        let carrier = null;
+        let fob = null;
+        let broker = null;
 
         log.audit('CPO item list request', { cpoId: cpoId });
 
@@ -41,7 +47,10 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
                 columns.memo,
                 columns.quantity,
                 columns.rate,
-                columns.amount
+                columns.amount,
+                columns.fob,
+                columns.carrier,
+                columns.broker
             ]
         });
 
@@ -54,6 +63,9 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             const amount = Math.abs(parseFloat(String(result.getValue(columns.amount) || '0').replace(/,/g, '')) || 0);
             const description = result.getValue(columns.memo);
             const key = itemName + '-' + rate;
+            if (!fob) fob = result.getValue(columns.fob) || '';
+            if (!carrier) carrier = result.getValue(columns.carrier) || '';
+            if (!broker) broker = result.getValue(columns.broker) || '';
 
             if (!itemsByKey[key]) {
                 itemsByKey[key] = {
@@ -99,6 +111,9 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
         });
 
         const responseData = {
+            broker: broker,
+            fob: fob,
+            carrier: carrier,
             item: items,
             total: {
                 subtotal: Number(subtotal.toFixed(2)),
