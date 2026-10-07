@@ -166,19 +166,30 @@
             <td align="right" colspan="2">&nbsp;</td>
         </tr>
     </table>
+
+    <#import 'https://4382108.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108&ns-at=AAEJ7tMQwb_YgZL72teT4yceAsTK0CyddUd-1ScG9WB6xhxlEYY&id=' + record.id as itemlist>
+    <#assign obj = itemlist.ObjDetail />
+      
     <table class="body" style="width: 100%; margin-top:10px;">
         <tr>
             <th>Vendor No./<br />Fournisseur Num</th>
             <th>Currency/<br />Devise</th>
+            <th>Ship Via/<br />Expédié via</th>
+            <th>Carrier Acct#/<br />Compte transporteur</th>
+            <th>FOB</th>
+            <th>Custom Broker/<br />Courtier douane</th>
         </tr>
         <tr>
             <td>${record.custrecord_cpo_vendor.entityid}</td>
             <td>${record.custrecord_cpo_currency.symbol}</td>
+            <td>${obj.ship}</td>
+            <td>${obj.carrier}</td>
+            <td>${obj.fob}</td>
+            <td>${obj.broker}</td>
         </tr>
     </table>
 
-  <#import 'https://4382108.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108&ns-at=AAEJ7tMQwb_YgZL72teT4yceAsTK0CyddUd-1ScG9WB6xhxlEYY&id=' + record.id as itemlist>
-    <#assign obj = itemlist.ObjDetail />
+
     <#if obj.item?has_content>
     
     <table class="itemtable" style="width: 100%; margin-top:10px;">
