@@ -13,7 +13,8 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             amount: search.createColumn({ name: 'fxamount', label: 'Amount (Foreign Currency)' }),
             fob: search.createColumn({ name: 'incoterm', label: 'incoterm' }),
             carrier: search.createColumn({ name: 'custbody_po_carrier_no', label: 'Carrier' }),
-            broker: search.createColumn({ name: 'custbody_po_custom_broker', label: 'Broker' })
+            broker: search.createColumn({ name: 'custbody_po_custom_broker', label: 'Broker' }),
+            ship: search.createColumn({ name: 'custbody_po_ship_via', label: 'Ship Via' })
         };
         const itemsByKey = {};
         const items = [];
@@ -23,7 +24,7 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
         let carrier = null;
         let fob = null;
         let broker = null;
-
+        let ship = null;
         log.audit('CPO item list request', { cpoId: cpoId });
 
         const purchaseorderSearchObj = search.create({
@@ -66,6 +67,7 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             if (!fob) fob = result.getValue(columns.fob) || '';
             if (!carrier) carrier = result.getValue(columns.carrier) || '';
             if (!broker) broker = result.getValue(columns.broker) || '';
+            if (!ship) broker = result.getValue(columns.ship) || '';
 
             if (!itemsByKey[key]) {
                 itemsByKey[key] = {
@@ -115,6 +117,7 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             fob: fob,
             carrier: carrier,
             item: items,
+            ship: ship,
             total: {
                 subtotal: Number(subtotal.toFixed(2)),
                 tax: Number(tax.toFixed(2)),
