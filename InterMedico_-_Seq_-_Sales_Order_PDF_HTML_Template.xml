@@ -320,6 +320,8 @@
 
 </table>
 
+          <table><tr><td>SubTotal: ${record.subtotal}</td></tr></table>
+
         </#if>
 </body>
 </pdf>
