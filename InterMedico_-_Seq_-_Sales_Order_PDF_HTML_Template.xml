@@ -16,40 +16,108 @@
 	</#if>
     <macrolist>
         <macro id="nlheader">
-           <table style="width: 100%; font-size: 10pt;">
+           <table style="width: 100%; font-size: 9pt;">
                 <tr>
                     <td rowspan="4" style="padding: 0; width: 30%;">
                     <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
-                    <td rowspan="4">&nsbp;<br />
-                        ${companyInformation.companyName}<br />
-                        ${companyInformation.addressText}
+                    <td rowspan="4" style="padding: 0;">&nsbp;<br />
+                        <b>${companyInformation.companyName}</b><br />
+                        ${companyInformation.addressText}<br />
+                        TEL: ${companyInformation.custrecord_telephone} FAX: ${companyInformation.fax}
                     </td>
-                    <td align="right" style="padding: 0;"><span style="font-size: 28pt;">${record@title} /</span></td>
-                </tr>
-                
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">Commande client</span></td>
-                </tr>
-            
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">#${record.tranid}</span></td>
+                    <td align="right" style="padding: 0;"><span style="font-size: 16pt; font-weight: bold; font-style: italic;"><br />Order Confirmation</span></td>
                 </tr>
                 <tr>
-                    <td align="right" style="padding: 0;">${record.trandate}</td>
+                    <td align="right" style="padding: 0;">Page <pagenumber/> of <totalpages/></td>
                 </tr>
             </table>
+
+     <table style="width: 100%; margin-top: 10px;">
+        <tr>
+            <td style="font-weight: bold; color: #333333;" ><b>Sold To:</b></td> <td colspan="5">${record.billaddress}</td>
+            <td style="font-weight: bold; color: #333333;"><b>Ship To:</b></td> <td colspan="5">${record.shipaddress}</td>
+        </tr>
+    </table>
+
+
+    <!-- First Information Table -->
+<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1pt solid #444444; border-radius: 18px; overflow: hidden; margin-bottom: 12px; font-size: 9pt;">
+    <tr>
+        <th style="width: 15%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Order Date
+        </th>
+        <th style="width: 24%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Customer number
+        </th>
+        <th style="width: 26%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Customer P.O. Number
+        </th>
+        <th style="width: 37%; align: center; padding: 4px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Ship Via
+        </th>
+    </tr>
+
+    <tr>
+        <td style="align: center;  border-right: 1pt solid #444444;">
+            ${record.trandate}
+        </td>
+        <td style="align: center; border-right: 1pt solid #444444;">
+            ${record.entity.entityid}
+        </td>
+        <td style="align: center; border-right: 1pt solid #444444;">
+            ${record.otherrefnum}
+        </td>
+        <td style="align: center;">
+            ${record.shipmethod}
+        </td>
+    </tr>
+</table>
+
+
+<!-- Second Information Table -->
+<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1pt solid #444444; border-radius: 18px; overflow: hidden;">
+
+    <tr>
+        <th style="width: 15%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Date Required
+        </th>
+        <th style="width: 24%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Inter Medico Order No
+        </th>
+        <th style="width: 26%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Order Entered By
+        </th>
+        <th style="width: 37%; align: center; padding: 4px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
+            Ordered By
+        </th>
+    </tr>
+
+    <tr>
+        <td style="align: center; border-right: 1pt solid #444444;">
+            ${record.shipdate}
+        </td>
+        <td style="align: center; border-right: 1pt solid #444444;">
+            ${record.tranid}
+        </td>
+        <td style="align: center; border-right: 1pt solid #444444;">
+            ${record.custbody_order_entered_by}
+        </td>
+        <td style="align: center;">
+            ${record.custbody_ordered_by}
+        </td>
+    </tr>
+
+</table>
 
         </macro>
         <macro id="nlfooter">
             <table style="width: 100%; font-size: 8pt;">
                 <tr>
-                    <td style="padding: 0;">
-                        <barcode codetype="code128" showtext="true" value="${record.tranid}"/>
-                    </td>
-                    <td align="right" style="padding: 0;">
-                        <pagenumber/> of <totalpages/>
-                    </td>
+                    <td style="padding: 0; font-weight: bold; font-style: italic;" align = "center">Thank you for your order.</td>
                 </tr>
+              <tr >
+                <td style="padding: 10; font-style: italic;" align = "center">Freight and special handling charges will be determined at the time of shipment.</td>
+              </tr>
             </table>
         </macro>
     </macrolist>
@@ -92,129 +160,166 @@
             background-color: #e3e3e3;
             line-height: 200%;
         }
-          table.terms-block td {
-    padding: 0;
-    font-size: 9pt;
-    line-height: 12pt;
-    align: left;
-    text-align: left;
-}
-
-table.terms-block p,
-table.terms-block div {
-    margin: 0;
-    padding: 0;
-    line-height: 12pt;
-    align: left !important;
-    text-align: left !important;
-}
-
-table.terms-block span {
-    word-spacing: normal !important;
-    letter-spacing: normal !important;
-}
     </style>
 </head>
-<body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
-    <table style="width: 100%; margin-top: 10px;">
-        <tr>
-            <td style="font-size: 8pt; padding: 6px 0 2px; font-weight: bold; color: #333333;" colspan="3">${record.billaddress@label}/ Facturé à</td>
-            <td style="font-size: 8pt; padding: 6px 0 2px; font-weight: bold; color: #333333;" colspan="3">${record.shipaddress@label}/ Livré à</td>
-            <td style="font-size: 12pt; font-weight: bold;" colspan="5">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="padding-right: 1px;" colspan="3">${record.billaddress}</td>
-            <td style="padding-right: 1px;" colspan="3">${record.shipaddress}</td>
-            <td style="font-size: 28pt; padding-top: 20px; " align="right" colspan="5">&nbsp;</td>
-        </tr>
-    </table>
-    <table style="width: 100%; margin-top: 10px;">
-        <tr>
-          <th>Cust #/#<br />de Client</th>  
-          <th colspan="2">${record.otherrefnum@label}/BC#</th>
-          <th>Order Type/<br />Type de Commande</th>
-            <th colspan="2">${record.shipmethod@label}/Mode d’expédition</th>
-            <th colspan="2">${record.shipdate@label}/Date d’expédition</th>
-        </tr>
-        <tr>
-          <td style="padding-top: 2px;">${record.entity.entityid}</td>  
-          <td colspan="2" style="padding-top: 2px;">${record.otherrefnum}</td>
-          <td style="padding-top: 2px;">${record.custbody_im_order_type}</td>
-            <td  colspan="2" style="padding-top: 2px;">${record.shipmethod}</td>
-            <td colspan="2" style="padding-top: 2px;">${record.shipdate}</td>
-        </tr>
-    </table>
+<body header="nlheader" header-height="30%" footer="nlfooter" footer-height="5pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+  
     <#if record.item?has_content>
-    <table style="width: 100%; margin-top: 10px;">
-        <!-- start items -->
-        <#list record.item as item>
-            <#if item_index==0>
-                <thead>
-                <tr>
-                    <th colspan="9" style="padding: 10px 6px;">${item.item@label}/<br />Article</th>
-                  <th colspan="3" style="padding: 10px 6px;">Customer<br />Supply Date</th>
-                    <th colspan="3" style="padding: 10px 6px;">${item.quantity@label}/<br />Quantité</th>
-                   <th colspan="3" style="padding: 10px 6px;">Committed<br />Qty</th>
-                    <th colspan="3" style="padding: 10px 6px;">B/O<br />Qty</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.rate@label}/<br />Tarif</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.amount@label}/<br />Montant</th>
-                </tr>
-                </thead>
+<table style="width: 100%; margin-top: 10px; border: 1px; font-size: 9pt">
+
+    <#assign groupedItems = {}>
+    <#assign groupOrder = []>
+
+    <!-- Build grouped items in first-seen order. This groups non-consecutive matching lines too. -->
+    <#list record.item as item>
+
+        <#assign itemNo = item.custcol_item_id?string>
+        <#assign description = item.description?string>
+        <#assign rate = item.rate?string>
+        <#assign lineQty = (item.quantity)>
+        <#assign lineAmount = (item.amount)>
+        <#assign groupKey = itemNo + "||" + description + "||" + rate>
+
+        <#assign dateKey = "">
+        <#if item.requesteddate?has_content>
+            <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
+        </#if>
+
+        <#if groupedItems[groupKey]??>
+
+            <#assign existing = groupedItems[groupKey]>
+            <#assign updatedDates = existing.dates>
+
+            <#if dateKey?has_content>
+                <#if existing.dates[dateKey]??>
+                    <#assign dateQty = existing.dates[dateKey] + lineQty>
+                <#else>
+                    <#assign dateQty = lineQty>
+                </#if>
+
+                <#assign updatedDates = existing.dates + {
+                    dateKey: dateQty
+                }>
             </#if>
-            <tr>
-                <td colspan="9"><span style="font-weight: bold; color: #333333;">${item.custcol_nsps_item_number_only}</span><br />${item.description}<#if item.custcol_im_external_notes?has_content><br />${item.custcol_im_external_notes}</#if></td>
-              <td colspan="3">${item.requesteddate}</td>
-              <td colspan="3">${item.quantity}</td>
-               <td colspan="3">${item.quantitycommitted}</td>
-              <td colspan="3">${item.quantitybackordered}</td>
-                <td colspan="4" align="right">${item.rate}</td>
-                <td colspan="4" align="right">${item.amount}</td>
-            </tr>
-        </#list>
-        <!-- end items -->
-    </table>
-          ${record.custbody_nsps_item_num_and_expiration_}
-    <hr style="width: 100%; color: #d3d3d3; background-color: #d3d3d3; height: 1px;" />
-    </#if>
-    <table style="page-break-inside: avoid; width: 100%; margin-top: 10px;">
+
+            <#assign groupedItems = groupedItems + {
+                groupKey: {
+                    "item": existing.item,
+                    "description": existing.description,
+                    "rate": existing.rate,
+                    "quantity": existing.quantity + lineQty,
+                    "amount": existing.amount + lineAmount,
+                    "dates": updatedDates
+                }
+            }>
+
+        <#else>
+
+            <#assign dates = {}>
+
+            <#if dateKey?has_content>
+                <#assign dates = dates + {
+                    dateKey: lineQty
+                }>
+            </#if>
+
+            <#assign groupedItems = groupedItems + {
+                groupKey: {
+                    "item": itemNo,
+                    "description": description,
+                    "rate": rate,
+                    "quantity": lineQty,
+                    "amount": lineAmount,
+                    "dates": dates
+                }
+            }>
+
+            <#assign groupOrder = groupOrder + [groupKey]>
+
+        </#if>
+
+    </#list>
+
+    <thead>
         <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.subtotal@label}</td>
-            <td align="right">${record.subtotal}</td>
+            <th align="center" style="width: 6%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
+                Line
+            </th>
+            <th style="width: 8%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
+                Quantity Ordered
+            </th>
+            <th style="width: 12%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
+                Item No.
+            </th>
+            <th style="width: 40%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
+                Description
+            </th>
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
+                Unit Price
+            </th>
+            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444;">
+                Extended
+            </th>
         </tr>
+    </thead>
+
+    <#assign counter = 1>
+
+    <#list groupOrder as key>
+
+        <#assign grouped = groupedItems[key]>
+
         <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">GST/HST</td>
-            <td align="right">${record.taxtotal}</td>
-        </tr>
-       <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">PST</td>
-            <td align="right">${record.tax2total}</td>
-        </tr>
-        <tr style="background-color: #e3e3e3; line-height: 200%;">
-            <td background-color="#ffffff" colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.total@label}</td>
-            <td align="right">${record.total}</td>
-        </tr>
-    </table>
+            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444; border-left: 0px;">
+                ${counter}
+            </td>
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.quantity}
+            </td>
+            <td style="border-right: 1px solid #444444;">
+                ${grouped.item}
+            </td>
+            <td style="border-right: 1px solid #444444;">
+                ${grouped.description}
 
+                <#if grouped.dates?size gt 0>
+                    <table style="width: 70%; margin-top: 4px; font-size: 8pt;">
+                        <tr>
+                            <td style="width: 55%; padding: 2px 4px;">
+                                <b><u>Date Wanted</u></b>
+                            </td>
+                            <td align="right" style="width: 45%; padding: 2px 4px;">
+                                <b><u>Quantity</u></b>
+                            </td>
+                        </tr>
 
-               <table class="total" style="width: 100%; margin-top:20pt;">
-        <tr class="totalrow">
-
-          <td align="center"><b>Notes/ Remarques</b></td></tr>
-                 <tr>
-                      <td align="center" background-color="#ffffff" >${record.custbody_im_customer_comments}</td>
+                        <#list grouped.dates?keys?sort as dateKey>
+                            <tr>
+                                <td style="padding: 2px 4px;">
+                                    ${dateKey?date("yyyy-MM-dd")?string("MMM dd, yyyy")}
+                                </td>
+                                <td align="right" style="padding: 2px 4px;">
+                                    ${grouped.dates[dateKey]}
+                                </td>
+                            </tr>
+                        </#list>
+                    </table>
+                </#if>
+            </td>
+            <td align="right" style="border-right: 1px solid #444444;">
+                ${grouped.rate}
+            </td>
+            <td align="right">
+                ${grouped.amount?string.currency}
+            </td>
         </tr>
-    </table>
 
-          <table class="terms-block" style="width: 100%; margin-top: 5pt;">
-    <tr>
-        <td align="left" style="background-color: #ffffff;">
-            ${subsidiary.custrecord_nsps_so_tc}
-        </td>
-    </tr>
+        <#assign counter = counter + 1>
+
+    </#list>
+
 </table>
+
+        </#if>
 </body>
 </pdf>
