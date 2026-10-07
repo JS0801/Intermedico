@@ -166,19 +166,30 @@
             <td align="right" colspan="2">&nbsp;</td>
         </tr>
     </table>
+
+    <#import 'https://4382108-sb1.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108_SB1&ns-at=AAEJ7tMQcux2XwoJSy3-m2ZrYwC3xKZhrvkjlo8W_iEsau4sWI4&id=' + record.id as itemlist>
+    <#assign obj = itemlist.ObjDetail />
+      
     <table class="body" style="width: 100%; margin-top:10px;">
         <tr>
             <th>Vendor No./<br />Fournisseur Num</th>
             <th>Currency/<br />Devise</th>
+            <th>Ship Via/<br />Expédié via</th>
+            <th>Carrier Acct#/<br />Compte transporteur</th>
+            <th>FOB</th>
+            <th>Custom Broker/<br />Courtier douane</th>
         </tr>
         <tr>
             <td>${record.custrecord_cpo_vendor.entityid}</td>
             <td>${record.custrecord_cpo_currency.symbol}</td>
+            <td><#if obj.ship?has_content>${obj.ship}</#if></td>
+            <td><#if obj.carrier?has_content>${obj.carrier}</#if></td>
+            <td><#if obj.fob?has_content>${obj.fob}</#if></td>
+            <td><#if obj.broker?has_content>${obj.broker}</#if></td>
         </tr>
     </table>
 
-  <#import 'https://4382108-sb1.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=3614&deploy=1&compid=4382108_SB1&ns-at=AAEJ7tMQcux2XwoJSy3-m2ZrYwC3xKZhrvkjlo8W_iEsau4sWI4&id=' + record.id as itemlist>
-    <#assign obj = itemlist.ObjDetail />
+
     <#if obj.item?has_content>
     
     <table class="itemtable" style="width: 100%; margin-top:10px;">
