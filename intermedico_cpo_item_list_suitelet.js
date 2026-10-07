@@ -21,10 +21,10 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
         let subtotal = 0;
         let tax = 0;
         let total = 0;
-        let carrier = null;
-        let fob = null;
-        let broker = null;
-        let ship = null;
+        let carrier = '';
+        let fob = '';
+        let broker = '';
+        let ship = '';
         log.audit('CPO item list request', { cpoId: cpoId });
 
         const purchaseorderSearchObj = search.create({
