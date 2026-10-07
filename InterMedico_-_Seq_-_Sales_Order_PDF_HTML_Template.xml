@@ -320,7 +320,7 @@
 
 </table>
 
-          <table><tr><td>SubTotal: ${record.subtotal}</td></tr></table>
+          <table><tr><td align = 'right'><b>SubTotal:</b></td> <td align = 'right'>${record.subtotal}</td></tr></table>
 
         </#if>
 </body>
