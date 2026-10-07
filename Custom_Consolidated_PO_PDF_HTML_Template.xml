@@ -182,10 +182,10 @@
         <tr>
             <td>${record.custrecord_cpo_vendor.entityid}</td>
             <td>${record.custrecord_cpo_currency.symbol}</td>
-            <td>${obj.ship}</td>
-            <td>${obj.carrier}</td>
-            <td>${obj.fob}</td>
-            <td>${obj.broker}</td>
+            <td><#if obj.ship?has_content>${obj.ship}</#if></td>
+            <td><#if obj.carrier?has_content>${obj.carrier}</#if></td>
+            <td><#if obj.fob?has_content>${obj.fob}</#if></td>
+            <td><#if obj.broker?has_content>${obj.broker}</#if></td>
         </tr>
     </table>
 
