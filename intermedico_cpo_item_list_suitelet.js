@@ -65,9 +65,9 @@ define(['N/search', 'N/query', 'N/log'], function (search, query, log) {
             const description = result.getValue(columns.memo);
             const key = itemName + '-' + rate;
             if (!fob) fob = result.getValue(columns.fob) || '';
-            if (!carrier) carrier = result.getValue(columns.carrier) || '';
-            if (!broker) broker = result.getValue(columns.broker) || '';
-            if (!ship) broker = result.getValue(columns.ship) || '';
+            if (!carrier) carrier = result.getText(columns.carrier) || '';
+            if (!broker) broker = result.getText(columns.broker) || '';
+            if (!ship) broker = result.getText(columns.ship) || '';
 
             if (!itemsByKey[key]) {
                 itemsByKey[key] = {
