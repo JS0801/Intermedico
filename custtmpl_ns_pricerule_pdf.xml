@@ -269,25 +269,21 @@ font-family: NotoSans, sans-serif;
         <#assign regularLeft = regularCustomers[regularIndex]>
         <tr>
             <#if regularLeft.level == 0>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">${regularLeft.text?esc}</td>
                 <#elseif regularLeft.level == 1>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">${regularLeft.text?esc}</td>
                 <#else>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">${regularLeft.text?esc}</td>
                 </#if>
-                    ${regularLeft.text?esc}
-                </td>
             <#if (regularIndex + regularHalf) lt regularCustomers?size>
                 <#assign regularRight = regularCustomers[regularIndex + regularHalf]>
                 <#if regularRight.level == 0>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">${regularRight.text?esc}</td>
                 <#elseif regularRight.level == 1>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">${regularRight.text?esc}</td>
                 <#else>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">${regularRight.text?esc}</td>
                 </#if>
-                    ${regularRight.text?esc}
-                </td>
             <#else>
                 <td width="50%">&#160;</td>
             </#if>
@@ -309,25 +305,21 @@ font-family: NotoSans, sans-serif;
         <#assign ruralLeft = ruralCustomers[ruralIndex]>
         <tr>
             <#if ruralLeft.level == 0>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">${ruralLeft.text?esc}</td>
                 <#elseif ruralLeft.level == 1>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">${ruralLeft.text?esc}</td>
                 <#else>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">${ruralLeft.text?esc}</td>
                 </#if>
-                    ${ruralLeft.text?esc}
-                </td>
             <#if (ruralIndex + ruralHalf) lt ruralCustomers?size>
                 <#assign ruralRight = ruralCustomers[ruralIndex + ruralHalf]>
                 <#if ruralRight.level == 0>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">${ruralRight.text?esc}</td>
                 <#elseif ruralRight.level == 1>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">${ruralRight.text?esc}</td>
                 <#else>
-                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">${ruralRight.text?esc}</td>
                 </#if>
-                    ${ruralRight.text?esc}
-                </td>
             <#else>
                 <td width="50%">&#160;</td>
             </#if>
