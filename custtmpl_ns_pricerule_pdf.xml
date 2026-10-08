@@ -260,18 +260,25 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
-		<#list cdata.customer as customer>
-			<#if customer?index % 2 == 0>
-			<tr>
-			</#if>
-                                                <td align="left" style="padding:3px 15px; width:50%;">${customer?esc}</td>
-			<#if (customer?index % 2 == 1) || (customer?is_last)>
-				<#if customer?is_last && (customer?index % 2 == 0)>
-				<td style="padding:3px 15px; width:50%;">&nbsp;</td>
-				</#if>
-			</tr>
-			</#if>
-		</#list>
+<#assign customers = cdata.customer>
+<#assign half = (customers?size / 2)?ceiling>
+
+<#if half gt 0>
+    <#list 0..(half - 1) as i>
+        <tr>
+            <td align="left" style="padding:3px 15px; width:50%;">
+                ${customers[i]?esc}
+            </td>
+            <td align="left" style="padding:3px 15px; width:50%;">
+                <#if (i + half) lt customers?size>
+                    ${customers[i + half]?esc}
+                <#else>
+                    &nbsp;
+                </#if>
+            </td>
+        </tr>
+    </#list>
+</#if>
 
 		<#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
 		<tr>
