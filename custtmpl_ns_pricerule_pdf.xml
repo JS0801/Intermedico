@@ -1,31 +1,6 @@
 <#ftl output_format="XML" auto_esc=false>
 <?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
 
-<#-- Each customer is rendered directly in the two-column table. -->
-<#macro customerHierarchy customers>
-    <#local half = (customers?size / 2)?ceiling>
-    <#if half gt 0>
-        <#list 0..(half - 1) as i>
-            <#local left = customers[i]>
-            <tr>
-                <td width="50%" align="left" padding-left="${(6 + left.level * 12)?c}pt"
-                    style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + left.level * 12)?c}pt;">
-                    ${left.text?esc}
-                </td>
-                <#if (i + half) lt customers?size>
-                    <#local right = customers[i + half]>
-                    <td width="50%" align="left" padding-left="${(6 + right.level * 12)?c}pt"
-                        style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + right.level * 12)?c}pt;">
-                        ${right.text?esc}
-                    </td>
-                <#else>
-                    <td width="50%" style="padding:0;">&#160;</td>
-                </#if>
-            </tr>
-        </#list>
-    </#if>
-</#macro>
-
 <pdf>
 <head>
 	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
@@ -287,7 +262,26 @@ font-family: NotoSans, sans-serif;
 		</tr>
 </table>
 <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed;">
-<@customerHierarchy customers=cdata.customer />
+<#assign regularCustomers = cdata.customer>
+<#assign regularHalf = (regularCustomers?size / 2)?ceiling>
+<#if regularHalf gt 0>
+    <#list 0..(regularHalf - 1) as regularIndex>
+        <#assign regularLeft = regularCustomers[regularIndex]>
+        <tr>
+            <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + regularLeft.level * 12)?c}pt;">
+                ${regularLeft.text?esc}
+            </td>
+            <#if (regularIndex + regularHalf) lt regularCustomers?size>
+                <#assign regularRight = regularCustomers[regularIndex + regularHalf]>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + regularRight.level * 12)?c}pt;">
+                    ${regularRight.text?esc}
+                </td>
+            <#else>
+                <td width="50%">&#160;</td>
+            </#if>
+        </tr>
+    </#list>
+</#if>
 
 		<#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
 		<tr>
@@ -296,7 +290,26 @@ font-family: NotoSans, sans-serif;
 			</td>
 		</tr>
 
-		<@customerHierarchy customers=cdata.ruralcustomer />
+		<#assign ruralCustomers = cdata.ruralcustomer>
+<#assign ruralHalf = (ruralCustomers?size / 2)?ceiling>
+<#if ruralHalf gt 0>
+    <#list 0..(ruralHalf - 1) as ruralIndex>
+        <#assign ruralLeft = ruralCustomers[ruralIndex]>
+        <tr>
+            <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + ruralLeft.level * 12)?c}pt;">
+                ${ruralLeft.text?esc}
+            </td>
+            <#if (ruralIndex + ruralHalf) lt ruralCustomers?size>
+                <#assign ruralRight = ruralCustomers[ruralIndex + ruralHalf]>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + ruralRight.level * 12)?c}pt;">
+                    ${ruralRight.text?esc}
+                </td>
+            <#else>
+                <td width="50%">&#160;</td>
+            </#if>
+        </tr>
+    </#list>
+</#if>
 
         </#if>
 
