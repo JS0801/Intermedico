@@ -1,44 +1,35 @@
 <#ftl output_format="XML" auto_esc=false>
 <?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
 
-<#-- Split only before a root customer so a family stays in one column. -->
+<#-- Explicit spacer cells provide indentation without CSS padding shorthand. -->
+<#macro hierarchyEntry entry>
+    <table width="100%" style="margin:0; padding:0;">
+        <tr>
+            <td width="${(12 + entry.level * 14)?c}" style="padding:0;">&#160;</td>
+            <td align="left" style="padding:0; vertical-align:top;">
+                <p style="margin:0; padding:0;">${entry.text?esc}</p>
+            </td>
+        </tr>
+    </table>
+</#macro>
+
+<#-- Read down the left half, then down the right half. -->
 <#macro customerHierarchy customers>
     <#local total = customers?size>
-    <#if total gt 0>
-        <#local split = total>
-        <#local bestDistance = total>
-        <#list customers as customer>
-            <#local position = customer?index>
-            <#if position gt 0 && customer.level == 0>
-                <#local distance = (total - (2 * position))?abs>
-                <#if distance lte bestDistance>
-                    <#local split = position>
-                    <#local bestDistance = distance>
-                </#if>
-            </#if>
-        </#list>
-        <#local rows = split>
-        <#if (total - split) gt rows>
-            <#local rows = total - split>
-        </#if>
-        <#list 0..(rows - 1) as i>
+    <#local half = (total / 2)?ceiling>
+    <#if half gt 0>
+        <#list 0..(half - 1) as i>
             <tr>
-                <#if i lt split>
-                    <#local left = customers[i]>
-                    <td align="left" width="50%" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:15px; padding-left:${(15 + left.level * 12)?c}px;">
-                        ${left.text?esc}
-                    </td>
-                <#else>
-                    <td width="50%">&#160;</td>
-                </#if>
-                <#if (split + i) lt total>
-                    <#local right = customers[split + i]>
-                    <td align="left" width="50%" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:15px; padding-left:${(15 + right.level * 12)?c}px;">
-                        ${right.text?esc}
-                    </td>
-                <#else>
-                    <td width="50%">&#160;</td>
-                </#if>
+                <td width="50%" align="left" style="padding:3px 0; vertical-align:top;">
+                    <@hierarchyEntry entry=customers[i] />
+                </td>
+                <td width="50%" align="left" style="padding:3px 0; vertical-align:top;">
+                    <#if (i + half) lt total>
+                        <@hierarchyEntry entry=customers[i + half] />
+                    <#else>
+                        &#160;
+                    </#if>
+                </td>
             </tr>
         </#list>
     </#if>
