@@ -1,37 +1,26 @@
 <#ftl output_format="XML" auto_esc=false>
 <?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
 
-<#-- Fixed column widths and explicit paragraph alignment keep hierarchy levels aligned. -->
-<#macro hierarchyEntry entry>
-    <#local indent = 8 + entry.level * 12>
-    <#local textWidth = 252 - indent>
-    <table align="left" width="252pt" style="width:252pt; margin:0; padding:0; table-layout:fixed;">
-        <tr>
-            <td width="${indent?c}pt" style="width:${indent?c}pt; padding:0;">&#160;</td>
-            <td width="${textWidth?c}pt" align="left" style="width:${textWidth?c}pt; padding:0; vertical-align:top;">
-                <p align="left" style="text-align:left; margin:0; padding:0;">${entry.text?esc}</p>
-            </td>
-        </tr>
-    </table>
-</#macro>
-
-<#-- Read down the left half, then down the right half. -->
+<#-- Each customer is rendered directly in the two-column table. -->
 <#macro customerHierarchy customers>
-    <#local total = customers?size>
-    <#local half = (total / 2)?ceiling>
+    <#local half = (customers?size / 2)?ceiling>
     <#if half gt 0>
         <#list 0..(half - 1) as i>
+            <#local left = customers[i]>
             <tr>
-                <td width="270pt" align="left" style="width:270pt; padding:3px 0; vertical-align:top;">
-                    <@hierarchyEntry entry=customers[i] />
+                <td width="50%" align="left" padding-left="${(6 + left.level * 12)?c}pt"
+                    style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + left.level * 12)?c}pt;">
+                    ${left.text?esc}
                 </td>
-                <td width="270pt" align="left" style="width:270pt; padding:3px 0; vertical-align:top;">
-                    <#if (i + half) lt total>
-                        <@hierarchyEntry entry=customers[i + half] />
-                    <#else>
-                        &#160;
-                    </#if>
-                </td>
+                <#if (i + half) lt customers?size>
+                    <#local right = customers[i + half]>
+                    <td width="50%" align="left" padding-left="${(6 + right.level * 12)?c}pt"
+                        style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + right.level * 12)?c}pt;">
+                        ${right.text?esc}
+                    </td>
+                <#else>
+                    <td width="50%" style="padding:0;">&#160;</td>
+                </#if>
             </tr>
         </#list>
     </#if>
@@ -288,7 +277,7 @@ font-family: NotoSans, sans-serif;
 </#if>
 
 <pbr header="childpagesheader" header-height="70px" footer="childpagesfooter" footer-height="20px" padding="0.15in 0.5in 0.5in 0.5in" size="letter" />
-	<table class="itemtable" align="left" width="540pt" style="width:540pt; table-layout:fixed;">
+	<table class="itemtable" style="width: 100%;">
 		<tr>
 			<td colspan="2" width="100%" align="left">
                                     <p style="padding:0px; margin:0px">Contract Pricing Reference No. ${cdata.header.id?esc} is valid for the below account number(s) :</p>
@@ -296,6 +285,8 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
+</table>
+<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed;">
 <@customerHierarchy customers=cdata.customer />
 
 		<#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
