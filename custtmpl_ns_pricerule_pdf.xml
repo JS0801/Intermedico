@@ -1,5 +1,49 @@
 <#ftl output_format="XML" auto_esc=false>
 <?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+
+<#-- Split only before a root customer so a family stays in one column. -->
+<#macro customerHierarchy customers>
+    <#local total = customers?size>
+    <#if total gt 0>
+        <#local split = total>
+        <#local bestDistance = total>
+        <#list customers as customer>
+            <#local position = customer?index>
+            <#if position gt 0 && customer.level == 0>
+                <#local distance = (total - (2 * position))?abs>
+                <#if distance lte bestDistance>
+                    <#local split = position>
+                    <#local bestDistance = distance>
+                </#if>
+            </#if>
+        </#list>
+        <#local rows = split>
+        <#if (total - split) gt rows>
+            <#local rows = total - split>
+        </#if>
+        <#list 0..(rows - 1) as i>
+            <tr>
+                <#if i lt split>
+                    <#local left = customers[i]>
+                    <td align="left" width="50%" style="vertical-align:top; padding:3px 15px 3px ${(15 + left.level * 12)?c}px;">
+                        ${left.text?esc}
+                    </td>
+                <#else>
+                    <td width="50%">&#160;</td>
+                </#if>
+                <#if (split + i) lt total>
+                    <#local right = customers[split + i]>
+                    <td align="left" width="50%" style="vertical-align:top; padding:3px 15px 3px ${(15 + right.level * 12)?c}px;">
+                        ${right.text?esc}
+                    </td>
+                <#else>
+                    <td width="50%">&#160;</td>
+                </#if>
+            </tr>
+        </#list>
+    </#if>
+</#macro>
+
 <pdf>
 <head>
 	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
@@ -228,7 +272,6 @@ font-family: NotoSans, sans-serif;
 		</td>
 	</tr>
 	<#list cdata.detail as detail>
-	<#assign qty = detail.count?number>
 	<tr>
                                                 <td align="left" style="padding:3px" class="bdr-right bdr-top">${detail.item?esc}</td>
 		<td align="left" style="padding:3px" class="bdr-right bdr-top">${detail.description?esc}</td>
@@ -260,25 +303,7 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
-<#assign customers = cdata.customer>
-<#assign half = (customers?size / 2)?ceiling>
-
-<#if half gt 0>
-    <#list 0..(half - 1) as i>
-        <tr>
-            <td align="left" style="padding:3px 15px; width:50%;">
-                ${customers[i]?esc}
-            </td>
-            <td align="left" style="padding:3px 15px; width:50%;">
-                <#if (i + half) lt customers?size>
-                    ${customers[i + half]?esc}
-                <#else>
-                    &nbsp;
-                </#if>
-            </td>
-        </tr>
-    </#list>
-</#if>
+<@customerHierarchy customers=cdata.customer />
 
 		<#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
 		<tr>
@@ -287,18 +312,7 @@ font-family: NotoSans, sans-serif;
 			</td>
 		</tr>
 
-		<#list cdata.ruralcustomer as ruralcustomer>
-			<#if ruralcustomer?index % 2 == 0>
-			<tr>
-			</#if>
-                                                <td align="left" style="padding:3px 15px; width:50%;">${ruralcustomer?esc}</td>
-			<#if (ruralcustomer?index % 2 == 1) || (ruralcustomer?is_last)>
-				<#if ruralcustomer?is_last && (ruralcustomer?index % 2 == 0)>
-				<td style="padding:3px 15px; width:50%;">&nbsp;</td>
-				</#if>
-		    </tr>
-		    </#if>
-		</#list>
+		<@customerHierarchy customers=cdata.ruralcustomer />
 
         </#if>
 
