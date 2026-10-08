@@ -309,58 +309,220 @@ define( //using require instead for better module loading especially for the hav
 				.replace(/\r\n|\r|\n/g, '<br/>');
 		}
 
-		Helper.getCustomerList = function(params) {
-			let stLogTitle = 'getCustomerList';
-			log.debug(stLogTitle);
+		// Helper.getCustomerList = function(params) {
+		// 	let stLogTitle = 'getCustomerList';
+		// 	log.debug(stLogTitle);
 
-			let arrCustomerList = [];
-			let arrRuralCustomerList = [];
-			let objSearchCustomerList = search.create({
-				type: "customrecord_nts_pr_customer_create",
-				filters:
-					[
-						["custrecord_nts_pr_customer_create_prm","anyof",params.id],
-						"AND",
-						["isinactive","is","F"]
-					],
-				columns:
-					[
-						search.createColumn({
-							name: "entityid",
-							join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
-							label: "ID"
-						}),
-						search.createColumn({
-							name: "companyname",
-							join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
-							label: "Company Name"
-						}),
-						search.createColumn({
-							name: "custentity_rural",
-							join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
-							label: "Rural"
-						})
-					]
-			});
-			objSearchCustomerList.run().each(function(result){
-				let intCustomerId = result.getValue({ name: 'entityid', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
-				let stCustomerName = result.getValue({ name: 'companyname', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
-				let blIsRural = result.getValue({ name: 'custentity_rural', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
-				let stCustomer = intCustomerId+' - '+stCustomerName;
+		// 	let arrCustomerList = [];
+		// 	let arrRuralCustomerList = [];
+		// 	let objSearchCustomerList = search.create({
+		// 		type: "customrecord_nts_pr_customer_create",
+		// 		filters:
+		// 			[
+		// 				["custrecord_nts_pr_customer_create_prm","anyof",params.id],
+		// 				"AND",
+		// 				["isinactive","is","F"]
+		// 			],
+		// 		columns:
+		// 			[
+		// 				search.createColumn({
+		// 					name: "entityid",
+		// 					join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
+		// 					label: "ID"
+		// 				}),
+		// 				search.createColumn({
+		// 					name: "companyname",
+		// 					join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
+		// 					label: "Company Name"
+		// 				}),
+		// 				search.createColumn({
+		// 					name: "custentity_rural",
+		// 					join: "CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST",
+		// 					label: "Rural"
+		// 				})
+		// 			]
+		// 	});
+		// 	objSearchCustomerList.run().each(function(result){
+		// 		let intCustomerId = result.getValue({ name: 'entityid', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
+		// 		let stCustomerName = result.getValue({ name: 'companyname', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
+		// 		let blIsRural = result.getValue({ name: 'custentity_rural', join: 'CUSTRECORD_NTS_PR_CUSTOMER_CREATE_CUST' });
+		// 		let stCustomer = intCustomerId+' - '+stCustomerName;
 
-				if (blIsRural === true) {
-					arrRuralCustomerList.push(stCustomer);
-				} else {
-					arrCustomerList.push(stCustomer);
-				}
-				return true;
-			});
+		// 		if (blIsRural === true) {
+		// 			arrRuralCustomerList.push(stCustomer);
+		// 		} else {
+		// 			arrCustomerList.push(stCustomer);
+		// 		}
+		// 		return true;
+		// 	});
 
-			return {
-				arrCustomerList,
-				arrRuralCustomerList
-			};
-		}
+		// 	return {
+		// 		arrCustomerList,
+		// 		arrRuralCustomerList
+		// 	};
+		// }
+
+      Helper.getCustomerList = function(params) {
+    let arrCustomers = [];
+    let objSeen = {};
+
+    search.create({
+        type: 'customrecord_nts_pr_customer_create',
+        filters: [
+            ['custrecord_nts_pr_customer_create_prm', 'anyof', params.id],
+            'AND',
+            ['isinactive', 'is', 'F']
+        ],
+        columns: [
+            search.createColumn({
+                name: 'internalid',
+                join: 'custrecord_nts_pr_customer_create_cust'
+            }),
+            search.createColumn({
+                name: 'parent',
+                join: 'custrecord_nts_pr_customer_create_cust'
+            }),
+            search.createColumn({
+                name: 'entityid',
+                join: 'custrecord_nts_pr_customer_create_cust',
+                sort: search.Sort.ASC
+            }),
+            search.createColumn({
+                name: 'companyname',
+                join: 'custrecord_nts_pr_customer_create_cust'
+            }),
+            search.createColumn({
+                name: 'custentity_rural',
+                join: 'custrecord_nts_pr_customer_create_cust'
+            })
+        ]
+    }).run().each(function(result) {
+        let join = 'custrecord_nts_pr_customer_create_cust';
+
+        let id = String(result.getValue({
+            name: 'internalid',
+            join: join
+        }) || '');
+
+        if (!id || objSeen[id]) {
+            return true;
+        }
+        objSeen[id] = true;
+
+        let parentId = String(result.getValue({
+            name: 'parent',
+            join: join
+        }) || '');
+
+        let accountNumber = result.getValue({
+            name: 'entityid',
+            join: join
+        }) || '';
+
+        let companyName = result.getValue({
+            name: 'companyname',
+            join: join
+        }) || '';
+
+        let rural = result.getValue({
+            name: 'custentity_rural',
+            join: join
+        });
+
+        arrCustomers.push({
+            id: id,
+            parentId: parentId,
+            text: accountNumber + (companyName ? ' - ' + companyName : ''),
+            rural: rural === true || rural === 'T'
+        });
+
+        return true;
+    });
+
+    function buildHierarchy(customers) {
+        let byId = {};
+        let children = {};
+        let roots = [];
+        let visited = {};
+        let ordered = [];
+        let groups = [];
+
+        customers.forEach(function(customer) {
+            byId[customer.id] = customer;
+        });
+
+        customers.forEach(function(customer) {
+            if (
+                customer.parentId &&
+                customer.parentId !== customer.id &&
+                byId[customer.parentId]
+            ) {
+                if (!children[customer.parentId]) {
+                    children[customer.parentId] = [];
+                }
+                children[customer.parentId].push(customer);
+            } else {
+                roots.push(customer);
+            }
+        });
+
+        function visit(customer, level, group) {
+            if (visited[customer.id]) {
+                return;
+            }
+            visited[customer.id] = true;
+
+            let entry = {
+                id: customer.id,
+                parentId: customer.parentId,
+                text: customer.text,
+                level: level
+            };
+
+            ordered.push(entry);
+            group.push(entry);
+
+            (children[customer.id] || []).forEach(function(child) {
+                visit(child, level + 1, group);
+            });
+        }
+
+        function addGroup(customer) {
+            if (visited[customer.id]) {
+                return;
+            }
+
+            let group = [];
+            visit(customer, 0, group);
+            groups.push(group);
+        }
+
+        roots.forEach(addGroup);
+
+        // Prevent malformed parent relationships from omitting customers.
+        customers.forEach(addGroup);
+
+        return {
+            list: ordered,
+            groups: groups
+        };
+    }
+
+    let regular = buildHierarchy(arrCustomers.filter(function(customer) {
+        return !customer.rural;
+    }));
+
+    let rural = buildHierarchy(arrCustomers.filter(function(customer) {
+        return customer.rural;
+    }));
+
+    return {
+        arrCustomerList: regular.list,
+        arrRuralCustomerList: rural.list,
+        arrCustomerGroups: regular.groups,
+        arrRuralCustomerGroups: rural.groups
+    };
+};
 
 		Helper.mergeParams = function (params, paramsHttp) {
 			var stLogTitle = 'Helper.mergeParams';
