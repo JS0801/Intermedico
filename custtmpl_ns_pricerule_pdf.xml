@@ -269,29 +269,23 @@ font-family: NotoSans, sans-serif;
         <#assign regularLeft = regularCustomers[regularIndex]>
         <tr>
             <#if regularLeft.level == 0>
-                    <#assign customerPadding = 0>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
                 <#elseif regularLeft.level == 1>
-                    <#assign customerPadding = 5>
-                <#elseif regularLeft.level == 2>
-                    <#assign customerPadding = 10>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
                 <#else>
-                    <#assign customerPadding = regularLeft.level * 5>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
                 </#if>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${regularLeft.text?esc}
                 </td>
             <#if (regularIndex + regularHalf) lt regularCustomers?size>
                 <#assign regularRight = regularCustomers[regularIndex + regularHalf]>
                 <#if regularRight.level == 0>
-                    <#assign customerPadding = 0>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
                 <#elseif regularRight.level == 1>
-                    <#assign customerPadding = 5>
-                <#elseif regularRight.level == 2>
-                    <#assign customerPadding = 10>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
                 <#else>
-                    <#assign customerPadding = regularRight.level * 5>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
                 </#if>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${regularRight.text?esc}
                 </td>
             <#else>
@@ -315,29 +309,23 @@ font-family: NotoSans, sans-serif;
         <#assign ruralLeft = ruralCustomers[ruralIndex]>
         <tr>
             <#if ruralLeft.level == 0>
-                    <#assign customerPadding = 0>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
                 <#elseif ruralLeft.level == 1>
-                    <#assign customerPadding = 5>
-                <#elseif ruralLeft.level == 2>
-                    <#assign customerPadding = 10>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
                 <#else>
-                    <#assign customerPadding = ruralLeft.level * 5>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
                 </#if>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${ruralLeft.text?esc}
                 </td>
             <#if (ruralIndex + ruralHalf) lt ruralCustomers?size>
                 <#assign ruralRight = ruralCustomers[ruralIndex + ruralHalf]>
                 <#if ruralRight.level == 0>
-                    <#assign customerPadding = 0>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:0px;">
                 <#elseif ruralRight.level == 1>
-                    <#assign customerPadding = 5>
-                <#elseif ruralRight.level == 2>
-                    <#assign customerPadding = 10>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:5px;">
                 <#else>
-                    <#assign customerPadding = ruralRight.level * 5>
+                    <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:10px;">
                 </#if>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${ruralRight.text?esc}
                 </td>
             <#else>
