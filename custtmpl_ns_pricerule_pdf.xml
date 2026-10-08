@@ -268,12 +268,30 @@ font-family: NotoSans, sans-serif;
     <#list 0..(regularHalf - 1) as regularIndex>
         <#assign regularLeft = regularCustomers[regularIndex]>
         <tr>
-            <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + regularLeft.level * 12)?c}pt;">
-                ${regularLeft.text?esc}
-            </td>
+            <#if regularLeft.level == 0>
+                    <#assign customerPadding = 0>
+                <#elseif regularLeft.level == 1>
+                    <#assign customerPadding = 5>
+                <#elseif regularLeft.level == 2>
+                    <#assign customerPadding = 10>
+                <#else>
+                    <#assign customerPadding = regularLeft.level * 5>
+                </#if>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
+                    ${regularLeft.text?esc}
+                </td>
             <#if (regularIndex + regularHalf) lt regularCustomers?size>
                 <#assign regularRight = regularCustomers[regularIndex + regularHalf]>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + regularRight.level * 12)?c}pt;">
+                <#if regularRight.level == 0>
+                    <#assign customerPadding = 0>
+                <#elseif regularRight.level == 1>
+                    <#assign customerPadding = 5>
+                <#elseif regularRight.level == 2>
+                    <#assign customerPadding = 10>
+                <#else>
+                    <#assign customerPadding = regularRight.level * 5>
+                </#if>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${regularRight.text?esc}
                 </td>
             <#else>
@@ -296,12 +314,30 @@ font-family: NotoSans, sans-serif;
     <#list 0..(ruralHalf - 1) as ruralIndex>
         <#assign ruralLeft = ruralCustomers[ruralIndex]>
         <tr>
-            <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:12pt; padding-left:${(6 + ruralLeft.level * 12)?c}pt;">
-                ${ruralLeft.text?esc}
-            </td>
+            <#if ruralLeft.level == 0>
+                    <#assign customerPadding = 0>
+                <#elseif ruralLeft.level == 1>
+                    <#assign customerPadding = 5>
+                <#elseif ruralLeft.level == 2>
+                    <#assign customerPadding = 10>
+                <#else>
+                    <#assign customerPadding = ruralLeft.level * 5>
+                </#if>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
+                    ${ruralLeft.text?esc}
+                </td>
             <#if (ruralIndex + ruralHalf) lt ruralCustomers?size>
                 <#assign ruralRight = ruralCustomers[ruralIndex + ruralHalf]>
-                <td width="50%" align="left" style="vertical-align:top; padding-top:3pt; padding-bottom:3pt; padding-right:6pt; padding-left:${(6 + ruralRight.level * 12)?c}pt;">
+                <#if ruralRight.level == 0>
+                    <#assign customerPadding = 0>
+                <#elseif ruralRight.level == 1>
+                    <#assign customerPadding = 5>
+                <#elseif ruralRight.level == 2>
+                    <#assign customerPadding = 10>
+                <#else>
+                    <#assign customerPadding = ruralRight.level * 5>
+                </#if>
+                <td width="50%" align="left" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${customerPadding?c}px;">
                     ${ruralRight.text?esc}
                 </td>
             <#else>
