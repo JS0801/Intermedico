@@ -1,13 +1,15 @@
 <#ftl output_format="XML" auto_esc=false>
 <?xml version="1.0"?><!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
 
-<#-- Explicit spacer cells provide indentation without CSS padding shorthand. -->
+<#-- Fixed column widths and explicit paragraph alignment keep hierarchy levels aligned. -->
 <#macro hierarchyEntry entry>
-    <table width="100%" style="margin:0; padding:0;">
+    <#local indent = 8 + entry.level * 12>
+    <#local textWidth = 252 - indent>
+    <table align="left" width="252pt" style="width:252pt; margin:0; padding:0; table-layout:fixed;">
         <tr>
-            <td width="${(12 + entry.level * 14)?c}" style="padding:0;">&#160;</td>
-            <td align="left" style="padding:0; vertical-align:top;">
-                <p style="margin:0; padding:0;">${entry.text?esc}</p>
+            <td width="${indent?c}pt" style="width:${indent?c}pt; padding:0;">&#160;</td>
+            <td width="${textWidth?c}pt" align="left" style="width:${textWidth?c}pt; padding:0; vertical-align:top;">
+                <p align="left" style="text-align:left; margin:0; padding:0;">${entry.text?esc}</p>
             </td>
         </tr>
     </table>
@@ -20,10 +22,10 @@
     <#if half gt 0>
         <#list 0..(half - 1) as i>
             <tr>
-                <td width="50%" align="left" style="padding:3px 0; vertical-align:top;">
+                <td width="270pt" align="left" style="width:270pt; padding:3px 0; vertical-align:top;">
                     <@hierarchyEntry entry=customers[i] />
                 </td>
-                <td width="50%" align="left" style="padding:3px 0; vertical-align:top;">
+                <td width="270pt" align="left" style="width:270pt; padding:3px 0; vertical-align:top;">
                     <#if (i + half) lt total>
                         <@hierarchyEntry entry=customers[i + half] />
                     <#else>
@@ -286,7 +288,7 @@ font-family: NotoSans, sans-serif;
 </#if>
 
 <pbr header="childpagesheader" header-height="70px" footer="childpagesfooter" footer-height="20px" padding="0.15in 0.5in 0.5in 0.5in" size="letter" />
-	<table class="itemtable" style="width: 100%;">
+	<table class="itemtable" align="left" width="540pt" style="width:540pt; table-layout:fixed;">
 		<tr>
 			<td colspan="2" width="100%" align="left">
                                     <p style="padding:0px; margin:0px">Contract Pricing Reference No. ${cdata.header.id?esc} is valid for the below account number(s) :</p>
