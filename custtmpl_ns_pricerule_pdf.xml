@@ -25,7 +25,7 @@
             <tr>
                 <#if i lt split>
                     <#local left = customers[i]>
-                    <td align="left" width="50%" style="vertical-align:top; padding:3px 15px 3px ${(15 + left.level * 12)?c}px;">
+                    <td align="left" width="50%" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:15px; padding-left:${(15 + left.level * 12)?c}px;">
                         ${left.text?esc}
                     </td>
                 <#else>
@@ -33,7 +33,7 @@
                 </#if>
                 <#if (split + i) lt total>
                     <#local right = customers[split + i]>
-                    <td align="left" width="50%" style="vertical-align:top; padding:3px 15px 3px ${(15 + right.level * 12)?c}px;">
+                    <td align="left" width="50%" style="vertical-align:top; padding-top:3px; padding-bottom:3px; padding-right:15px; padding-left:${(15 + right.level * 12)?c}px;">
                         ${right.text?esc}
                     </td>
                 <#else>
