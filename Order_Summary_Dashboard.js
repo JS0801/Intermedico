@@ -81,7 +81,7 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
                 { label: 'Vendor', keywords: KEYWORDS.vendor }
             ],
             dateFilter: { label: 'Ending Date', keywords: KEYWORDS.endingDate },
-            serverDateFilter: { label: 'Requested Date', field: 'requesteddate', join: 'transaction' },
+            serverDateFilter: { label: 'Customer Supply By Date', field: 'requesteddate', join: 'transaction' },
             hideColumns: [KEYWORDS.vendor]
         },
 
@@ -352,7 +352,14 @@ define(['N/search', 'N/url', 'N/runtime', 'N/log', 'N/format'], function (search
             }
 
             if (action === 'count') {
-                sendJson(response, getReportCount(request.parameters.report));
+                sendJson(
+                    response,
+                    getReportCount(
+                        request.parameters.report,
+                        request.parameters.reqFrom,
+                        request.parameters.reqTo
+                    )
+                );
                 return;
             }
 
@@ -1527,7 +1534,7 @@ function addDateFilter(searchObj, reportKey, dateFrom, dateTo) {
         return data;
     }
 
-    function getReportCount(reportKey) {
+     function getReportCount(reportKey, reqFrom, reqTo) {
         const report = getReportDef(reportKey);
 
         if (!report) {
@@ -1538,9 +1545,13 @@ function addDateFilter(searchObj, reportKey, dateFrom, dateTo) {
             };
         }
 
-        const data = safeSection(report.label + ' count', function () {
+                const data = safeSection(report.label + ' count', function () {
+            const searchObj = loadSearch(report.key);
+
+            addDateFilter(searchObj, report.key, reqFrom, reqTo);
+
             return {
-                total: loadSearch(report.key).runPaged({ pageSize: PAGE_SIZE }).count || 0
+                total: searchObj.runPaged({ pageSize: PAGE_SIZE }).count || 0
             };
         });
 
@@ -3645,9 +3656,6 @@ var reportLayout = {
             requestParams[name] = serverFilter[name];
         });
 
-        // a filtered result is only part of the report, so the overview total is left alone
-        var partial = Boolean(params) || Object.keys(serverFilter).length > 0;
-
         api('reportData', requestParams)
             .then(function (data) {
                 if (requestSeq[key] !== seq) {
@@ -3662,7 +3670,8 @@ var reportLayout = {
 
                                 render(key);
 
-                if (!partial) {
+                // data.total comes from the filtered search, so the card follows the Requested Date range
+                if (!params) {
                     var count = byId('count_' + key);
 
                     count.innerHTML = esc(
@@ -3672,12 +3681,6 @@ var reportLayout = {
                     );
 
                     count.title = '';
-
-                } else if (!params) {
-                    // filtered by Requested Date: the overview card keeps the unfiltered total
-                    api('count', { report: key }).then(function (countData) {
-                        byId('count_' + key).innerHTML = esc(countData.total || 0);
-                    }).catch(function () {});
                 }
             })
             .catch(function (e) {
@@ -3694,7 +3697,7 @@ var reportLayout = {
                     'Unable to load this report: ' + e.message
                 );
 
-                if (!partial) {
+                if (!params) {
                     var count = byId('count_' + key);
 
                     count.innerHTML = '–';
@@ -3753,7 +3756,7 @@ var reportLayout = {
 
             var element = byId('count_' + report.key);
 
-            return api('count', { report: report.key })
+            return api('count', Object.assign({ report: report.key }, serverParams(report.key)))
                 .then(function (data) {
                     element.innerHTML = esc(data.total || 0);
                 })
