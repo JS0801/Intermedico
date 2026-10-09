@@ -259,10 +259,9 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
-<#assign custobj = cdata.objCustomerList />
-<#list custobj.arrCustomerList as customer>
+<#list cdata.customer as customer>
     <tr>
-        <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc} ${(customer.level * 5)?c}</td>
+        <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
     </tr>
 </#list>
 
@@ -272,7 +271,7 @@ font-family: NotoSans, sans-serif;
     </tr>
     <#list cdata.ruralcustomer as customer>
         <tr>
-            <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc} ${(customer.level * 5)?c}</td>
+            <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
         </tr>
     </#list>
 </#if>
