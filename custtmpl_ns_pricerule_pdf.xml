@@ -259,42 +259,10 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
-<#-- TEMPORARY DEBUG: all customer fields passed by the Suitelet to cdata. -->
-<tr>
-    <td width="100%" align="left" style="padding:8px 0; font-weight:bold;">DEBUG - Customer payload</td>
-</tr>
-<tr>
-    <td width="100%" align="left" style="padding:3px 0;">cdata.customer (${cdata.customer?size?c} records)</td>
-</tr>
-<#list cdata.customer as debugCustomer>
-    <tr>
-        <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
-            id: ${(debugCustomer.id!"[missing]")?string?esc}<br/>
-            parentId: ${(debugCustomer.parentId!"[missing]")?string?esc}<br/>
-            text: ${(debugCustomer.text!"[missing]")?string?esc}<br/>
-            level: <#if debugCustomer.level??>${debugCustomer.level?c}<#else>[missing]</#if><br/>
-        </td>
-    </tr>
-</#list>
-<tr>
-    <td width="100%" align="left" style="padding:6px 0;">cdata.ruralcustomer (${cdata.ruralcustomer?size?c} records)</td>
-</tr>
-<#list cdata.ruralcustomer as debugCustomer>
-    <tr>
-        <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
-            id: ${(debugCustomer.id!"[missing]")?string?esc}<br/>
-            parentId: ${(debugCustomer.parentId!"[missing]")?string?esc}<br/>
-            text: ${(debugCustomer.text!"[missing]")?string?esc}<br/>
-            level: <#if debugCustomer.level??>${debugCustomer.level?c}<#else>[missing]</#if><br/>
-        </td>
-    </tr>
-</#list>
-<tr>
-    <td width="100%" align="left" style="padding:10px 0; font-weight:bold;">END DEBUG - Customer list below</td>
-</tr>
 <#list cdata.customer as customer>
+    <#assign customerLevel = customer.level?string?trim?number>
     <tr>
-        <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
+        <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customerLevel * 5)?c}px;"><#if customerLevel gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
     </tr>
 </#list>
 
@@ -303,8 +271,9 @@ font-family: NotoSans, sans-serif;
         <td width="100%" align="left" style="padding-top:20px; padding-bottom:5px; padding-left:0px; font-weight:bold;">Rural Customers / Les sites en zone rurale:</td>
     </tr>
     <#list cdata.ruralcustomer as customer>
+    <#assign customerLevel = customer.level?string?trim?number>
         <tr>
-            <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
+            <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customerLevel * 5)?c}px;"><#if customerLevel gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
         </tr>
     </#list>
 </#if>
