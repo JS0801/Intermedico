@@ -269,9 +269,10 @@ font-family: NotoSans, sans-serif;
 <#list cdata.customer as debugCustomer>
     <tr>
         <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
-            <#list debugCustomer?keys as debugKey>
-                ${debugKey?esc}: <#if debugCustomer[debugKey]??><#assign debugValue = debugCustomer[debugKey]><#if debugValue?is_boolean>${debugValue?string('true', 'false')}<#elseif debugValue?is_number>${debugValue?c}<#else>${debugValue?string?esc}</#if><#else>null</#if><br/>
-            </#list>
+            id: ${(debugCustomer.id!"[missing]")?string?esc}<br/>
+            parentId: ${(debugCustomer.parentId!"[missing]")?string?esc}<br/>
+            text: ${(debugCustomer.text!"[missing]")?string?esc}<br/>
+            level: <#if debugCustomer.level??>${debugCustomer.level?c}<#else>[missing]</#if><br/>
         </td>
     </tr>
 </#list>
@@ -281,9 +282,10 @@ font-family: NotoSans, sans-serif;
 <#list cdata.ruralcustomer as debugCustomer>
     <tr>
         <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
-            <#list debugCustomer?keys as debugKey>
-                ${debugKey?esc}: <#if debugCustomer[debugKey]??><#assign debugValue = debugCustomer[debugKey]><#if debugValue?is_boolean>${debugValue?string('true', 'false')}<#elseif debugValue?is_number>${debugValue?c}<#else>${debugValue?string?esc}</#if><#else>null</#if><br/>
-            </#list>
+            id: ${(debugCustomer.id!"[missing]")?string?esc}<br/>
+            parentId: ${(debugCustomer.parentId!"[missing]")?string?esc}<br/>
+            text: ${(debugCustomer.text!"[missing]")?string?esc}<br/>
+            level: <#if debugCustomer.level??>${debugCustomer.level?c}<#else>[missing]</#if><br/>
         </td>
     </tr>
 </#list>
