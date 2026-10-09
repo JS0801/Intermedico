@@ -259,6 +259,37 @@ font-family: NotoSans, sans-serif;
 
 			</td>
 		</tr>
+<#-- TEMPORARY DEBUG: all customer fields passed by the Suitelet to cdata. -->
+<tr>
+    <td width="100%" align="left" style="padding:8px 0; font-weight:bold;">DEBUG - Customer payload</td>
+</tr>
+<tr>
+    <td width="100%" align="left" style="padding:3px 0;">cdata.customer (${cdata.customer?size?c} records)</td>
+</tr>
+<#list cdata.customer as debugCustomer>
+    <tr>
+        <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
+            <#list debugCustomer?keys as debugKey>
+                ${debugKey?esc}: <#if debugCustomer[debugKey]??><#assign debugValue = debugCustomer[debugKey]><#if debugValue?is_boolean>${debugValue?string('true', 'false')}<#elseif debugValue?is_number>${debugValue?c}<#else>${debugValue?string?esc}</#if><#else>null</#if><br/>
+            </#list>
+        </td>
+    </tr>
+</#list>
+<tr>
+    <td width="100%" align="left" style="padding:6px 0;">cdata.ruralcustomer (${cdata.ruralcustomer?size?c} records)</td>
+</tr>
+<#list cdata.ruralcustomer as debugCustomer>
+    <tr>
+        <td width="100%" align="left" style="padding:4px 0; font-size:8pt; border-bottom:1px solid #dddddd;">Record ${(debugCustomer?index + 1)?c}<br/>
+            <#list debugCustomer?keys as debugKey>
+                ${debugKey?esc}: <#if debugCustomer[debugKey]??><#assign debugValue = debugCustomer[debugKey]><#if debugValue?is_boolean>${debugValue?string('true', 'false')}<#elseif debugValue?is_number>${debugValue?c}<#else>${debugValue?string?esc}</#if><#else>null</#if><br/>
+            </#list>
+        </td>
+    </tr>
+</#list>
+<tr>
+    <td width="100%" align="left" style="padding:10px 0; font-weight:bold;">END DEBUG - Customer list below</td>
+</tr>
 <#list cdata.customer as customer>
     <tr>
         <td width="100%" align="left" style="padding-top:3px; padding-bottom:3px; padding-right:0px; padding-left:${(customer.level * 5)?c}px;"><#if customer.level gt 0>&#8226;&#160;</#if>${customer.text?esc}</td>
