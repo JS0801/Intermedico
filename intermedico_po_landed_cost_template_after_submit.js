@@ -66,11 +66,11 @@ define(['N/log', 'N/record', 'N/search'], function (log, record, search) {
             }
 
             var poId = context.newRecord.id;
-            var createdFrom = context.newRecord.getValue({ fieldId: CONFIG.bodyFields.createdFrom });
+            // var createdFrom = context.newRecord.getValue({ fieldId: CONFIG.bodyFields.createdFrom });
 
-            if (CONFIG.runOnlyWhenCreatedFromSalesOrder && !isCreatedFromSalesOrder(createdFrom)) {
-                return;
-            }
+            // if (CONFIG.runOnlyWhenCreatedFromSalesOrder && !isCreatedFromSalesOrder(createdFrom)) {
+            //     return;
+            // }
 
             var poRecord = record.load({
                 type: record.Type.PURCHASE_ORDER,
