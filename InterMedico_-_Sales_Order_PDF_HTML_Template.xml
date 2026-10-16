@@ -1,550 +1,116 @@
-<?xml version="1.0"?>
-<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
-<pdf>
+<!doctype html>
 
-<#assign salesChannel = record.saleschannel>
-
-<#if salesChannel == "Blanket Orders" || salesChannel == "Sequester Orders">
- <head>
-	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
-	<#if .locale == "zh_CN">
-		<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
-	<#elseif .locale == "zh_TW">
-		<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
-	<#elseif .locale == "ja_JP">
-		<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
-	<#elseif .locale == "ko_KR">
-		<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
-	<#elseif .locale == "th_TH">
-		<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
-	</#if>
-    <macrolist>
-        <macro id="nlheader">
-           <table style="width: 100%; font-size: 9pt;">
-                <tr>
-                    <td rowspan="4" style="padding: 0; width: 30%;">
-                    <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
-                    <td rowspan="4" style="padding: 0;">&nsbp;<br />
-                        <b>${companyInformation.companyName}</b><br />
-                        ${companyInformation.addressText}<br />
-                        TEL: ${companyInformation.custrecord_telephone} FAX: ${companyInformation.fax}
-                    </td>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt; font-weight: bold; font-style: italic;"><br />Order Confirmation</span></td>
-                </tr>
-                <tr>
-                    <td align="right" style="padding: 0;">Page <pagenumber/> of <totalpages/></td>
-                </tr>
-            </table>
-
-     <table style="width: 100%; margin-top: 10px;">
-        <tr>
-            <td style="font-weight: bold; color: #333333;" ><b>Sold To:</b></td> <td colspan="5">${record.billaddress}</td>
-            <td style="font-weight: bold; color: #333333;"><b>Ship To:</b></td> <td colspan="5">${record.shipaddress}</td>
-        </tr>
-    </table>
-
-
-    <!-- First Information Table -->
-<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1pt solid #444444; border-radius: 18px; overflow: hidden; margin-bottom: 12px; font-size: 9pt;">
-    <tr>
-        <th style="width: 15%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Order Date
-        </th>
-        <th style="width: 24%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Customer number
-        </th>
-        <th style="width: 26%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Customer P.O. Number
-        </th>
-        <th style="width: 37%; align: center; padding: 4px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Ship Via
-        </th>
-    </tr>
-
-    <tr>
-        <td style="align: center;  border-right: 1pt solid #444444;">
-            ${record.trandate}
-        </td>
-        <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.entity.entityid}
-        </td>
-        <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.otherrefnum}
-        </td>
-        <td style="align: center;">
-            ${record.shipmethod}
-        </td>
-    </tr>
-</table>
-
-
-<!-- Second Information Table -->
-<table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 1pt solid #444444; border-radius: 18px; overflow: hidden;">
-
-    <tr>
-        <th style="width: 15%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Date Required
-        </th>
-        <th style="width: 24%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Inter Medico Order No
-        </th>
-        <th style="width: 26%; align: center; padding: 4px 4px; border-right: 1pt solid #444444; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Order Entered By
-        </th>
-        <th style="width: 37%; align: center; padding: 4px 4px; border-bottom: 1pt solid #444444; font-weight: bold; font-size: 9.5pt;">
-            Ordered By
-        </th>
-    </tr>
-
-    <tr>
-        <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.shipdate}
-        </td>
-        <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.tranid}
-        </td>
-        <td style="align: center; border-right: 1pt solid #444444;">
-            ${record.custbody_order_entered_by}
-        </td>
-        <td style="align: center;">
-            ${record.custbody_ordered_by}
-        </td>
-    </tr>
-
-</table>
-
-        </macro>
-        <macro id="nlfooter">
-            <table style="width: 100%; font-size: 8pt;">
-                <tr>
-                    <td style="padding: 0; font-weight: bold; font-style: italic;" align = "center">Thank you for your order.</td>
-                </tr>
-              <tr >
-                <td style="padding: 10; font-style: italic;" align = "center">Freight and special handling charges will be determined at the time of shipment.</td>
-              </tr>
-            </table>
-        </macro>
-    </macrolist>
-    <style>
-		* {
-		<#if .locale == "zh_CN">
-			font-family: NotoSans, NotoSansCJKsc, sans-serif;
-		<#elseif .locale == "zh_TW">
-			font-family: NotoSans, NotoSansCJKtc, sans-serif;
-		<#elseif .locale == "ja_JP">
-			font-family: NotoSans, NotoSansCJKjp, sans-serif;
-		<#elseif .locale == "ko_KR">
-			font-family: NotoSans, NotoSansCJKkr, sans-serif;
-		<#elseif .locale == "th_TH">
-			font-family: NotoSans, NotoSansThai, sans-serif;
-		<#else>
-			font-family: NotoSans, sans-serif;
-		</#if>
-		}
-		table {
-			font-size: 9pt;
-			table-layout: fixed;
-		}
-        th {
-            font-weight: bold;
-            font-size: 8pt;
-            vertical-align: middle;
-            padding: 5px 6px 3px;
-            background-color: #e3e3e3;
-            color: #333333;
-        }
-        td {
-            padding: 4px 6px;
-        }
-		th p { align:left }
-          td p { align:left }
-          table.serial
-          {margin-top: 10px;}
-          tr.totalrow {
-            background-color: #e3e3e3;
-            line-height: 200%;
-        }
-    </style>
-</head>
-<body header="nlheader" header-height="30%" footer="nlfooter" footer-height="5pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
-  
-    <#if record.item?has_content>
-<table style="width: 100%; margin-top: 10px; border: 1px; font-size: 9pt">
-
-    <#assign groupedItems = {}>
-    <#assign groupOrder = []>
-
-    <!-- Build grouped items in first-seen order. This groups non-consecutive matching lines too. -->
-    <#list record.item as item>
-
-        <#assign itemNo = item.custcol_item_id?string>
-        <#assign description = item.description?string>
-        <#assign rate = item.rate?string>
-        <#assign lineQty = (item.quantity)>
-        <#assign lineAmount = (item.amount)>
-        <#assign groupKey = itemNo + "||" + description + "||" + rate>
-
-        <#assign dateKey = "">
-        <#if item.requesteddate?has_content>
-            <#assign dateKey = item.requesteddate?string("yyyy-MM-dd")>
-        </#if>
-
-        <#if groupedItems[groupKey]??>
-
-            <#assign existing = groupedItems[groupKey]>
-            <#assign updatedDates = existing.dates>
-
-            <#if dateKey?has_content>
-                <#if existing.dates[dateKey]??>
-                    <#assign dateQty = existing.dates[dateKey] + lineQty>
-                <#else>
-                    <#assign dateQty = lineQty>
-                </#if>
-
-                <#assign updatedDates = existing.dates + {
-                    dateKey: dateQty
-                }>
-            </#if>
-
-            <#assign groupedItems = groupedItems + {
-                groupKey: {
-                    "item": existing.item,
-                    "description": existing.description,
-                    "rate": existing.rate,
-                    "quantity": existing.quantity + lineQty,
-                    "amount": existing.amount + lineAmount,
-                    "dates": updatedDates
-                }
-            }>
-
-        <#else>
-
-            <#assign dates = {}>
-
-            <#if dateKey?has_content>
-                <#assign dates = dates + {
-                    dateKey: lineQty
-                }>
-            </#if>
-
-            <#assign groupedItems = groupedItems + {
-                groupKey: {
-                    "item": itemNo,
-                    "description": description,
-                    "rate": rate,
-                    "quantity": lineQty,
-                    "amount": lineAmount,
-                    "dates": dates
-                }
-            }>
-
-            <#assign groupOrder = groupOrder + [groupKey]>
-
-        </#if>
-
-    </#list>
-
-    <thead>
-        <tr>
-            <th align="center" style="width: 6%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
-                Line
-            </th>
-            <th style="width: 8%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
-                Quantity Ordered
-            </th>
-            <th style="width: 12%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
-                Item No.
-            </th>
-            <th style="width: 40%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
-                Description
-            </th>
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444; border-right: 1px solid #444444;">
-                Unit Price
-            </th>
-            <th align="center" style="width: 12.5%; padding: 6px 6px; border-bottom: 1px solid #444444;">
-                Extended
-            </th>
-        </tr>
-    </thead>
-
-    <#assign counter = 1>
-
-    <#list groupOrder as key>
-
-        <#assign grouped = groupedItems[key]>
-
-        <tr>
-            <td align="center" style="border-left: 1px solid #444444; border-right: 1px solid #444444; border-left: 0px;">
-                ${counter}
-            </td>
-            <td align="right" style="border-right: 1px solid #444444;">
-                ${grouped.quantity}
-            </td>
-            <td style="border-right: 1px solid #444444;">
-                ${grouped.item}
-            </td>
-            <td style="border-right: 1px solid #444444;">
-                ${grouped.description}
-
-                <#if grouped.dates?size gt 0>
-                    <table style="width: 70%; margin-top: 4px; font-size: 8pt;">
-                        <tr>
-                            <td style="width: 55%; padding: 2px 4px;">
-                                <b><u>Date Wanted</u></b>
-                            </td>
-                            <td align="right" style="width: 45%; padding: 2px 4px;">
-                                <b><u>Quantity</u></b>
-                            </td>
-                        </tr>
-
-                        <#list grouped.dates?keys?sort as dateKey>
-                            <tr>
-                                <td style="padding: 2px 4px;">
-                                    ${dateKey?date("yyyy-MM-dd")?string("MMM dd, yyyy")}
-                                </td>
-                                <td align="right" style="padding: 2px 4px;">
-                                    ${grouped.dates[dateKey]}
-                                </td>
-                            </tr>
-                        </#list>
-                    </table>
-                </#if>
-            </td>
-            <td align="right" style="border-right: 1px solid #444444;">
-                ${grouped.rate}
-            </td>
-            <td align="right">
-                ${grouped.amount?string.currency}
-            </td>
-        </tr>
-
-        <#assign counter = counter + 1>
-
-    </#list>
-
-</table>
-
-        </#if>
-</body>
-      <#else>
-  
+<html>
 <head>
-	<link name="NotoSans" type="font" subtype="truetype" src="${nsfont.NotoSans_Regular}" src-bold="${nsfont.NotoSans_Bold}" src-italic="${nsfont.NotoSans_Italic}" src-bolditalic="${nsfont.NotoSans_BoldItalic}" bytes="2" />
-	<#if .locale == "zh_CN">
-		<link name="NotoSansCJKsc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKsc_Regular}" src-bold="${nsfont.NotoSansCJKsc_Bold}" bytes="2" />
-	<#elseif .locale == "zh_TW">
-		<link name="NotoSansCJKtc" type="font" subtype="opentype" src="${nsfont.NotoSansCJKtc_Regular}" src-bold="${nsfont.NotoSansCJKtc_Bold}" bytes="2" />
-	<#elseif .locale == "ja_JP">
-		<link name="NotoSansCJKjp" type="font" subtype="opentype" src="${nsfont.NotoSansCJKjp_Regular}" src-bold="${nsfont.NotoSansCJKjp_Bold}" bytes="2" />
-	<#elseif .locale == "ko_KR">
-		<link name="NotoSansCJKkr" type="font" subtype="opentype" src="${nsfont.NotoSansCJKkr_Regular}" src-bold="${nsfont.NotoSansCJKkr_Bold}" bytes="2" />
-	<#elseif .locale == "th_TH">
-		<link name="NotoSansThai" type="font" subtype="opentype" src="${nsfont.NotoSansThai_Regular}" src-bold="${nsfont.NotoSansThai_Bold}" bytes="2" />
-	</#if>
-    <macrolist>
-        <macro id="nlheader">
-           <table style="width: 100%; font-size: 10pt;">
-                <tr>
-                    <td rowspan="4" style="padding: 0; width: 30%;">
-                    <#if companyInformation.logoUrl?length != 0> <@filecabinet nstype="image" style="width: 200px; height: 90px; float: left; margin: 7px;" src="https://4382108.app.netsuite.com/core/media/media.nl?id=13674&c=4382108&h=3oRoxAYLZwyCAX1U-F2HfvwmizNG40oQpatR8dh56b_8-peY" /> </#if></td>
-                    <td rowspan="4">&nsbp;<br />
-                        ${companyInformation.companyName}<br />
-                        ${companyInformation.addressText}
-                    </td>
-                    <td align="right" style="padding: 0;"><span style="font-size: 28pt;">${record@title} /</span></td>
-                </tr>
-                
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">Commande client</span></td>
-                </tr>
-            
-                <tr>
-                    <td align="right" style="padding: 0;"><span style="font-size: 16pt;">#${record.tranid}</span></td>
-                </tr>
-                <tr>
-                    <td align="right" style="padding: 0;">${record.trandate}</td>
-                </tr>
-            </table>
+	<title>NetSuite Login</title>
 
-        </macro>
-        <macro id="nlfooter">
-            <table style="width: 100%; font-size: 8pt;">
-                <tr>
-                    <td style="padding: 0;">
-                        <barcode codetype="code128" showtext="true" value="${record.tranid}"/>
-                    </td>
-                    <td align="right" style="padding: 0;">
-                        <pagenumber/> of <totalpages/>
-                    </td>
-                </tr>
-            </table>
-        </macro>
-    </macrolist>
-    <style>
-		* {
-		<#if .locale == "zh_CN">
-			font-family: NotoSans, NotoSansCJKsc, sans-serif;
-		<#elseif .locale == "zh_TW">
-			font-family: NotoSans, NotoSansCJKtc, sans-serif;
-		<#elseif .locale == "ja_JP">
-			font-family: NotoSans, NotoSansCJKjp, sans-serif;
-		<#elseif .locale == "ko_KR">
-			font-family: NotoSans, NotoSansCJKkr, sans-serif;
-		<#elseif .locale == "th_TH">
-			font-family: NotoSans, NotoSansThai, sans-serif;
-		<#else>
-			font-family: NotoSans, sans-serif;
-		</#if>
-		}
-		table {
-			font-size: 9pt;
-			table-layout: fixed;
-		}
-        th {
-            font-weight: bold;
-            font-size: 8pt;
-            vertical-align: middle;
-            padding: 5px 6px 3px;
-            background-color: #e3e3e3;
-            color: #333333;
-        }
-        td {
-            padding: 4px 6px;
-        }
-		th p { align:left }
-          td p { align:left }
-          table.serial
-          {margin-top: 10px;}
-          tr.totalrow {
-            background-color: #e3e3e3;
-            line-height: 200%;
-        }
-          table.terms-block td {
-    padding: 0;
-    font-size: 9pt;
-    line-height: 12pt;
-    align: left;
-    text-align: left;
-}
+<link rel="icon" type="image/png" href="/authentication/ui/loginpage/assets/icon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/authentication/ui/loginpage/assets/icon/favicon.svg" />
+<link rel="shortcut icon" href="/authentication/ui/loginpage/assets/icon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/authentication/ui/loginpage/assets/icon/apple-touch-icon.png" />
+<link rel="manifest" href="/authentication/ui/loginpage/assets/icon/site.webmanifest" />	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="robots" content="noindex, nofollow"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/@uif-js/fonts/1.0.9/css/fonts.css?NS_VER=2026.2&amp;minver=14" />
+    <link rel="stylesheet" type="text/css" href="/assets/redwood_tokens/3366255335.css?NS_VER=2026.2&amp;minver=14" />
+    <link rel="stylesheet" type="text/css" href="/assets/loginpage_redwoodcommon/602668830.css?NS_VER=2026.2&amp;minver=14" />
+    <link rel="stylesheet" type="text/css" href="/assets/loginpage_redwood/3726434582.css?NS_VER=2026.2&amp;minver=14" />
+    	<script type="text/javascript" nonce="FzboA94j03UtBy8HAkUu/9+qce13Zwk3x3vWR8A1CRY=" src="/javascript/NLPortal.jsp?JSP_VER=1&amp;NS_VER=2026.2&amp;minver=14&amp;buildver=20025"></script>
+    	<script type="text/javascript" nonce="FzboA94j03UtBy8HAkUu/9+qce13Zwk3x3vWR8A1CRY=" src="/assets/loginpage_redwoodcommon/1976399009.js?NS_VER=2026.2&amp;minver=14" integrity="sha512-VH/GQaIwvXZ2svPEnslYRq5sggFbL4oLp/BM2Au84yIyvHADIqpqXLzA0BvPDCCCVfWa4rqnIhCVwIQoNLyscQ=="></script>
 
-table.terms-block p,
-table.terms-block div {
-    margin: 0;
-    padding: 0;
-    line-height: 12pt;
-    align: left !important;
-    text-align: left !important;
-}
 
-table.terms-block span {
-    word-spacing: normal !important;
-    letter-spacing: normal !important;
-}
-    </style>
 </head>
-                        
-  
-<body header="nlheader" header-height="10%" footer="nlfooter" footer-height="20pt" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
-    <table style="width: 100%; margin-top: 10px;">
-        <tr>
-            <td style="font-size: 8pt; padding: 6px 0 2px; font-weight: bold; color: #333333;" colspan="3">${record.billaddress@label}/ Facturé à</td>
-            <td style="font-size: 8pt; padding: 6px 0 2px; font-weight: bold; color: #333333;" colspan="3">${record.shipaddress@label}/ Livré à</td>
-            <td style="font-size: 12pt; font-weight: bold;" colspan="5">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="padding-right: 1px;" colspan="3">${record.billaddress}</td>
-            <td style="padding-right: 1px;" colspan="3">${record.shipaddress}</td>
-            <td style="font-size: 28pt; padding-top: 20px; " align="right" colspan="5">&nbsp;</td>
-        </tr>
-    </table>
-    <table style="width: 100%; margin-top: 10px;">
-        <tr>
-          <th>Cust #/#<br />de Client</th>  
-          <th colspan="2">${record.otherrefnum@label}/BC#</th>
-          <th>Order Type/<br />Type de Commande</th>
-            <th colspan="2">${record.shipmethod@label}/Mode d’expédition</th>
-            <th colspan="2">${record.shipdate@label}/Date d’expédition</th>
-        </tr>
-        <tr>
-          <td style="padding-top: 2px;">${record.entity.entityid}</td>  
-          <td colspan="2" style="padding-top: 2px;">${record.otherrefnum}</td>
-          <td style="padding-top: 2px;">${record.custbody_im_order_type}</td>
-            <td  colspan="2" style="padding-top: 2px;">${record.shipmethod}</td>
-            <td colspan="2" style="padding-top: 2px;">${record.shipdate}</td>
-        </tr>
-    </table>
-    <#if record.item?has_content>
-    <table style="width: 100%; margin-top: 10px;">
-        <!-- start items -->
-        <#list record.item as item>
-            <#if item_index==0>
-                <thead>
-                <tr>
-                    <th colspan="9" style="padding: 10px 6px;">${item.item@label}/<br />Article</th>
-                  <th colspan="3" style="padding: 10px 6px;">Customer<br />Supply Date</th>
-                    <th colspan="3" style="padding: 10px 6px;">${item.quantity@label}/<br />Quantité</th>
-                   <th colspan="3" style="padding: 10px 6px;">Committed<br />Qty</th>
-                    <th colspan="3" style="padding: 10px 6px;">B/O<br />Qty</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.rate@label}/<br />Tarif</th>
-                    <th colspan="4" align="right" style="padding: 10px 6px;">${item.amount@label}/<br />Montant</th>
-                </tr>
-                </thead>
-            </#if>
-            <tr>
-                <td colspan="9"><span style="font-weight: bold; color: #333333;">${item.custcol_nsps_item_number_only}</span><br />${item.description}<#if item.custcol_im_external_notes?has_content><br />${item.custcol_im_external_notes}</#if></td>
-              <td colspan="3">${item.requesteddate}</td>
-              <td colspan="3">${item.quantity}</td>
-               <td colspan="3">${item.quantitycommitted}</td>
-              <td colspan="3">${item.quantitybackordered}</td>
-                <td colspan="4" align="right">${item.rate}</td>
-                <td colspan="4" align="right">${item.amount}</td>
-            </tr>
-        </#list>
-        <!-- end items -->
-    </table>
-          ${record.custbody_nsps_item_num_and_expiration_}
-    <hr style="width: 100%; color: #d3d3d3; background-color: #d3d3d3; height: 1px;" />
-    </#if>
-    <table style="page-break-inside: avoid; width: 100%; margin-top: 10px;">
-        <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.subtotal@label}</td>
-            <td align="right">${record.subtotal}</td>
-        </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">GST/HST</td>
-            <td align="right">${record.taxtotal}</td>
-        </tr>
-       <tr>
-            <td colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">PST</td>
-            <td align="right">${record.tax2total}</td>
-        </tr>
-        <tr style="background-color: #e3e3e3; line-height: 200%;">
-            <td background-color="#ffffff" colspan="4"></td>
-            <td align="right" style="font-weight: bold; color: #333333;">${record.total@label}</td>
-            <td align="right">${record.total}</td>
-        </tr>
-    </table>
+<body>
+
+<div id="page-wrapper">
+	<div id='div__alert' class="text-align: center"></div>
+<div class="login-page-body" data-page-type="login">
+	<div class="login-page-main">
+		<div class="login-page-box">
+			<div class="login-page-box-logos">
+				<a class="login-page-box-logo-link" href="http://www.netsuite.com/portal/home.shtml?noredirect=T" tabindex="-1">
+					<img class="login-page-box-logo login-page-box-logo--ns"
+						src="/authentication/ui/loginpage/assets/logo/NetSuite-logo-dark.svg" alt="Oracle NetSuite" />
+				</a>
+			</div>
+			<h2 class="login-page-box-title">Log In</h2>
 
 
-               <table class="total" style="width: 100%; margin-top:20pt;">
-        <tr class="totalrow">
+			<form method="post" id="login-form" class="login-page-form" data-validate data-cookie-prefill data-reset-rememberme>
+				<input type="hidden" name="jsenabled" value="F">
 
-          <td align="center"><b>Notes/ Remarques</b></td></tr>
-                 <tr>
-                      <td align="center" background-color="#ffffff" >${record.custbody_im_customer_comments}</td>
-        </tr>
-    </table>
+					<input type="hidden" name="redirect" value="/app/suiteapp/devframework/xml/datafileexport.nl?recordtype=advancedpdftemplate&amp;amp;name=template&amp;amp;id=127">
+					<input type="hidden" name="c" value="4382108">
 
-          <table class="terms-block" style="width: 100%; margin-top: 5pt;">
-    <tr>
-        <td align="left" style="background-color: #ffffff;">
-            ${subsidiary.custrecord_nsps_so_tc}
-        </td>
-    </tr>
-</table>
-</body>
-</#if>
-</pdf>
+				<div class="login-page-form-field">
+					<input type="email" name="email" id="email" required data-validate-on-blur
+						placeholder="Email address"/>
+					<label for="email">Email address</label>
+					<div class="validation-message">
+						<p>
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            	<path d="M1.33154 8.00016C1.33154 11.6821 4.31631 14.6668 7.99821 14.6668C11.6801 14.6668 14.6649 11.6821 14.6649 8.00016C14.6649 4.31826 11.6801 1.3335 7.99821 1.3335C4.31631 1.3335 1.33154 4.31826 1.33154 8.00016ZM4.86014 5.8049L5.80295 4.86209L11.1363 10.1954L10.1935 11.1382L4.86014 5.8049Z" fill="#EE7362"/>
+                            </svg>
+
+							<span>Valid email is required: name@company.com</span>
+						</p>
+					</div>
+				</div>
+
+				<div class="login-page-form-field">
+					<input type="password" name="password" id="password" autocomplete="off" required data-validate-on-blur
+						placeholder="Password"/>
+					<label for="password">Password</label>
+					<div class="validation-message">
+						<p>
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            	<path d="M1.33154 8.00016C1.33154 11.6821 4.31631 14.6668 7.99821 14.6668C11.6801 14.6668 14.6649 11.6821 14.6649 8.00016C14.6649 4.31826 11.6801 1.3335 7.99821 1.3335C4.31631 1.3335 1.33154 4.31826 1.33154 8.00016ZM4.86014 5.8049L5.80295 4.86209L11.1363 10.1954L10.1935 11.1382L4.86014 5.8049Z" fill="#EE7362"/>
+                            </svg>
+							<span>Password is required</span>
+						</p>
+					</div>
+				</div>
+
+				<div class="login-page-form-checkbox">
+					<input type="checkbox" name="rememberme" id="rememberme" class="login-checkbox"/>
+					<label for="rememberme">Remember Me</label>
+				</div>
+
+				<button class="login-page-form-submit" type="submit" name="submitButton" id="login-submit" disabled>
+					<svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M11.9982 4C14.2074 4 15.9982 5.79086 15.9982 8V11H7.99823V8C7.99823 5.79086 9.78909 4 11.9982 4ZM17.9982 11V8C17.9982 4.68629 15.3119 2 11.9982 2C8.68452 2 5.99823 4.68629 5.99823 8V11H1.99823V22H21.9982V11H17.9982ZM3.99823 13H19.9982V20H3.99823V13Z"></path>
+					</svg>
+					<span>Log In</span>
+				</button>
+
+				<script type="module" src="/authentication/ui/loginpage/assets/js/passkeys.js" defer></script>
+					<button class="login-page-form-submit login-page-form-secondary-btn " type="button" id="passkey-login-btn" disabled>
+						<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        	<path fill-rule="evenodd" clip-rule="evenodd" d="M15.3091 3.85836C11.4829 1.6264 7.28772 2.92689 5.69092 3.85836L4.80914 2.34675C6.71234 1.23655 11.6171 -0.321291 16.1909 2.34675L15.3091 3.85836ZM6.17179 6.41247C4.84866 7.08561 3.79963 7.90346 3.2622 8.47447L1.98785 7.27509C2.68573 6.5336 3.90654 5.60145 5.37827 4.85272C6.85209 4.10292 8.65036 3.49978 10.5 3.49978C12.1303 3.49978 16.204 3.86209 19.0505 7.31854L17.6996 8.43102C15.3578 5.58747 11.958 5.24978 10.5 5.24978C9.01441 5.24978 7.49282 5.7404 6.17179 6.41247ZM10.5186 6.12608C10.5345 6.12521 10.5504 6.12478 10.5663 6.12478C11.7112 6.12478 13.4518 6.43756 15.0147 7.3335C16.604 8.24458 18.0438 9.78515 18.409 12.2049C18.7132 14.2214 17.4837 16.4005 15.2183 16.6019C14.8576 16.6339 14.4819 16.6347 14.1107 16.5893C13.3628 16.4979 12.8313 16.0975 12.4487 15.6525C12.1088 15.257 11.8452 14.7752 11.6352 14.3912C11.622 14.3671 11.6091 14.3435 11.5964 14.3203C11.3559 13.8816 11.1765 13.5727 10.9765 13.361C10.8083 13.1831 10.6744 13.1248 10.5 13.1248C10.3137 13.1248 10.11 13.1843 9.95994 13.3252C9.82649 13.4505 9.62503 13.7432 9.62503 14.4373C9.62503 14.8245 9.7168 15.276 10.1967 15.8376C10.7057 16.4334 11.6686 17.171 13.4732 18.0206L12.7278 19.6039C10.8155 18.7036 9.60318 17.837 8.86618 16.9744C8.10005 16.0777 7.87503 15.2168 7.87503 14.4373C7.87503 13.3814 8.19659 12.5803 8.76215 12.0494C9.31108 11.534 9.98243 11.3748 10.5 11.3748C11.2674 11.3748 11.8352 11.7218 12.2484 12.159C12.6267 12.5593 12.9069 13.0703 13.1257 13.4696L13.1309 13.479C13.3748 13.9239 13.5591 14.2596 13.7757 14.5117C13.9711 14.7389 14.136 14.8294 14.3229 14.8522C14.5532 14.8804 14.8042 14.8818 15.0634 14.8587C16.0977 14.7668 16.8686 13.7252 16.6786 12.466C16.4099 10.6858 15.3772 9.5585 14.1443 8.85173C12.896 8.13613 11.4787 7.87927 10.5896 7.87484C7.72674 8.03849 6.05264 9.47756 5.13428 11.2057C4.18476 12.9925 4.0462 15.095 4.35279 16.4288L2.64727 16.8208C2.24989 15.0921 2.43438 12.5571 3.58893 10.3845C4.77205 8.15813 6.97618 6.3192 10.5186 6.12608ZM7.66362 9.39861C8.73072 8.76111 9.86918 8.74978 10.5295 8.74978C12.4603 8.74978 13.7993 9.36591 14.6483 10.2909C15.4773 11.194 15.75 12.2951 15.75 13.1248H14C14 12.642 13.8353 11.993 13.3591 11.4743C12.903 10.9774 12.0692 10.4998 10.5295 10.4998C9.87734 10.4998 9.17835 10.5322 8.56112 10.9009C7.99372 11.2399 7.34337 11.9618 7.02322 13.6768C6.97893 14.2514 6.99023 15.0447 7.12638 15.828C7.26846 16.6454 7.52971 17.3541 7.91363 17.8141L6.57008 18.9354C5.90379 18.1371 5.56795 17.0811 5.40223 16.1277C5.23391 15.1593 5.22383 14.1952 5.28263 13.4896C5.28497 13.4615 5.28867 13.4335 5.29372 13.4057C5.67641 11.3009 6.5513 10.0631 7.66362 9.39861Z" fill="#E5F1F5"/>
+                        </svg>
+						<span>Log In with Passkey</span>
+					</button>
+
+				<a href="/app/login/preparepwdreset.nl?email=&"
+					class="login-page-form-forgot">Forgot your password?</a>
+
+			</form>
+
+			<div class="login-page-box-footer">
+				By clicking on the Log In button, you understand and agree to
+				<a href="https://www.oracle.com/us/legal/terms/index.html">Oracle Terms of Use</a>
+				and
+				<a href="https://www.oracle.com/us/legal/privacy/privacy-policy/index.html">Oracle Privacy Policy</a>
+			</div>
+		</div>
+
+		<div class="login-page-footer">
+			<a class="link" href="https://www.oracle.com/legal/copyright.html">© Oracle</a>
+			<span class="sep">|</span>
+			<a class="link" href="http://www.netsuite.com/portal/assets/pdf/oracle-terms-use-netsuite-support-portal.pdf">Oracle Terms of Use for NetSuite Support Portal</a>
+		</div>
+	</div>
+</div>
+</div> <!-- #page-wrapper -->
+<script type="text/javascript" nonce="10cdee26c34dd654e4db69cc7c10c974" src="/lIGRnmYmVcGH/qjlgpXAGfL/JU/EabawDwttOhJVruEOf/AVEzIQ/YE0aZkAg/cUc"></script></body>
+</html>
