@@ -323,6 +323,10 @@
     </#list>
 
 </table>
+<table style="width: 100%;" padding-top = '10px'><tr>
+<td style="width: 86%;" align="right"><strong>SubTotal:</strong></td>
+<td style="width: 14%;" align="right"><b>${record.subtotal}</b></td>
+</tr></table>
 
         </#if>
 </body>
