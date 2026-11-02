@@ -31,23 +31,25 @@ define(['N/search','N/file','N/runtime','N/format','N/log'], (search,file,runtim
         const periods=[1,2,3].map(n=>({from:p['from'+n]||'',to:p['to'+n]||''})).filter((r,i)=>i===0||r.from||r.to);
         periods.forEach(r=>{date(r.from);date(r.to);if(r.to<r.from)fail('A period end cannot precede its start.');});
         let headers=loadRows(c,'headers');
+        const originalAccounts=new Map(headers.map(h=>[String(h.id),h.account_text]));
         const includes=(v,q)=>!q||String(v||'').toLowerCase().includes(String(q).trim().toLowerCase());
         const selected=(p.rules||'').split(',').map(x=>x.trim()).filter(Boolean);
         headers=headers.filter(h=>(!selected.length||selected.includes(String(h.id)))&&includes(h.account_text,p.account)&&includes(h.group_text,p.group)&&includes(h.rep_text,p.rep)&&(!p.status||h.status_text===p.status)&&(!p.expfrom||iso(h.end)>=p.expfrom)&&(!p.expto||iso(h.end)<=p.expto));
         if(p.expfrom)date(p.expfrom);if(p.expto)date(p.expto);if(p.expfrom&&p.expto&&p.expfrom>p.expto)fail('Expiry range is reversed.');
         if(!headers.length)return json(ctx,{periods,rules:[],uniqueTotals:periods.map(()=>({qty:0,amount:0})),message:'No price rules match these filters.'});
-        if(headers.length>c.maxRules)fail('Select at most '+c.maxRules+' rules or narrow the filters.');
         const ids=headers.map(h=>h.id),items=loadRows(c,'ruleItems',[c.fields.itemParent,'anyof',ids]),members=loadRows(c,'members',[c.fields.memberParent,'anyof',ids]);
         const allowedItems=items.filter(i=>!c.excludedItemStatuses.includes(i.status_text));
         const memberMatches=new Set(members.filter(m=>includes(m.customer_text,p.member)).map(m=>m.rule));
         const itemMatches=new Set(allowedItems.filter(i=>includes(i.item_text+' '+i.description,p.item)&&includes(i.class_text,p.category)&&includes(i.department_text,p.department)).map(i=>i.rule));
         headers=headers.filter(h=>memberMatches.has(h.id)&&itemMatches.has(h.id));
+        if(headers.length>c.maxRules)fail('Select at most '+c.maxRules+' rules or narrow the filters.');
         const hs=new Set(headers.map(h=>h.id)),ri=allowedItems.filter(i=>hs.has(i.rule)&&(p.itemScope!=='matching'||(includes(i.item_text+' '+i.description,p.item)&&includes(i.class_text,p.category)&&includes(i.department_text,p.department))));
         const itemIds=[...new Set(ri.map(i=>i.item))],customerIds=[...new Set(members.filter(m=>hs.has(m.rule)).map(m=>m.customer))];
         if(!itemIds.length||!customerIds.length)return json(ctx,{periods,rules:[],uniqueTotals:periods.map(()=>({qty:0,amount:0})),message:'No matching items or customer memberships.'});
         const master=loadRows(c,'itemMaster',['internalid','anyof',itemIds]),masterBy=new Map(master.map(i=>[i.id,i]));
         const min=periods.map(r=>r.from).sort()[0],max=periods.map(r=>r.to).sort().at(-1);
         const sales=loadRows(c,'sales',[[c.fields.salesCustomer,'anyof',customerIds],'AND',[c.fields.salesItem,'anyof',itemIds],'AND',['trandate','within',nsdate(min),nsdate(max)]]);
+        sales.forEach(s=>{s.ruleAccount=originalAccounts.get(String(s.rule))||'';});
         const seen=new Map(),clean=[];
         for(const s of sales){if(s.currency_text!==c.currency)fail('A qualifying sale uses '+s.currency_text+'. This validation version requires '+c.currency+' sales; mixed currencies are not combined.');const key=s.id+':'+s.line;if(!s.line)fail('A transaction line has no unique key.');const fingerprint=JSON.stringify(s);if(seen.has(key)){if(seen.get(key)!==fingerprint)fail('Conflicting duplicate transaction line '+key);continue;}seen.set(key,fingerprint);s.dateISO=iso(s.date);s.qty=number(s.qty);s.amount=number(s.amount);s.rate=number(s.rate);if(s.qty===null||s.amount===null)fail('Missing sales quantity or amount.');s.key=key;clean.push(s);}
         const unique=new Map(),rules=headers.map(h=>{
@@ -67,3 +69,4 @@ define(['N/search','N/file','N/runtime','N/format','N/log'], (search,file,runtim
   function json(ctx,value){ctx.response.setHeader({name:'Content-Type',value:'application/json; charset=utf-8'});ctx.response.write(JSON.stringify(value));}
   return {onRequest};
 });
+
