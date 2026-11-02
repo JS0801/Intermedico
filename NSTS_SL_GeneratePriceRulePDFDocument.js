@@ -362,167 +362,110 @@ define( //using require instead for better module loading especially for the hav
 		// 	};
 		// }
 
-      Helper.getCustomerList = function(params) {
-    let arrCustomers = [];
-    let objSeen = {};
+        Helper.getCustomerList = function(params) {
+            const customers = [];
+            const seen = {};
+            const cache = {};
+            const join = 'custrecord_nts_pr_customer_create_cust';
 
-    search.create({
-        type: 'customrecord_nts_pr_customer_create',
-        filters: [
-            ['custrecord_nts_pr_customer_create_prm', 'anyof', params.id],
-            'AND',
-            ['isinactive', 'is', 'F']
-        ],
-        columns: [
-            search.createColumn({
-                name: 'internalid',
-                join: 'custrecord_nts_pr_customer_create_cust'
-            }),
-            search.createColumn({
-                name: 'parent',
-                join: 'custrecord_nts_pr_customer_create_cust'
-            }),
-            search.createColumn({
-                name: 'entityid',
-                join: 'custrecord_nts_pr_customer_create_cust',
-                sort: search.Sort.ASC
-            }),
-            search.createColumn({
-                name: 'companyname',
-                join: 'custrecord_nts_pr_customer_create_cust'
-            }),
-            search.createColumn({
-                name: 'custentity_rural',
-                join: 'custrecord_nts_pr_customer_create_cust'
-            })
-        ]
-    }).run().each(function(result) {
-        let join = 'custrecord_nts_pr_customer_create_cust';
+            // The joined parent search column can represent the top-level ancestor.
+            // Read the customer record's direct parent for the actual hierarchy.
+            function getCustomer(id) {
+                if (cache[id]) return cache[id];
+                const customerRecord = record.load({type: record.Type.CUSTOMER, id: id, isDynamic: false});
+                const account = String(customerRecord.getValue({fieldId: 'entityid'}) || '');
+                const company = String(customerRecord.getValue({fieldId: 'companyname'}) || '');
+                const person = [customerRecord.getValue({fieldId: 'firstname'}), customerRecord.getValue({fieldId: 'lastname'})].filter(Boolean).join(' ');
+                const name = company || person || account;
+                const rural = customerRecord.getValue({fieldId: 'custentity_rural'});
+                cache[id] = {
+                    id: String(id),
+                    parentId: String(customerRecord.getValue({fieldId: 'parent'}) || ''),
+                    name: name,
+                    text: account + (name && name !== account ? ' - ' + name : ''),
+                    rural: rural === true || rural === 'T'
+                };
+                return cache[id];
+            }
 
-        let id = String(result.getValue({
-            name: 'internalid',
-            join: join
-        }) || '');
-
-        if (!id || objSeen[id]) {
-            return true;
-        }
-        objSeen[id] = true;
-
-        let parentId = String(result.getValue({
-            name: 'parent',
-            join: join
-        }) || '');
-
-        let accountNumber = result.getValue({
-            name: 'entityid',
-            join: join
-        }) || '';
-
-        let companyName = result.getValue({
-            name: 'companyname',
-            join: join
-        }) || '';
-
-        let rural = result.getValue({
-            name: 'custentity_rural',
-            join: join
-        });
-
-        arrCustomers.push({
-            id: id,
-            parentId: parentId,
-            text: accountNumber + (companyName ? ' - ' + companyName : ''),
-            rural: rural === true || rural === 'T'
-        });
-
-        return true;
-    });
-
-    function buildHierarchy(customers) {
-        let byId = {};
-        let children = {};
-        let roots = [];
-        let visited = {};
-        let ordered = [];
-        let groups = [];
-
-        customers.forEach(function(customer) {
-            byId[customer.id] = customer;
-        });
-
-        customers.forEach(function(customer) {
-            if (
-                customer.parentId &&
-                customer.parentId !== customer.id &&
-                byId[customer.parentId]
-            ) {
-                if (!children[customer.parentId]) {
-                    children[customer.parentId] = [];
+            search.create({
+                type: 'customrecord_nts_pr_customer_create',
+                filters: [['custrecord_nts_pr_customer_create_prm', 'anyof', params.id], 'AND', ['isinactive', 'is', 'F']],
+                columns: [search.createColumn({name: 'internalid', join: join})]
+            }).run().each(function(result) {
+                const id = String(result.getValue({name: 'internalid', join: join}) || '');
+                if (id && !seen[id]) {
+                    seen[id] = true;
+                    customers.push(getCustomer(id));
                 }
-                children[customer.parentId].push(customer);
-            } else {
-                roots.push(customer);
-            }
-        });
-
-        function visit(customer, level, group) {
-            if (visited[customer.id]) {
-                return;
-            }
-            visited[customer.id] = true;
-
-            let entry = {
-                id: customer.id,
-                parentId: customer.parentId,
-                text: customer.text,
-                level: level
-            };
-
-            ordered.push(entry);
-            group.push(entry);
-
-            (children[customer.id] || []).forEach(function(child) {
-                visit(child, level + 1, group);
+                return true;
             });
-        }
 
-        function addGroup(customer) {
-            if (visited[customer.id]) {
-                return;
+            function hierarchy(list) {
+                const byId = {};
+                const children = {};
+                const roots = [];
+                const visited = {};
+                const ordered = [];
+                const groups = [];
+                list.forEach(function(customer) { byId[customer.id] = customer; });
+                list.forEach(function(customer) {
+                    // Connect through missing intermediate records without adding
+                    // unselected accounts to the contract's eligible-customer list.
+                    let parentId = customer.parentId;
+                    const path = {};
+                    while (parentId && parentId !== customer.id && !byId[parentId] && !path[parentId]) {
+                        path[parentId] = true;
+                        const ancestor = getCustomer(parentId);
+                        if (ancestor.parentId === parentId) break;
+                        parentId = ancestor.parentId;
+                    }
+                    if (parentId && parentId !== customer.id && byId[parentId]) {
+                        (children[parentId] || (children[parentId] = [])).push(customer);
+                    } else {
+                        roots.push(customer);
+                    }
+                });
+                function compareNames(a, b) {
+                    const left = a.name.toLocaleLowerCase();
+                    const right = b.name.toLocaleLowerCase();
+                    return left.localeCompare(right) || a.id.localeCompare(b.id);
+                }
+                roots.sort(compareNames);
+                Object.keys(children).forEach(function(parentId) {
+                    children[parentId].sort(function(a, b) {
+                        // Reference order: direct accounts alphabetically, then
+                        // sub-parent groups alphabetically (for example IWK Health).
+                        const aBranch = !!(children[a.id] && children[a.id].length);
+                        const bBranch = !!(children[b.id] && children[b.id].length);
+                        return Number(aBranch) - Number(bBranch) || compareNames(a, b);
+                    });
+                });
+                function visit(customer, level, group) {
+                    if (visited[customer.id]) return;
+                    visited[customer.id] = true;
+                    const descendants = children[customer.id] || [];
+                    const entry = {id: customer.id, parentId: customer.parentId, text: customer.text,
+                        name: customer.name, level: level, hasChildren: descendants.length > 0};
+                    ordered.push(entry);
+                    group.push(entry);
+                    descendants.forEach(function(child) { visit(child, level + 1, group); });
+                }
+                function addGroup(customer) {
+                    if (visited[customer.id]) return;
+                    const group = [];
+                    visit(customer, 0, group);
+                    groups.push(group);
+                }
+                roots.forEach(addGroup);
+                list.slice().sort(compareNames).forEach(addGroup);
+                return {list: ordered, groups: groups};
             }
-
-            let group = [];
-            visit(customer, 0, group);
-            groups.push(group);
-        }
-
-        roots.forEach(addGroup);
-
-        // Prevent malformed parent relationships from omitting customers.
-        customers.forEach(addGroup);
-
-        return {
-            list: ordered,
-            groups: groups
+            const regular = hierarchy(customers.filter(function(customer) { return !customer.rural; }));
+            const rural = hierarchy(customers.filter(function(customer) { return customer.rural; }));
+            return {arrCustomerList: regular.list, arrRuralCustomerList: rural.list,
+                arrCustomerGroups: regular.groups, arrRuralCustomerGroups: rural.groups};
         };
-    }
-
-    let regular = buildHierarchy(arrCustomers.filter(function(customer) {
-        return !customer.rural;
-    }));
-
-    let rural = buildHierarchy(arrCustomers.filter(function(customer) {
-        return customer.rural;
-    }));
-
-    return {
-        arrCustomerList: regular.list,
-        arrRuralCustomerList: rural.list,
-        arrCustomerGroups: regular.groups,
-        arrRuralCustomerGroups: rural.groups
-    };
-};
 
 		Helper.mergeParams = function (params, paramsHttp) {
 			var stLogTitle = 'Helper.mergeParams';
