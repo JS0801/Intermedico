@@ -298,11 +298,11 @@ font-family: NotoSans, sans-serif;
                     <#assign left = group[rowIndex + 1]>
                     <#assign leftLevel = left.level?string?trim?number>
                     <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10)?c}px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
+                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
                         <#if (firstRight + rowIndex) lt group?size>
                             <#assign right = group[firstRight + rowIndex]>
                             <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10)?c}px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
+                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
                         <#else>
                             <td width="50%" style="padding:0;">&#160;</td>
                         </#if>
@@ -361,11 +361,11 @@ font-family: NotoSans, sans-serif;
                     <#assign left = group[rowIndex + 1]>
                     <#assign leftLevel = left.level?string?trim?number>
                     <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10)?c}px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
+                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
                         <#if (firstRight + rowIndex) lt group?size>
                             <#assign right = group[firstRight + rowIndex]>
                             <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10)?c}px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
+                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
                         <#else>
                             <td width="50%" style="padding:0;">&#160;</td>
                         </#if>
