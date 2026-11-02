@@ -288,8 +288,8 @@ font-family: NotoSans, sans-serif;
     <table width="100%" style="width:100%; margin-top:8px; table-layout:fixed;" table-layout="fixed">
         <thead>
             <tr>
-                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${group[0].text?esc}</td>
-                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
+                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>">${group[0].text?esc}</td>
+                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
             </tr>
         </thead>
         <tbody>
@@ -298,11 +298,11 @@ font-family: NotoSans, sans-serif;
                     <#assign left = group[rowIndex + 1]>
                     <#assign leftLevel = left.level?string?trim?number>
                     <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
+                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if><#if (left.hasChildren!false)?string == "true"><b>${left.text?esc}</b><#else>${left.text?esc}</#if></td>
                         <#if (firstRight + rowIndex) lt group?size>
                             <#assign right = group[firstRight + rowIndex]>
                             <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
+                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if><#if (right.hasChildren!false)?string == "true"><b>${right.text?esc}</b><#else>${right.text?esc}</#if></td>
                         <#else>
                             <td width="50%" style="padding:0;">&#160;</td>
                         </#if>
@@ -351,8 +351,8 @@ font-family: NotoSans, sans-serif;
     <table width="100%" style="width:100%; margin-top:8px; table-layout:fixed;" table-layout="fixed">
         <thead>
             <tr>
-                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${group[0].text?esc}</td>
-                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
+                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>">${group[0].text?esc}</td>
+                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
             </tr>
         </thead>
         <tbody>
@@ -361,11 +361,11 @@ font-family: NotoSans, sans-serif;
                     <#assign left = group[rowIndex + 1]>
                     <#assign leftLevel = left.level?string?trim?number>
                     <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if>${left.text?esc}</td>
+                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if><#if (left.hasChildren!false)?string == "true"><b>${left.text?esc}</b><#else>${left.text?esc}</#if></td>
                         <#if (firstRight + rowIndex) lt group?size>
                             <#assign right = group[firstRight + rowIndex]>
                             <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if>${right.text?esc}</td>
+                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if><#if (right.hasChildren!false)?string == "true"><b>${right.text?esc}</b><#else>${right.text?esc}</#if></td>
                         <#else>
                             <td width="50%" style="padding:0;">&#160;</td>
                         </#if>
