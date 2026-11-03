@@ -5,9 +5,6 @@
   ],
   "title": "Price rules & sales",
   "currency": "CAD",
-  "maxRules": 20,
-  "maxRows": 50000,
-  "minUsage": 100,
   "defaults": {
     "from1": "2026-09-01",
     "to1": "2026-09-30",
@@ -379,5 +376,6 @@
         ]
       ]
     }
-  }
+  },
+  "pageSize": 1000
 }
