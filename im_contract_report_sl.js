@@ -73,7 +73,7 @@ define(['N/search','N/file','N/runtime','N/format','N/log'], (search,file,runtim
         const [master,sales]=await Promise.all([loadRows(c,'itemMaster',['internalid','anyof',itemIds]),loadRows(c,'sales',[[c.fields.salesCustomer,'anyof',customerIds],'AND',[c.fields.salesItem,'anyof',itemIds],'AND',['trandate','within',nsdate(min),nsdate(max)]])]);
         const masterBy=new Map(master.map(i=>[i.id,i]));
         const seen=new Map(),clean=[];
-        for(const raw of sales){const s={...raw,ruleAccount:originalAccounts.get(String(raw.rule))||''};if(s.currency_text!==c.currency)fail('A qualifying sale uses '+s.currency_text+'. This validation version requires '+c.currency+' sales; mixed currencies are not combined.');const key=s.id+':'+s.line;if(!s.line)fail('A transaction line has no unique key.');const fingerprint=JSON.stringify(s);if(seen.has(key)){if(seen.get(key)!==fingerprint)fail('Conflicting duplicate transaction line '+key);continue;}seen.set(key,fingerprint);s.dateISO=iso(s.date);s.qty=number(s.qty);s.amount=number(s.amount);s.rate=number(s.rate);if(s.qty===null||s.amount===null)fail('Missing sales quantity or amount.');s.key=key;clean.push(s);}
+        for(const raw of sales){const s={...raw,ruleAccount:originalAccounts.get(String(raw.rule))||''};if(s.currency_text!==c.currency)fail('A qualifying sale uses '+s.currency_text+'. This report requires '+c.currency+' sales; mixed currencies are not combined.');const key=s.id+':'+s.line;if(!s.line)fail('A transaction line has no unique key.');const fingerprint=JSON.stringify(s);if(seen.has(key)){if(seen.get(key)!==fingerprint)fail('Conflicting duplicate transaction line '+key);continue;}seen.set(key,fingerprint);s.dateISO=iso(s.date);s.qty=number(s.qty);s.amount=number(s.amount);s.rate=number(s.rate);if(s.qty===null||s.amount===null)fail('Missing sales quantity or amount.');s.key=key;clean.push(s);}
         // Build lookup arrays once, instead of scanning all source rows for every rule/item.
         const index=(rows,key)=>{const map=new Map();for(const row of rows){const value=row[key];if(!map.has(value))map.set(value,[]);map.get(value).push(row);}return map;};
         const membersByRule=index(members,'rule'),itemsByRule=index(ri,'rule'),salesByItem=index(clean.filter(s=>periods.some(p=>s.dateISO>=p.from&&s.dateISO<=p.to)),'item');
@@ -89,7 +89,10 @@ define(['N/search','N/file','N/runtime','N/format','N/log'], (search,file,runtim
       const script=runtime.getCurrentScript(),configId=script.getParameter({name:'custscript_im_cr_config'}),templateId=script.getParameter({name:'custscript_im_cr_template'});
       if(!configId||!templateId)fail('The report configuration and HTML template parameters must be set.');
       const c=JSON.parse(file.load({id:configId}).getContents());
-      if(runtime.accountId!==c.accountId||!c.allowedRoles.map(String).includes(String(runtime.getCurrentUser().role)))fail('This report is restricted to the configured validation roles.');
+      if(runtime.accountId!==c.accountId)fail('This report is not configured for this account.');
+      const user=runtime.getCurrentUser();
+      if(c.accessMode==='authenticated'){if(!(Number(user.id)>0))fail('Sign in to use this report.');}
+      else if(!Array.isArray(c.allowedRoles)||!c.allowedRoles.map(String).includes(String(user.role)))fail('Your role does not have access to this report.');
       const p=ctx.request.parameters;
       if(p.action==='rows')return json(ctx,readPage(c,p));
       if(p.action)fail('Reload the report to use the current version.');
