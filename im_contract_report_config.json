@@ -236,13 +236,7 @@
       "id": "customsearch_im_cr_itemmaster_v1",
       "title": "IM | Contract Report | itemMaster | v1",
       "type": "item",
-      "filters": [
-        [
-          "isinactive",
-          "is",
-          "F"
-        ]
-      ],
+      "filters": [],
       "columns": [
         [
           "id",
@@ -377,5 +371,5 @@
       ]
     }
   },
-  "pageSize": 1000
+  "pageSize": 50
 }
