@@ -1,0 +1,383 @@
+{
+  "accountId": "4382108",
+  "allowedRoles": [
+    3
+  ],
+  "title": "Price rules & sales",
+  "currency": "CAD",
+  "maxRules": 20,
+  "maxRows": 50000,
+  "minUsage": 100,
+  "defaults": {
+    "from1": "2026-09-01",
+    "to1": "2026-09-30",
+    "rules": [
+      "5444"
+    ]
+  },
+  "excludedItemStatuses": [
+    "Voided",
+    "Void",
+    "Rejected"
+  ],
+  "fields": {
+    "itemParent": "custrecord_nts_pr_item_create_parent",
+    "memberParent": "custrecord_nts_pr_customer_create_prm",
+    "salesCustomer": "entity",
+    "salesItem": "item"
+  },
+  "datasets": {
+    "headers": {
+      "id": "customsearch_im_cr_headers_v1",
+      "title": "IM | Contract Report | headers | v1",
+      "type": "customrecord_nts_price_rule_create",
+      "filters": [
+        [
+          "isinactive",
+          "is",
+          "F"
+        ]
+      ],
+      "columns": [
+        [
+          "id",
+          "internalid",
+          null,
+          "ASC"
+        ],
+        [
+          "name",
+          "name"
+        ],
+        [
+          "account",
+          "custrecord_nts_pr_acctnumber"
+        ],
+        [
+          "group",
+          "custrecord_nts_pr_buying_group"
+        ],
+        [
+          "rep",
+          "custrecord_nts_pr_salesrep"
+        ],
+        [
+          "status",
+          "custrecord_nts_pr_create_status"
+        ],
+        [
+          "start",
+          "custrecord_nts_pr_start"
+        ],
+        [
+          "end",
+          "custrecord_nts_pr_end"
+        ],
+        [
+          "terms",
+          "custrecord_nts_pr_create_terms"
+        ],
+        [
+          "attention",
+          "custrecord_nts_pr_attention_to"
+        ],
+        [
+          "address",
+          "custrecord_nts_pr_address"
+        ],
+        [
+          "notes",
+          "custrecord_nts_pr_header_notes"
+        ],
+        [
+          "instructions",
+          "custrecord_nts_pr_special_instructions"
+        ],
+        [
+          "customerNotes",
+          "custrecord_nts_pr_customernotes"
+        ],
+        [
+          "tender",
+          "custrecord_nts_pr_tender"
+        ],
+        [
+          "proposal",
+          "custrecord_nts_pr_proposal"
+        ],
+        [
+          "equipment",
+          "custrecord_nts_pr_equipment"
+        ],
+        [
+          "previous",
+          "custrecord_nts_pr_createdfrom"
+        ],
+        [
+          "minimumValue",
+          "custrecord_nts_pr_minimum_order_value"
+        ],
+        [
+          "freight",
+          "custrecord_nts_pr_create_freight"
+        ],
+        [
+          "freightAmount",
+          "custrecord_nts_pr_create_freight_amount"
+        ],
+        [
+          "handling",
+          "custrecord_nts_pr_create_handling"
+        ],
+        [
+          "handlingAmount",
+          "custrecord_nts_pr_create_handling_amount"
+        ],
+        [
+          "dangerousGoods",
+          "custrecord_nts_pr_create_dangerous_goods"
+        ],
+        [
+          "dangerousGoodsAmount",
+          "custrecord_nts_pr_create_dnggoods_amt"
+        ],
+        [
+          "dryIce",
+          "custrecord_nts_pr_create_dry_ice"
+        ],
+        [
+          "dryIceAmount",
+          "custrecord_nts_pr_create_dry_ice_amt"
+        ],
+        [
+          "minimumCharge",
+          "custrecord_nts_pr_create_minord_charge"
+        ],
+        [
+          "minimumChargeAmount",
+          "custrecord_nts_pr_create_minord_amt"
+        ]
+      ]
+    },
+    "ruleItems": {
+      "id": "customsearch_im_cr_ruleitems_v1",
+      "title": "IM | Contract Report | ruleItems | v1",
+      "type": "customrecord_nts_price_rule_item_create",
+      "filters": [
+        [
+          "isinactive",
+          "is",
+          "F"
+        ]
+      ],
+      "columns": [
+        [
+          "id",
+          "internalid",
+          null,
+          "ASC"
+        ],
+        [
+          "rule",
+          "custrecord_nts_pr_item_create_parent"
+        ],
+        [
+          "item",
+          "custrecord_nts_pr_item_id"
+        ],
+        [
+          "description",
+          "custrecord_nts_pr_item_name"
+        ],
+        [
+          "price",
+          "custrecord_nts_pr_item_discountedprice"
+        ],
+        [
+          "status",
+          "custrecord_nts_pr_item_status"
+        ],
+        [
+          "class",
+          "custrecord_nts_pr_item_class"
+        ],
+        [
+          "department",
+          "custrecord_nts_pr_item_department"
+        ]
+      ]
+    },
+    "members": {
+      "id": "customsearch_im_cr_members_v1",
+      "title": "IM | Contract Report | members | v1",
+      "type": "customrecord_nts_pr_customer_create",
+      "filters": [
+        [
+          "isinactive",
+          "is",
+          "F"
+        ]
+      ],
+      "columns": [
+        [
+          "id",
+          "internalid",
+          null,
+          "ASC"
+        ],
+        [
+          "rule",
+          "custrecord_nts_pr_customer_create_prm"
+        ],
+        [
+          "customer",
+          "custrecord_nts_pr_customer_create_cust"
+        ]
+      ]
+    },
+    "itemMaster": {
+      "id": "customsearch_im_cr_itemmaster_v1",
+      "title": "IM | Contract Report | itemMaster | v1",
+      "type": "item",
+      "filters": [
+        [
+          "isinactive",
+          "is",
+          "F"
+        ]
+      ],
+      "columns": [
+        [
+          "id",
+          "internalid",
+          null,
+          "ASC"
+        ],
+        [
+          "code",
+          "itemid"
+        ],
+        [
+          "description",
+          "salesdescription"
+        ],
+        [
+          "list",
+          "baseprice"
+        ]
+      ]
+    },
+    "sales": {
+      "id": "customsearch_im_cr_sales_v1",
+      "title": "IM | Contract Report | sales | v1",
+      "type": "transaction",
+      "filters": [
+        [
+          "type",
+          "anyof",
+          "CustInvc"
+        ],
+        "AND",
+        [
+          "mainline",
+          "is",
+          "F"
+        ],
+        "AND",
+        [
+          "taxline",
+          "is",
+          "F"
+        ],
+        "AND",
+        [
+          "shipping",
+          "is",
+          "F"
+        ],
+        "AND",
+        [
+          "cogs",
+          "is",
+          "F"
+        ],
+        "AND",
+        [
+          "voided",
+          "is",
+          "F"
+        ]
+      ],
+      "columns": [
+        [
+          "id",
+          "internalid",
+          null,
+          "ASC"
+        ],
+        [
+          "line",
+          "lineuniquekey",
+          null,
+          "ASC"
+        ],
+        [
+          "doc",
+          "tranid"
+        ],
+        [
+          "date",
+          "trandate"
+        ],
+        [
+          "customer",
+          "entity"
+        ],
+        [
+          "item",
+          "item"
+        ],
+        [
+          "qty",
+          "quantity"
+        ],
+        [
+          "rate",
+          "rate"
+        ],
+        [
+          "amount",
+          "amount"
+        ],
+        [
+          "currency",
+          "currency"
+        ],
+        [
+          "rule",
+          "custcol_ns_price_rule"
+        ],
+        [
+          "description",
+          "memo"
+        ],
+        [
+          "shipto",
+          "shipaddress"
+        ],
+        [
+          "billto",
+          "billaddress"
+        ],
+        [
+          "po",
+          "otherrefnum"
+        ],
+        [
+          "subsidiary",
+          "subsidiary"
+        ]
+      ]
+    }
+  }
+}
