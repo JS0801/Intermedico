@@ -526,6 +526,7 @@ define(function (require)
             quantity: Number(desiredLine.quantity),
             location: desiredLine.location,
             expectedshipdate: desiredLine.deliveryDate,
+            custcol_fefo_line_item_added_manually: true,
             requesteddate: desiredLine.deliveryDate,
             [FIELD.itemSchedule]: desiredLine.itemScheduleId,
             [FIELD.occurrenceKey]: desiredLine.occurrenceKey,
