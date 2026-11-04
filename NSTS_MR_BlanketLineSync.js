@@ -22,6 +22,8 @@
  * @changeLog:   1.6       10 August 2026     Manuel Teodoro       Apply Schedule Sales Channel and Create PO for Sequester Orders
  * @changeLog:   1.7       28 August 2026     Manuel Teodoro       Configure the Sequester Sales Channel through a company-level script parameter
  * @changeLog:   1.8       01 September 2026  Manuel Teodoro       Initialize new Sales Orders with the customer to source required header defaults
+ * @changeLog:   1.9       01 October 2026    Manuel Teodoro       Synchronize only Ready for Processing schedules and skip later status changes
+ * @changeLog:   2.0       01 October 2026    Manuel Teodoro       Recover Sales Orders by Blanket Schedule and persist the relationship before final status updates
  *
  */
 define(function (require)
@@ -163,7 +165,21 @@ define(function (require)
         let stLogTitle = 'syncOrder';
         log.debug(stLogTitle);
 
+        const counts = {
+            created: 0,
+            updated: 0,
+            closed: 0,
+            duplicate: 0,
+            protectedSkipped: 0,
+            failed: 0
+        };
         const header = record.load({ type: HEADER_TYPE, id: headerId });
+        const statusText = header.getText({ fieldId: FIELD.status });
+        if (statusText !== blanketSchedule.CONSTANTS.status.ready)
+        {
+            return Helper.skipSync(headerId, statusText, counts);
+        }
+
         const headerValues = Helper.getHeaderValues(header);
         const itemSchedules = Helper.getItemSchedules(headerId);
         const desiredLines = blanketSchedule.buildDesiredLines(headerValues, itemSchedules);
@@ -185,7 +201,15 @@ define(function (require)
         // onto generated Sales Order lines. This avoids relying on User Event execution alone.
         Helper.applyPriceRulesToDesiredLines(desiredLines, headerValues.customer);
         Helper.sortDesiredLines(desiredLines);
-        const orderId = header.getValue({ fieldId: FIELD.salesOrder });
+        const linkedOrderId = header.getValue({ fieldId: FIELD.salesOrder });
+        const orderId = linkedOrderId || Helper.findSalesOrderId(headerId);
+
+        if (!linkedOrderId && orderId)
+        {
+            Helper.linkSalesOrder(headerId, orderId);
+            log.audit(stLogTitle, `Recovered Sales Order ${orderId} for Blanket Schedule ${headerId}.`);
+        }
+
         const order = orderId
             ? record.load({ type: record.Type.SALES_ORDER, id: orderId, isDynamic: false })
             : record.create({
@@ -196,15 +220,6 @@ define(function (require)
                 // and header location) before generated lines are added.
                 defaultValues: { entity: headerValues.customer }
             });
-        const counts = {
-            created: 0,
-            updated: 0,
-            closed: 0,
-            duplicate: 0,
-            protectedSkipped: 0,
-            failed: 0
-        };
-
         if (!orderId && !desiredLines.length)
         {
             throw Error('At least one active Blanket Item Schedule with valid recurrence data is required to create a Sales Order.');
@@ -269,6 +284,14 @@ define(function (require)
             counts.closed += 1;
         });
 
+        // The schedule may have been closed or cancelled after this task was queued.
+        const currentStatusText = record.load({ type: HEADER_TYPE, id: headerId })
+            .getText({ fieldId: FIELD.status });
+        if (currentStatusText !== blanketSchedule.CONSTANTS.status.ready)
+        {
+            return Helper.skipSync(headerId, currentStatusText, counts);
+        }
+
         Helper.validateOrderForSave(order, headerId, headerValues, desiredLines);
         const saveDiagnostic = Helper.getSaveDiagnostic(order, headerId, headerValues, desiredLines, orderId);
         log.audit(`${stLogTitle} Sales Order Save Attempt`, saveDiagnostic);
@@ -291,10 +314,66 @@ define(function (require)
             }));
             throw error;
         }
-        Helper.updateHeaderSuccess(header, savedOrderId);
+        // Persist the durable relationship first. If a later header update fails, the next run
+        // can load this Sales Order instead of creating a duplicate.
+        Helper.linkSalesOrder(headerId, savedOrderId);
+        Helper.updateHeaderSuccess(headerId);
         log.audit(stLogTitle, `Blanket Schedule ${headerId} synchronized to Sales Order ${savedOrderId}.`);
 
         return { headerId: headerId, counts: counts };
+    };
+
+    Helper.skipSync = (headerId, statusText, counts) =>
+    {
+        Object.keys(counts).forEach((key) => { counts[key] = 0; });
+        record.submitFields({
+            type: HEADER_TYPE,
+            id: headerId,
+            values: { [FIELD.taskId]: '' }
+        });
+        log.audit('skipSync', `Blanket Schedule ${headerId} has status ${statusText}; Sales Order synchronization skipped.`);
+        return { headerId: headerId, counts: counts };
+    };
+
+    Helper.findSalesOrderId = (headerId) =>
+    {
+        const stLogTitle = 'findSalesOrderId';
+        const result = query.runSuiteQL({
+            query: `
+                SELECT salesOrder.id AS id
+                FROM Transaction AS salesOrder
+                WHERE salesOrder.type = 'SalesOrd'
+                  AND salesOrder.custbody_ns_bso_schedule = ?
+                ORDER BY salesOrder.id`,
+            params: [headerId]
+        });
+        const salesOrderIds = result.asMappedResults().reduce((ids, row) =>
+        {
+            const salesOrderId = String(row.id || '');
+            if (salesOrderId && !ids.includes(salesOrderId)) ids.push(salesOrderId);
+            return ids;
+        }, []);
+
+        if (salesOrderIds.length > 1)
+        {
+            throw Error(`Blanket Schedule ${headerId} has multiple related Sales Orders: ${salesOrderIds.join(', ')}. No Sales Order was created or updated.`);
+        }
+
+        const salesOrderId = salesOrderIds[0] || '';
+        log.audit(stLogTitle, {
+            blanketScheduleId: headerId,
+            recoveredSalesOrderId: salesOrderId
+        });
+        return salesOrderId;
+    };
+
+    Helper.linkSalesOrder = (headerId, salesOrderId) =>
+    {
+        record.submitFields({
+            type: HEADER_TYPE,
+            id: headerId,
+            values: { [FIELD.salesOrder]: salesOrderId }
+        });
     };
 
     Helper.getHeaderValues = (header) =>
@@ -834,20 +913,23 @@ define(function (require)
         return blanketSchedule.getDateKey(Helper.parseDate(value));
     };
 
-    Helper.updateHeaderSuccess = (header, salesOrderId) =>
+    Helper.updateHeaderSuccess = (headerId) =>
     {
         let stLogTitle = 'updateHeaderSuccess';
         log.debug(stLogTitle);
 
-        header.setValue({ fieldId: FIELD.salesOrder, value: salesOrderId });
-        header.setValue({ fieldId: FIELD.lastGenerated, value: new Date() });
-        header.setValue({ fieldId: FIELD.lastError, value: '' });
-        header.setText({ fieldId: FIELD.status, text: 'Active' });
-        header.save({ enableSourcing: false, ignoreMandatoryFields: true });
+        const currentHeader = record.load({ type: HEADER_TYPE, id: headerId });
+        currentHeader.setValue({ fieldId: FIELD.lastGenerated, value: new Date() });
+        currentHeader.setValue({ fieldId: FIELD.lastError, value: '' });
+        if (currentHeader.getText({ fieldId: FIELD.status }) === blanketSchedule.CONSTANTS.status.ready)
+        {
+            currentHeader.setText({ fieldId: FIELD.status, text: blanketSchedule.CONSTANTS.status.active });
+        }
+        currentHeader.save({ enableSourcing: false, ignoreMandatoryFields: true });
 
         record.submitFields({
             type: HEADER_TYPE,
-            id: header.id,
+            id: headerId,
             values: { [FIELD.taskId]: '', [FIELD.lastError]: '' }
         });
     };
@@ -862,8 +944,21 @@ define(function (require)
         try
         {
             const header = record.load({ type: HEADER_TYPE, id: headerId });
-            header.setText({ fieldId: FIELD.status, text: 'Error' });
-            header.save({ enableSourcing: false, ignoreMandatoryFields: true });
+            if (header.getText({ fieldId: FIELD.status }) === blanketSchedule.CONSTANTS.status.ready)
+            {
+                header.setText({ fieldId: FIELD.status, text: blanketSchedule.CONSTANTS.status.error });
+                header.save({ enableSourcing: false, ignoreMandatoryFields: true });
+            }
+        }
+        catch (statusUpdateError)
+        {
+            log.error(`${stLogTitle} Status Update`, statusUpdateError);
+        }
+
+        // Clear the task independently so a failed status save does not prevent a corrected
+        // schedule from being submitted again. The related Sales Order is recovered on retry.
+        try
+        {
             record.submitFields({
                 type: HEADER_TYPE,
                 id: headerId,
@@ -873,9 +968,9 @@ define(function (require)
                 }
             });
         }
-        catch (updateError)
+        catch (taskUpdateError)
         {
-            log.error(stLogTitle, updateError);
+            log.error(`${stLogTitle} Task Update`, taskUpdateError);
         }
     };
 
