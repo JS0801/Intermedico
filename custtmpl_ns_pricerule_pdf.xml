@@ -258,41 +258,62 @@ font-family: NotoSans, sans-serif;
 <#assign entries = cdata.customer>
 <#if entries?has_content>
 <#assign half = (entries?size / 2)?ceiling>
-<#assign blockSize = 4>
-<#assign blockCount = (half / blockSize)?ceiling>
-<!-- Small outer rows allow natural page breaks; inner rows keep each column independent within a block. -->
-<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
-    <thead>
-        <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
-    </thead>
-    <tbody>
-        <#list 0..(blockCount - 1) as blockIndex>
-        <tr>
-            <#list 0..1 as columnIndex>
-            <td width="50%" style="padding:0; vertical-align:top;">
-                <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
-                    <#assign first = columnIndex * half + blockIndex * blockSize>
-                    <#assign last = first + blockSize - 1>
-                    <#assign columnLast = (columnIndex + 1) * half - 1>
-                    <#if last gt columnLast><#assign last = columnLast></#if>
-                    <#if last gte entries?size><#assign last = entries?size - 1></#if>
-                    <#if first lte last>
-                    <#list first..last as entryIndex>
-                        <#assign entry = entries[entryIndex]>
-                        <#assign level = entry.level?string?trim?number>
-                        <#assign bulletIndent = 0>
-                        <#if level gt 0><#assign bulletIndent = 7></#if>
-                        <tr><td align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(columnIndex * 10 + level * 10 + bulletIndent)?c}px; text-indent:-${bulletIndent?c}px; vertical-align:top;"><#if level gt 0>&#8226;&#160;</#if><#if (entry.hasChildren!false)?string == "true"><b>${entry.text?esc}</b><#else>${entry.text?esc}</#if></td></tr>
-                    </#list>
-                    <#else>
-                        <tr><td style="padding:0;">&#160;</td></tr>
-                    </#if>
-                </table>
-            </td>
-            </#list>
-        </tr>
+<#assign columns = []>
+<#list 0..1 as columnIndex>
+    <#assign lines = []>
+    <#assign first = columnIndex * half>
+    <#assign last = ((columnIndex + 1) * half - 1)>
+    <#if last gte entries?size><#assign last = entries?size - 1></#if>
+    <#if first lte last>
+    <#list first..last as entryIndex>
+        <#assign entry = entries[entryIndex]>
+        <#assign level = entry.level?string?trim?number>
+        <#assign indent = level * 7.5>
+        <#if indent gt 75><#assign indent = 75></#if>
+        <#assign markerWidth = 0>
+        <#if level gt 0><#assign markerWidth = 9.6></#if>
+        <#-- Letter page: 540pt body / 2, less gutter and indentation. Courier 8pt = 4.8pt per character. -->
+        <#assign capacity = ((270 - 15 - indent - markerWidth) / 4.8)?floor - 1>
+        <#assign remaining = entry.text?replace("\\s+", " ", "r")?trim>
+        <#assign firstLine = true>
+        <#-- Bounded by character count, including long unbroken words. -->
+        <#list 0..remaining?length as pass>
+            <#if remaining?has_content>
+                <#assign cut = remaining?length>
+                <#if cut gt capacity>
+                    <#assign cut = capacity>
+                    <#assign space = remaining?substring(0, capacity + 1)?last_index_of(" ")>
+                    <#if space gt 0><#assign cut = space></#if>
+                </#if>
+                <#assign lines = lines + [{"text": remaining?substring(0, cut), "indent": indent, "markerWidth": markerWidth, "bullet": firstLine && level gt 0, "bold": (entry.hasChildren!false)?string == "true"}]>
+                <#assign remaining = remaining?substring(cut)?trim>
+                <#assign firstLine = false>
+            </#if>
         </#list>
-    </tbody>
+    </#list>
+    </#if>
+    <#assign columns = columns + [lines]>
+</#list>
+<#assign lineCount = columns[0]?size>
+<#if columns[1]?size gt lineCount><#assign lineCount = columns[1]?size></#if>
+<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
+<thead><tr><td colspan="2" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr></thead>
+<tbody>
+<#if lineCount gt 0>
+<#list 0..(lineCount - 1) as lineIndex>
+<tr>
+<#list 0..1 as columnIndex>
+    <#if lineIndex lt columns[columnIndex]?size>
+        <#assign line = columns[columnIndex][lineIndex]>
+        <td width="50%" style="font-family:Courier; font-size:8pt; line-height:11pt; padding:1pt 5pt 1pt ${(columnIndex * 10 + line.indent + line.markerWidth)?c}pt; text-indent:-${line.markerWidth?c}pt; vertical-align:top;"><#if line.markerWidth gt 0><#if line.bullet>&#8226;&#160;<#else>&#160;&#160;</#if></#if><#if line.bold><b>${line.text?esc}</b><#else>${line.text?esc}</#if></td>
+    <#else>
+        <td width="50%" style="padding:1pt 5pt; font-family:Courier; font-size:8pt; line-height:11pt;">&#160;</td>
+    </#if>
+</#list>
+</tr>
+</#list>
+</#if>
+</tbody>
 </table>
 </#if>
 
@@ -302,43 +323,65 @@ font-family: NotoSans, sans-serif;
 <#assign entries = cdata.ruralcustomer>
 <#if entries?has_content>
 <#assign half = (entries?size / 2)?ceiling>
-<#assign blockSize = 4>
-<#assign blockCount = (half / blockSize)?ceiling>
-<!-- Small outer rows allow natural page breaks; inner rows keep each column independent within a block. -->
-<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
-    <thead>
-        <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
-    </thead>
-    <tbody>
-        <#list 0..(blockCount - 1) as blockIndex>
-        <tr>
-            <#list 0..1 as columnIndex>
-            <td width="50%" style="padding:0; vertical-align:top;">
-                <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
-                    <#assign first = columnIndex * half + blockIndex * blockSize>
-                    <#assign last = first + blockSize - 1>
-                    <#assign columnLast = (columnIndex + 1) * half - 1>
-                    <#if last gt columnLast><#assign last = columnLast></#if>
-                    <#if last gte entries?size><#assign last = entries?size - 1></#if>
-                    <#if first lte last>
-                    <#list first..last as entryIndex>
-                        <#assign entry = entries[entryIndex]>
-                        <#assign level = entry.level?string?trim?number>
-                        <#assign bulletIndent = 0>
-                        <#if level gt 0><#assign bulletIndent = 7></#if>
-                        <tr><td align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(columnIndex * 10 + level * 10 + bulletIndent)?c}px; text-indent:-${bulletIndent?c}px; vertical-align:top;"><#if level gt 0>&#8226;&#160;</#if><#if (entry.hasChildren!false)?string == "true"><b>${entry.text?esc}</b><#else>${entry.text?esc}</#if></td></tr>
-                    </#list>
-                    <#else>
-                        <tr><td style="padding:0;">&#160;</td></tr>
-                    </#if>
-                </table>
-            </td>
-            </#list>
-        </tr>
+<#assign columns = []>
+<#list 0..1 as columnIndex>
+    <#assign lines = []>
+    <#assign first = columnIndex * half>
+    <#assign last = ((columnIndex + 1) * half - 1)>
+    <#if last gte entries?size><#assign last = entries?size - 1></#if>
+    <#if first lte last>
+    <#list first..last as entryIndex>
+        <#assign entry = entries[entryIndex]>
+        <#assign level = entry.level?string?trim?number>
+        <#assign indent = level * 7.5>
+        <#if indent gt 75><#assign indent = 75></#if>
+        <#assign markerWidth = 0>
+        <#if level gt 0><#assign markerWidth = 9.6></#if>
+        <#-- Letter page: 540pt body / 2, less gutter and indentation. Courier 8pt = 4.8pt per character. -->
+        <#assign capacity = ((270 - 15 - indent - markerWidth) / 4.8)?floor - 1>
+        <#assign remaining = entry.text?replace("\\s+", " ", "r")?trim>
+        <#assign firstLine = true>
+        <#-- Bounded by character count, including long unbroken words. -->
+        <#list 0..remaining?length as pass>
+            <#if remaining?has_content>
+                <#assign cut = remaining?length>
+                <#if cut gt capacity>
+                    <#assign cut = capacity>
+                    <#assign space = remaining?substring(0, capacity + 1)?last_index_of(" ")>
+                    <#if space gt 0><#assign cut = space></#if>
+                </#if>
+                <#assign lines = lines + [{"text": remaining?substring(0, cut), "indent": indent, "markerWidth": markerWidth, "bullet": firstLine && level gt 0, "bold": (entry.hasChildren!false)?string == "true"}]>
+                <#assign remaining = remaining?substring(cut)?trim>
+                <#assign firstLine = false>
+            </#if>
         </#list>
-    </tbody>
+    </#list>
+    </#if>
+    <#assign columns = columns + [lines]>
+</#list>
+<#assign lineCount = columns[0]?size>
+<#if columns[1]?size gt lineCount><#assign lineCount = columns[1]?size></#if>
+<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
+<thead><tr><td colspan="2" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr></thead>
+<tbody>
+<#if lineCount gt 0>
+<#list 0..(lineCount - 1) as lineIndex>
+<tr>
+<#list 0..1 as columnIndex>
+    <#if lineIndex lt columns[columnIndex]?size>
+        <#assign line = columns[columnIndex][lineIndex]>
+        <td width="50%" style="font-family:Courier; font-size:8pt; line-height:11pt; padding:1pt 5pt 1pt ${(columnIndex * 10 + line.indent + line.markerWidth)?c}pt; text-indent:-${line.markerWidth?c}pt; vertical-align:top;"><#if line.markerWidth gt 0><#if line.bullet>&#8226;&#160;<#else>&#160;&#160;</#if></#if><#if line.bold><b>${line.text?esc}</b><#else>${line.text?esc}</#if></td>
+    <#else>
+        <td width="50%" style="padding:1pt 5pt; font-family:Courier; font-size:8pt; line-height:11pt;">&#160;</td>
+    </#if>
+</#list>
+</tr>
+</#list>
+</#if>
+</tbody>
 </table>
 </#if>
+
 
 
 </#if>
