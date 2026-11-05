@@ -250,7 +250,7 @@ font-family: NotoSans, sans-serif;
 </table>
 </#if>
 
-<pbr header="childpagesheader" header-height="70px" footer="childpagesfooter" footer-height="20px" padding="0.15in 0.5in 0.5in 0.5in" size="letter" />
+<pbr header="childpagesheader" header-height="70px" footer="childpagesfooter" footer-height="32pt" padding="0.15in 0.5in 0.5in 0.5in" size="letter" />
 <table width="100%" style="width:100%;">
     <tr><td align="left" style="padding:6px 0; font-size:9pt;">Contract Pricing Reference No. ${cdata.header.id?esc} is valid for the below account number(s):<br/>No. de référence ${cdata.header.id?esc} est validé pour les client(s) ci-dessous :</td></tr>
 </table>
@@ -258,18 +258,23 @@ font-family: NotoSans, sans-serif;
 <#assign entries = cdata.customer>
 <#if entries?has_content>
 <#assign half = (entries?size / 2)?ceiling>
-<!-- Each column has independent rows so wrapped names cannot stretch the opposite column. -->
+<#assign blockSize = 4>
+<#assign blockCount = (half / blockSize)?ceiling>
+<!-- Small outer rows allow natural page breaks; inner rows keep each column independent within a block. -->
 <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
     <thead>
         <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
     </thead>
     <tbody>
+        <#list 0..(blockCount - 1) as blockIndex>
         <tr>
             <#list 0..1 as columnIndex>
             <td width="50%" style="padding:0; vertical-align:top;">
                 <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
-                    <#assign first = columnIndex * half>
-                    <#assign last = ((columnIndex + 1) * half - 1)>
+                    <#assign first = columnIndex * half + blockIndex * blockSize>
+                    <#assign last = first + blockSize - 1>
+                    <#assign columnLast = (columnIndex + 1) * half - 1>
+                    <#if last gt columnLast><#assign last = columnLast></#if>
                     <#if last gte entries?size><#assign last = entries?size - 1></#if>
                     <#if first lte last>
                     <#list first..last as entryIndex>
@@ -286,6 +291,7 @@ font-family: NotoSans, sans-serif;
             </td>
             </#list>
         </tr>
+        </#list>
     </tbody>
 </table>
 </#if>
@@ -296,18 +302,23 @@ font-family: NotoSans, sans-serif;
 <#assign entries = cdata.ruralcustomer>
 <#if entries?has_content>
 <#assign half = (entries?size / 2)?ceiling>
-<!-- Each column has independent rows so wrapped names cannot stretch the opposite column. -->
+<#assign blockSize = 4>
+<#assign blockCount = (half / blockSize)?ceiling>
+<!-- Small outer rows allow natural page breaks; inner rows keep each column independent within a block. -->
 <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
     <thead>
         <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
     </thead>
     <tbody>
+        <#list 0..(blockCount - 1) as blockIndex>
         <tr>
             <#list 0..1 as columnIndex>
             <td width="50%" style="padding:0; vertical-align:top;">
                 <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
-                    <#assign first = columnIndex * half>
-                    <#assign last = ((columnIndex + 1) * half - 1)>
+                    <#assign first = columnIndex * half + blockIndex * blockSize>
+                    <#assign last = first + blockSize - 1>
+                    <#assign columnLast = (columnIndex + 1) * half - 1>
+                    <#if last gt columnLast><#assign last = columnLast></#if>
                     <#if last gte entries?size><#assign last = entries?size - 1></#if>
                     <#if first lte last>
                     <#list first..last as entryIndex>
@@ -324,6 +335,7 @@ font-family: NotoSans, sans-serif;
             </td>
             </#list>
         </tr>
+        </#list>
     </tbody>
 </table>
 </#if>
