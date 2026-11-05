@@ -256,127 +256,78 @@ font-family: NotoSans, sans-serif;
 </table>
 
 <#assign entries = cdata.customer>
-<#assign groups = []>
-<#assign currentGroup = []>
-<#list entries as entry>
-    <#assign entryLevel = entry.level?string?trim?number>
-    <#if entryLevel == 0 && currentGroup?has_content>
-        <#assign groups = groups + [currentGroup]>
-        <#assign currentGroup = []>
-    </#if>
-    <#assign currentGroup = currentGroup + [entry]>
-</#list>
-<#if currentGroup?has_content><#assign groups = groups + [currentGroup]></#if>
-<#list groups as group>
-    <#assign childCount = group?size - 1>
-    <#assign half = (childCount / 2)?ceiling>
-    <#assign firstRight = half + 1>
-    <#assign rightContext = [group[0].text]>
-    <#if firstRight lt group?size>
-        <#assign neededLevel = group[firstRight].level?string?trim?number>
-        <#assign rightContext = []>
-        <#list 1..firstRight as distance>
-            <#assign ancestor = group[firstRight - distance]>
-            <#assign ancestorLevel = ancestor.level?string?trim?number>
-            <#if ancestorLevel lt neededLevel>
-                <#assign rightContext = [ancestor.text] + rightContext>
-                <#assign neededLevel = ancestorLevel>
-            </#if>
-        </#list>
-        <#if !rightContext?has_content><#assign rightContext = [group[0].text]></#if>
-    </#if>
-    <table width="100%" style="width:100%; margin-top:8px; table-layout:fixed;" table-layout="fixed">
-        <thead>
-            <tr>
-                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>">${group[0].text?esc}</td>
-                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
-            </tr>
-        </thead>
-        <tbody>
-            <#if half gt 0>
-                <#list 0..(half - 1) as rowIndex>
-                    <#assign left = group[rowIndex + 1]>
-                    <#assign leftLevel = left.level?string?trim?number>
-                    <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if><#if (left.hasChildren!false)?string == "true"><b>${left.text?esc}</b><#else>${left.text?esc}</#if></td>
-                        <#if (firstRight + rowIndex) lt group?size>
-                            <#assign right = group[firstRight + rowIndex]>
-                            <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if><#if (right.hasChildren!false)?string == "true"><b>${right.text?esc}</b><#else>${right.text?esc}</#if></td>
-                        <#else>
-                            <td width="50%" style="padding:0;">&#160;</td>
-                        </#if>
-                    </tr>
-                </#list>
-            <#else>
-                <tr><td width="50%" style="padding:0;"></td><td width="50%" style="padding:0;"></td></tr>
-            </#if>
-        </tbody>
-    </table>
-</#list>
+<#if entries?has_content>
+<#assign half = (entries?size / 2)?ceiling>
+<!-- Each column has independent rows so wrapped names cannot stretch the opposite column. -->
+<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
+    <thead>
+        <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <#list 0..1 as columnIndex>
+            <td width="50%" style="padding:0; vertical-align:top;">
+                <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
+                    <#assign first = columnIndex * half>
+                    <#assign last = ((columnIndex + 1) * half - 1)>
+                    <#if last gte entries?size><#assign last = entries?size - 1></#if>
+                    <#if first lte last>
+                    <#list first..last as entryIndex>
+                        <#assign entry = entries[entryIndex]>
+                        <#assign level = entry.level?string?trim?number>
+                        <#assign bulletIndent = 0>
+                        <#if level gt 0><#assign bulletIndent = 7></#if>
+                        <tr><td align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(columnIndex * 10 + level * 10 + bulletIndent)?c}px; text-indent:-${bulletIndent?c}px; vertical-align:top;"><#if level gt 0>&#8226;&#160;</#if><#if (entry.hasChildren!false)?string == "true"><b>${entry.text?esc}</b><#else>${entry.text?esc}</#if></td></tr>
+                    </#list>
+                    <#else>
+                        <tr><td style="padding:0;">&#160;</td></tr>
+                    </#if>
+                </table>
+            </td>
+            </#list>
+        </tr>
+    </tbody>
+</table>
+</#if>
 
 <#if cdata.ruralcustomer?? && cdata.ruralcustomer?has_content>
 <table width="100%"><tr><td align="left" style="padding:12px 0 4px 0; font-weight:bold;">Rural Customers / Les sites en zone rurale:</td></tr></table>
 
 <#assign entries = cdata.ruralcustomer>
-<#assign groups = []>
-<#assign currentGroup = []>
-<#list entries as entry>
-    <#assign entryLevel = entry.level?string?trim?number>
-    <#if entryLevel == 0 && currentGroup?has_content>
-        <#assign groups = groups + [currentGroup]>
-        <#assign currentGroup = []>
-    </#if>
-    <#assign currentGroup = currentGroup + [entry]>
-</#list>
-<#if currentGroup?has_content><#assign groups = groups + [currentGroup]></#if>
-<#list groups as group>
-    <#assign childCount = group?size - 1>
-    <#assign half = (childCount / 2)?ceiling>
-    <#assign firstRight = half + 1>
-    <#assign rightContext = [group[0].text]>
-    <#if firstRight lt group?size>
-        <#assign neededLevel = group[firstRight].level?string?trim?number>
-        <#assign rightContext = []>
-        <#list 1..firstRight as distance>
-            <#assign ancestor = group[firstRight - distance]>
-            <#assign ancestorLevel = ancestor.level?string?trim?number>
-            <#if ancestorLevel lt neededLevel>
-                <#assign rightContext = [ancestor.text] + rightContext>
-                <#assign neededLevel = ancestorLevel>
-            </#if>
-        </#list>
-        <#if !rightContext?has_content><#assign rightContext = [group[0].text]></#if>
-    </#if>
-    <table width="100%" style="width:100%; margin-top:8px; table-layout:fixed;" table-layout="fixed">
-        <thead>
-            <tr>
-                <td width="50%" align="left" style="padding:6px 10px 6px 0; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>">${group[0].text?esc}</td>
-                <td width="50%" align="left" style="padding:6px 0 6px 10px; font-size:8pt; <#if group?size gt 1>font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;<#else>font-weight:normal; color:#000000;</#if>"><#if firstRight lt group?size><#list rightContext as ancestorText><#if ancestorText?index gt 0> &#8594; </#if>${ancestorText?esc}</#list> &#8212; continued<#else>&#160;</#if></td>
-            </tr>
-        </thead>
-        <tbody>
-            <#if half gt 0>
-                <#list 0..(half - 1) as rowIndex>
-                    <#assign left = group[rowIndex + 1]>
-                    <#assign leftLevel = left.level?string?trim?number>
-                    <tr>
-                        <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(leftLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if leftLevel gt 0>&#8226;&#160;</#if><#if (left.hasChildren!false)?string == "true"><b>${left.text?esc}</b><#else>${left.text?esc}</#if></td>
-                        <#if (firstRight + rowIndex) lt group?size>
-                            <#assign right = group[firstRight + rowIndex]>
-                            <#assign rightLevel = right.level?string?trim?number>
-                            <td width="50%" align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:0; padding-left:${(10 + rightLevel * 10 + 7)?c}px; text-indent:-7px; vertical-align:top;"><#if rightLevel gt 0>&#8226;&#160;</#if><#if (right.hasChildren!false)?string == "true"><b>${right.text?esc}</b><#else>${right.text?esc}</#if></td>
-                        <#else>
-                            <td width="50%" style="padding:0;">&#160;</td>
-                        </#if>
-                    </tr>
-                </#list>
-            <#else>
-                <tr><td width="50%" style="padding:0;"></td><td width="50%" style="padding:0;"></td></tr>
-            </#if>
-        </tbody>
-    </table>
-</#list>
+<#if entries?has_content>
+<#assign half = (entries?size / 2)?ceiling>
+<!-- Each column has independent rows so wrapped names cannot stretch the opposite column. -->
+<table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin-top:8px;">
+    <thead>
+        <tr><td colspan="2" align="left" style="padding:6px 0; font-size:8pt; font-weight:bold; color:#17365d; border-bottom:1px solid #b7c4d1;">${cdata.header.id?esc}</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <#list 0..1 as columnIndex>
+            <td width="50%" style="padding:0; vertical-align:top;">
+                <table width="100%" table-layout="fixed" style="width:100%; table-layout:fixed; margin:0;">
+                    <#assign first = columnIndex * half>
+                    <#assign last = ((columnIndex + 1) * half - 1)>
+                    <#if last gte entries?size><#assign last = entries?size - 1></#if>
+                    <#if first lte last>
+                    <#list first..last as entryIndex>
+                        <#assign entry = entries[entryIndex]>
+                        <#assign level = entry.level?string?trim?number>
+                        <#assign bulletIndent = 0>
+                        <#if level gt 0><#assign bulletIndent = 7></#if>
+                        <tr><td align="left" style="font-size:8pt; line-height:10pt; padding-top:3px; padding-bottom:3px; padding-right:10px; padding-left:${(columnIndex * 10 + level * 10 + bulletIndent)?c}px; text-indent:-${bulletIndent?c}px; vertical-align:top;"><#if level gt 0>&#8226;&#160;</#if><#if (entry.hasChildren!false)?string == "true"><b>${entry.text?esc}</b><#else>${entry.text?esc}</#if></td></tr>
+                    </#list>
+                    <#else>
+                        <tr><td style="padding:0;">&#160;</td></tr>
+                    </#if>
+                </table>
+            </td>
+            </#list>
+        </tr>
+    </tbody>
+</table>
+</#if>
+
 
 </#if>
 
