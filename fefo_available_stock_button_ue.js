@@ -11,8 +11,8 @@ define(['N/runtime','N/url','N/ui/serverWidget'],(runtime,url,ui)=>{
     function beforeLoad(ctx) {
         if(ctx.type!==ctx.UserEventType.VIEW || runtime.executionContext!==runtime.ContextType.USER_INTERFACE || !ctx.newRecord.id) return;
         const script=runtime.getCurrentScript();
-        const scriptId=script.getParameter({name:'custscript_fas_sl_script'});
-        const deploymentId=script.getParameter({name:'custscript_fas_sl_deploy'});
+        const scriptId='customscript_img_sl_manually_allocate_it';
+        const deploymentId='customdeploy_img_sl_manually_allocate_it';
         if(!scriptId || !deploymentId) return;
         const target=url.resolveScript({scriptId,deploymentId,params:{soid:String(ctx.newRecord.id)}});
         const field=ctx.form.addField({id:'custpage_fas_popup_url',label:'Available stock allocation URL',type:ui.FieldType.LONGTEXT});
