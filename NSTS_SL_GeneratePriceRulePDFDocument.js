@@ -368,37 +368,84 @@ define( //using require instead for better module loading especially for the hav
             const cache = {};
             const join = 'custrecord_nts_pr_customer_create_cust';
 
-            // The joined parent search column can represent the top-level ancestor.
-            // Read the customer record's direct parent for the actual hierarchy.
-            function getCustomer(id) {
-                if (cache[id]) return cache[id];
-                const customerRecord = record.load({type: record.Type.CUSTOMER, id: id, isDynamic: false});
-                const account = String(customerRecord.getValue({fieldId: 'entityid'}) || '');
-                const company = String(customerRecord.getValue({fieldId: 'companyname'}) || '');
-                const person = [customerRecord.getValue({fieldId: 'firstname'}), customerRecord.getValue({fieldId: 'lastname'})].filter(Boolean).join(' ');
-                const name = company || person || account;
-                const rural = customerRecord.getValue({fieldId: 'custentity_rural'});
-                cache[id] = {
-                    id: String(id),
-                    parentId: String(customerRecord.getValue({fieldId: 'parent'}) || ''),
-                    name: name,
-                    text: account + (name && name !== account ? ' - ' + name : ''),
-                    rural: rural === true || rural === 'T'
-                };
-                return cache[id];
-            }
+            const selectedIds = [];
+            const batchSize = 500;
+            let customerSearchCount = 0;
 
-            search.create({
+            // Page the membership search; only these selected accounts appear in the PDF.
+            const membership = search.create({
                 type: 'customrecord_nts_pr_customer_create',
                 filters: [['custrecord_nts_pr_customer_create_prm', 'anyof', params.id], 'AND', ['isinactive', 'is', 'F']],
-                columns: [search.createColumn({name: 'internalid', join: join})]
-            }).run().each(function(result) {
-                const id = String(result.getValue({name: 'internalid', join: join}) || '');
-                if (id && !seen[id]) {
-                    seen[id] = true;
-                    customers.push(getCustomer(id));
+                columns: [
+                    search.createColumn({name: 'internalid', sort: search.Sort.ASC}),
+                    search.createColumn({name: 'internalid', join: join})
+                ]
+            }).runPaged({pageSize: 1000});
+            membership.pageRanges.forEach(function(pageRange) {
+                membership.fetch({index: pageRange.index}).data.forEach(function(result) {
+                    const id = String(result.getValue({name: 'internalid', join: join}) || '');
+                    if (id && !seen[id]) {
+                        seen[id] = true;
+                        selectedIds.push(id);
+                    }
+                });
+            });
+
+            // Use the explicit Parent Customer join for the immediate parent.
+            // The plain parent column may represent the top-level ancestor.
+            // Fetch missing ancestors in batches too; never load customer records.
+            function fetchCustomers(ids) {
+                for (let offset = 0; offset < ids.length; offset += batchSize) {
+                    const batch = ids.slice(offset, offset + batchSize);
+                    customerSearchCount++;
+                    search.create({
+                        type: search.Type.CUSTOMER,
+                        filters: [['internalid', 'anyof', batch]],
+                        columns: [
+                            search.createColumn({name: 'internalid', sort: search.Sort.ASC}),
+                            'entityid', 'companyname', 'firstname', 'lastname', 'custentity_rural',
+                            search.createColumn({name: 'internalid', join: 'parentcustomer'})
+                        ]
+                    }).run().each(function(result) {
+                        const id = String(result.getValue({name: 'internalid'}));
+                        const account = String(result.getValue({name: 'entityid'}) || '');
+                        const company = String(result.getValue({name: 'companyname'}) || '');
+                        const person = [result.getValue({name: 'firstname'}), result.getValue({name: 'lastname'})].filter(Boolean).join(' ');
+                        const name = company || person || account;
+                        const rural = result.getValue({name: 'custentity_rural'});
+                        cache[id] = {
+                            id: id,
+                            parentId: String(result.getValue({name: 'internalid', join: 'parentcustomer'}) || ''),
+                            name: name,
+                            text: account + (name && name !== account ? ' - ' + name : ''),
+                            rural: rural === true || rural === 'T'
+                        };
+                        return true;
+                    });
+                    // Fail explicitly rather than silently omit an inaccessible account.
+                    batch.forEach(function(id) {
+                        if (!cache[id]) throw new Error('Cannot retrieve customer ' + id + ' for price rule ' + params.id + '.');
+                    });
                 }
-                return true;
+            }
+
+            let pending = selectedIds.slice();
+            while (pending.length) {
+                fetchCustomers(pending);
+                const next = {};
+                pending.forEach(function(id) {
+                    const parentId = cache[id].parentId;
+                    if (parentId && !cache[parentId]) next[parentId] = true;
+                });
+                pending = Object.keys(next);
+            }
+            selectedIds.forEach(function(id) { customers.push(cache[id]); });
+            function getCustomer(id) { return cache[id]; }
+            log.debug('getCustomerList', {
+                selectedCustomers: customers.length,
+                cachedCustomers: Object.keys(cache).length,
+                customerSearches: customerSearchCount,
+                remainingUsage: runtime.getCurrentScript().getRemainingUsage()
             });
 
             function hierarchy(list) {
